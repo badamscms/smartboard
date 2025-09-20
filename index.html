@@ -153,6 +153,10 @@
             'deriving': {
                 term: 'Deriving',
                 definition: 'Getting something from a specific source. The Declaration states that governments derive their power from the people.'
+            },
+             'abolish': {
+                term: 'Abolish',
+                definition: 'To formally and completely put an end to a system, practice, or institution.'
             }
         };
 
@@ -218,7 +222,9 @@
         function addHighlightListeners() {
             document.querySelectorAll('.highlightable').forEach(el => {
                 el.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('glossary-term')) return; // Don't trigger for glossary terms
+                    // This check prevents the highlight from firing if a glossary term inside it is clicked
+                    if (e.target.classList.contains('glossary-term')) return; 
+
                     const matchGroup = e.currentTarget.getAttribute('data-match');
                     const isAlreadyHighlighted = e.currentTarget.classList.contains('highlighted');
                     
@@ -246,7 +252,7 @@
         function addGlossaryListeners() {
             document.querySelectorAll('.glossary-term').forEach(el => {
                 el.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevents highlight listener from firing
+                    e.stopPropagation(); // Prevents the parent's click (highlight) listener from firing
                     const termKey = e.target.getAttribute('data-term');
                     showModal(termKey);
                 });
@@ -268,4 +274,6 @@
 
 </body>
 </html>
+
+
 
