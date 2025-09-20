@@ -44,9 +44,6 @@
             color: #e2e8f0;
             transition: all 0.2s ease;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         .control-button:hover, .control-button.active {
             background-color: #718096;
@@ -70,7 +67,7 @@
             color: #1a202c;
             font-weight: bold;
         }
-        .glossary-term, .author-profile {
+        .glossary-term {
             text-decoration: underline;
             text-decoration-style: dotted;
             text-decoration-thickness: 2px;
@@ -78,50 +75,9 @@
             cursor: help;
             color: #90cdf4;
         }
-        .modal {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 50;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+        .hidden {
+            display: none;
         }
-        .modal.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background-color: #2d3748;
-            color: #e2e8f0;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            padding: 2rem;
-            max-width: 50rem;
-            width: 100%;
-            position: relative;
-            border: 2px solid #4a5568;
-        }
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            color: #a0aec0;
-            font-size: 2.5rem;
-            line-height: 1;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .modal-close:hover {
-            color: #fff;
-        }
-        .modal-term { font-size: 2.25rem; font-weight: bold; margin-bottom: 1rem; color: #f6e05e; }
-        .modal-definition { font-size: 1.75rem; }
-        .hidden { display: none; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -132,11 +88,11 @@
     </header>
 
     <!-- Control Panel -->
-    <div id="controls" class="flex justify-center items-center flex-wrap gap-4 p-4 bg-gray-800">
+    <div id="controls" class="flex justify-center items-center space-x-4 p-4 bg-gray-800">
         <button id="btn-doc1" class="control-button" onclick="setView('doc1')">Hobbes</button>
         <button id="btn-doc2" class="control-button" onclick="setView('doc2')">Locke</button>
         <button id="btn-doc3" class="control-button" onclick="setView('doc3')">Declaration</button>
-        <div class="border-l-2 border-gray-600 h-10 hidden md:block"></div>
+        <div class="border-l-2 border-gray-600 h-10"></div>
         <select id="font-selector" onchange="changeFont()" class="control-button">
             <option value="'Inter', sans-serif">Inter</option>
             <option value="'Georgia', serif">Georgia</option>
@@ -144,10 +100,7 @@
             <option value="'Playfair Display', serif">Playfair Display</option>
             <option value="'Merriweather', serif">Merriweather</option>
         </select>
-        <div class="border-l-2 border-gray-600 h-10 hidden md:block"></div>
-        <button id="btn-questions" class="control-button" onclick="showQuestions()">🤔 Key Questions</button>
-        <button id="btn-context" class="control-button" onclick="showContext()">📜 Context</button>
-        <div class="border-l-2 border-gray-600 h-10 hidden md:block"></div>
+        <div class="border-l-2 border-gray-600 h-10"></div>
         <button id="btn-compare-13" class="control-button" onclick="setView('doc1', 'doc3')">Compare: Hobbes vs Jefferson</button>
         <button id="btn-compare-23" class="control-button" onclick="setView('doc2', 'doc3')">Compare: Locke vs Jefferson</button>
     </div>
@@ -157,70 +110,63 @@
         <!-- Document panes will be injected here by JavaScript -->
     </main>
 
-    <!-- Generic Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="hideModal()">&times;</span>
-            <div id="modal-body"></div>
+    <!-- Glossary Modal -->
+    <div id="glossary-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 text-gray-200 rounded-lg shadow-xl p-8 max-w-3xl w-full relative border-2 border-gray-600">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-4xl leading-none">&times;</button>
+            <h3 id="modal-term" class="text-3xl font-bold mb-4 text-yellow-400"></h3>
+            <p id="modal-definition" class="text-2xl"></p>
         </div>
     </div>
 
+
     <script>
-        let currentView = { doc1: null, doc2: null };
-
         const glossary = {
-            'diffidence': { term: 'Diffidence', definition: 'In Hobbes’s context, this means distrust or fear of other people, leading one to act first for their own safety.' },
-            'common power': { term: 'Common Power', definition: 'A single, strong government or authority with the power to control everyone, which Hobbes believed was necessary to prevent chaos.' },
-            'consent': { term: 'Consent', definition: 'Permission or agreement for something to happen. Locke and Jefferson argued that governments get their power from the consent of the people.' },
-            'arbitrary power': { term: 'Arbitrary Power', definition: 'Power used by a ruler for any reason they want, without having to follow any rules or laws.' },
-            'absolved': { term: 'Absolved', definition: 'To be set free from an obligation or blame. Locke argued people are absolved from obeying a government that violates their rights.' },
-            'unalienable Rights': { term: 'Unalienable Rights', definition: 'Rights that you are born with and that cannot be taken away. Jefferson lists Life, Liberty, and the pursuit of Happiness as examples.' },
-            'instituted': { term: 'Instituted', definition: 'To establish or set up something, like a government. The Declaration says governments are instituted to secure rights.' },
-            'deriving': { term: 'Deriving', definition: 'Getting something from a specific source. The Declaration states that governments derive their power from the people.' },
-            'abolish': { term: 'Abolish', definition: 'To formally and completely put an end to a system, practice, or institution.' }
-        };
-
-        const profiles = {
-            hobbes: {
-                term: 'Thomas Hobbes (1588-1679)',
-                definition: 'An English philosopher who experienced the chaos of the English Civil War. His work argues that to escape a brutal "state of nature," people must give up their rights to an absolute sovereign for protection.',
-                image: 'https://placehold.co/600x400/2d3748/e2e8f0?text=Portrait+of+Hobbes'
+            'diffidence': {
+                term: 'Diffidence',
+                definition: 'In Hobbes’s context, this means distrust or fear of other people, leading one to act first for their own safety.'
             },
-            locke: {
-                term: 'John Locke (1632-1704)',
-                definition: 'An English philosopher and physician, widely regarded as one of the most influential of Enlightenment thinkers. He witnessed the Glorious Revolution, which influenced his belief in natural rights and government by consent.',
-                 image: 'https://placehold.co/600x400/2d3748/e2e8f0?text=Portrait+of+Locke'
-            }
-        };
-
-        const questions = {
-            doc1: ["Why does Hobbes believe life without government is a 'war of every man, against every man'?", "According to Hobbes, is a bad king better than no king at all? Why?"],
-            doc2: ["What does Locke mean by 'property'? Is it just physical objects, or something more?", "If a government is created by 'consent,' can the people take that consent back?"],
-            doc3: ["Why did Jefferson change Locke’s phrase 'life, liberty, and property' to 'the pursuit of Happiness'?", "The Declaration lists grievances against the King. Which of these might Locke consider a violation of the social contract?"],
-            'doc1-doc3': ["Where does the Declaration of Independence specifically REJECT Hobbes’s main ideas?", "Could a government based on Hobbes's philosophy ever produce a document like the Declaration? Why or why not?"],
-            'doc2-doc3': ["Besides the obvious echoes, what is the most important idea the Declaration borrows from Locke?", "Is the American government today closer to Locke's ideal or has it moved away from it?"]
-        };
-        
-        const context = {
-            doc1: {
-                term: "Context: The English Civil War",
-                definition: "Thomas Hobbes wrote 'Leviathan' shortly after the English Civil War (1642–1651), a brutal conflict that led to the execution of King Charles I. Hobbes witnessed firsthand the chaos, violence, and instability that arose when central authority collapsed. This experience deeply shaped his belief that a powerful, undivided government was the only way to prevent society from descending into a 'war of all against all.'",
-                image: 'https://placehold.co/600x400/2d3748/e2e8f0?text=English+Civil+War+Scene'
+            'common power': {
+                term: 'Common Power',
+                definition: 'A single, strong government or authority with the power to control everyone, which Hobbes believed was necessary to prevent chaos.'
             },
-            doc2: {
-                 term: "Context: The Glorious Revolution",
-                 definition: "John Locke's ideas were heavily influenced by the Glorious Revolution (1688) in England. This was a largely bloodless revolution where King James II was overthrown and replaced by William and Mary, who agreed to limit their power and respect the rights of Parliament and the people. This event proved to Locke that it was possible to change a government that did not have the consent of the governed, reinforcing his ideas about natural rights and social contracts.",
-                 image: 'https://placehold.co/600x400/2d3748/e2e8f0?text=Glorious+Revolution+Scene'
+            'consent': {
+                term: 'Consent',
+                definition: 'Permission or agreement for something to happen. Locke and Jefferson argued that governments get their power from the consent of the people.'
+            },
+            'arbitrary power': {
+                term: 'Arbitrary Power',
+                definition: 'Power used by a ruler for any reason they want, without having to follow any rules or laws.'
+            },
+            'absolved': {
+                term: 'Absolved',
+                definition: 'To be set free from an obligation or blame. Locke argued people are absolved from obeying a government that violates their rights.'
+            },
+            'unalienable Rights': {
+                term: 'Unalienable Rights',
+                definition: 'Rights that you are born with and that cannot be taken away. Jefferson lists Life, Liberty, and the pursuit of Happiness as examples.'
+            },
+            'instituted': {
+                term: 'Instituted',
+                definition: 'To establish or set up something, like a government. The Declaration says governments are instituted to secure rights.'
+            },
+            'deriving': {
+                term: 'Deriving',
+                definition: 'Getting something from a specific source. The Declaration states that governments derive their power from the people.'
+            },
+             'abolish': {
+                term: 'Abolish',
+                definition: 'To formally and completely put an end to a system, practice, or institution.'
             }
         };
 
         const documents = {
             doc1: {
-                title: `Document 1: <span class="author-profile" data-author="hobbes">Thomas Hobbes</span>, "Leviathan" (1651)`,
+                title: 'Document 1: Thomas Hobbes, "Leviathan" (1651)',
                 content: `"In the nature of man, we find three principal causes of quarrel: competition, <span class="glossary-term" data-term="diffidence">diffidence</span>, and glory. The first makes men invade for gain; the second, for safety; and the third, for reputation. ... During the time men live without a <span class="glossary-term" data-term="common power">common power</span> to keep them all in awe, they are in that condition which is called war; and such a war, as is of every man, against every man. The life of man, solitary, poor, nasty, brutish, and short."`
             },
             doc2: {
-                title: `Document 2: <span class="author-profile" data-author="locke">John Locke</span>, "Two Treatises of Government" (1689)`,
+                title: 'Document 2: John Locke, "Two Treatises of Government" (1689)',
                 content: `"Men being, as has been said, by nature all <span class="highlightable" data-match="equal">free, equal, and independent</span>, no one can be put out of this estate and subjected to the political power of another without his own <span class="highlightable glossary-term" data-match="consent" data-term="consent">consent</span>. The end of law is not to abolish or restrain but to <span class="highlightable" data-match="liberty">preserve and enlarge freedom</span>. ... Whenever the legislators endeavor to take away and destroy the property of the people or to reduce them to slavery under <span class="glossary-term" data-term="arbitrary power">arbitrary power</span>, they put themselves into a state of war with the people, who are thereupon <span class="highlightable" data-match="revolt"><span class="glossary-term" data-term="absolved">absolved</span> from any further obedience</span>."`
             },
             doc3: {
@@ -231,11 +177,14 @@
 
         const displayArea = document.getElementById('document-display');
         const buttons = document.querySelectorAll('.control-button');
-        const modal = document.getElementById('modal');
-        const modalBody = document.getElementById('modal-body');
+        const modal = document.getElementById('glossary-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const modalTerm = document.getElementById('modal-term');
+        const modalDefinition = document.getElementById('modal-definition');
 
         function changeFont() {
-            document.body.style.fontFamily = document.getElementById('font-selector').value;
+            const selector = document.getElementById('font-selector');
+            document.body.style.fontFamily = selector.value;
         }
 
         function createDocumentPane(docId) {
@@ -250,92 +199,78 @@
         }
         
         function setView(docId1, docId2 = null) {
-            currentView = { doc1: docId1, doc2: doc2 };
             displayArea.innerHTML = docId2 ? createComparisonPanes(docId1, docId2) : createDocumentPane(docId1);
             updateActiveButton(docId1, docId2);
-            addInteractiveListeners();
+            addHighlightListeners();
+            addGlossaryListeners();
         }
 
         function updateActiveButton(docId1, docId2) {
             let activeId;
-            if (docId2) activeId = `btn-compare-${docId1.slice(-1)}${docId2.slice(-1)}`;
-            else activeId = `btn-${docId1}`;
-            
+            if (docId1 === 'doc1' && docId2 === 'doc3') activeId = 'btn-compare-13';
+            else if (docId1 === 'doc2' && docId2 === 'doc3') activeId = 'btn-compare-23';
+            else if (docId1 === 'doc1') activeId = 'btn-doc1';
+            else if (docId1 === 'doc2') activeId = 'btn-doc2';
+            else if (docId1 === 'doc3') activeId = 'btn-doc3';
+
             buttons.forEach(button => button.classList.remove('active'));
-            const activeButton = document.getElementById(activeId);
-            if(activeButton) activeButton.classList.add('active');
+            if(document.getElementById(activeId)) {
+                document.getElementById(activeId).classList.add('active');
+            }
         }
         
-        function addInteractiveListeners() {
-            // Highlight listeners
+        function addHighlightListeners() {
             document.querySelectorAll('.highlightable').forEach(el => {
                 el.addEventListener('click', (e) => {
-                    if (e.target.matches('.glossary-term, .author-profile')) return;
+                    // This check prevents the highlight from firing if a glossary term inside it is clicked
+                    if (e.target.classList.contains('glossary-term')) return; 
+
                     const matchGroup = e.currentTarget.getAttribute('data-match');
-                    const isHighlighted = e.currentTarget.classList.contains('highlighted');
+                    const isAlreadyHighlighted = e.currentTarget.classList.contains('highlighted');
+                    
                     document.querySelectorAll('.highlighted').forEach(h => h.classList.remove('highlighted'));
-                    if (!isHighlighted) {
+                    
+                    if (!isAlreadyHighlighted) {
                         document.querySelectorAll(`[data-match="${matchGroup}"]`).forEach(match => match.classList.add('highlighted'));
                     }
                 });
             });
+        }
 
-            // Glossary and Profile listeners
-            const clickableTerms = document.querySelectorAll('.glossary-term, .author-profile');
-            clickableTerms.forEach(el => {
+        function showModal(termKey) {
+            if (glossary[termKey]) {
+                modalTerm.textContent = glossary[termKey].term;
+                modalDefinition.textContent = glossary[termKey].definition;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+        }
+
+        function addGlossaryListeners() {
+            document.querySelectorAll('.glossary-term').forEach(el => {
                 el.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const termKey = e.target.dataset.term || e.target.dataset.author;
-                    const source = e.target.classList.contains('glossary-term') ? glossary : profiles;
-                    showInfoModal(source[termKey]);
+                    e.stopPropagation(); // Prevents the parent's click (highlight) listener from firing
+                    const termKey = e.target.getAttribute('data-term');
+                    showModal(termKey);
                 });
             });
         }
         
-        function showInfoModal(data, isRawHtml = false) {
-            if (!data) return;
-            if (isRawHtml) {
-                modalBody.innerHTML = data;
-            } else {
-                 modalBody.innerHTML = `
-                    ${data.image ? `<img src="${data.image}" alt="${data.term}" class="w-full h-64 object-cover rounded-md mb-4">` : ''}
-                    <h3 class="modal-term">${data.term}</h3>
-                    <p class="modal-definition">${data.definition}</p>
-                `;
-            }
-            modal.classList.add('visible');
-        }
-        
-        function showQuestions() {
-            const viewKey = currentView.doc2 ? `${currentView.doc1}-${currentView.doc2}` : currentView.doc1;
-            const questionsToShow = questions[viewKey];
-            if (questionsToShow) {
-                let html = `<h3 class="modal-term">Key Questions</h3><ul class="modal-definition list-disc pl-8 space-y-4">`;
-                questionsToShow.forEach(q => { html += `<li>${q}</li>`; });
-                html += `</ul>`;
-                showInfoModal(html, true);
-            }
-        }
-
-        function showContext() {
-            // Show context for the first doc in view, prioritize Locke if both are present
-            const contextKey = currentView.doc2 ? (currentView.doc1 === 'doc2' ? 'doc2' : 'doc1') : currentView.doc1;
-            const contextToShow = context[contextKey];
-            if(contextToShow) showInfoModal(contextToShow);
-        }
-
-        function hideModal() {
-            modal.classList.remove('visible');
-        }
-
+        closeModalBtn.addEventListener('click', hideModal);
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) hideModal();
+            if (e.target === modal) { // only close if clicking on the background
+                hideModal();
+            }
         });
 
         // Initial view on load
-        window.onload = () => { setView('doc1'); };
+        window.onload = () => {
+            setView('doc1');
+        };
     </script>
 
 </body>
 </html>
-
