@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DBQ Smartboard: Hobbes, Locke, & Jefferson</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for smartboard readability */
         body {
-            font-family: 'Georgia', 'serif';
+            font-family: 'Inter', sans-serif; /* Default font */
             background-color: #1a202c; /* A dark, chalkboard-like color */
             color: #e2e8f0;
         }
@@ -46,6 +49,13 @@
             background-color: #718096;
             transform: translateY(-2px);
         }
+        #font-selector {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            text-align: center;
+            padding-right: 2rem; /* Keep padding consistent */
+        }
         .highlightable {
             cursor: pointer;
             transition: all 0.2s ease;
@@ -71,6 +81,14 @@
         <button id="btn-doc1" class="control-button" onclick="setView('doc1')">Hobbes</button>
         <button id="btn-doc2" class="control-button" onclick="setView('doc2')">Locke</button>
         <button id="btn-doc3" class="control-button" onclick="setView('doc3')">Declaration</button>
+        <div class="border-l-2 border-gray-600 h-10"></div>
+        <select id="font-selector" onchange="changeFont()" class="control-button">
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'Georgia', serif">Georgia</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="'Playfair Display', serif">Playfair Display</option>
+            <option value="'Merriweather', serif">Merriweather</option>
+        </select>
         <div class="border-l-2 border-gray-600 h-10"></div>
         <button id="btn-compare-13" class="control-button" onclick="setView('doc1', 'doc3')">Compare: Hobbes vs Jefferson</button>
         <button id="btn-compare-23" class="control-button" onclick="setView('doc2', 'doc3')">Compare: Locke vs Jefferson</button>
@@ -99,6 +117,11 @@
 
         const displayArea = document.getElementById('document-display');
         const buttons = document.querySelectorAll('.control-button');
+
+        function changeFont() {
+            const selector = document.getElementById('font-selector');
+            document.body.style.fontFamily = selector.value;
+        }
 
         function createDocumentPane(docId) {
             const doc = documents[docId];
@@ -179,3 +202,4 @@
 
 </body>
 </html>
+
