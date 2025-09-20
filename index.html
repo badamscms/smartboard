@@ -36,7 +36,7 @@
             font-size: 1.75rem; /* Large text for readability from a distance */
             line-height: 1.6;
         }
-        .control-button {
+        .control-button, .dropdown-select {
             padding: 1rem 2rem;
             font-size: 1.25rem;
             border-radius: 0.5rem;
@@ -47,17 +47,14 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-        .control-button:hover, .control-button.active {
-            background-color: #718096;
-            transform: translateY(-2px);
-        }
-        #font-selector {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
             text-align: center;
-            padding-right: 2rem; /* Keep padding consistent */
+        }
+        .control-button:hover, .dropdown-select:hover {
+            background-color: #718096;
+            transform: translateY(-2px);
         }
         .highlightable {
             cursor: pointer;
@@ -121,7 +118,6 @@
         }
         .modal-term { font-size: 2.25rem; font-weight: bold; margin-bottom: 1rem; color: #f6e05e; }
         .modal-definition { font-size: 1.75rem; }
-        .hidden { display: none; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -133,23 +129,27 @@
 
     <!-- Control Panel -->
     <div id="controls" class="flex justify-center items-center flex-wrap gap-4 p-4 bg-gray-800">
-        <button id="btn-doc1" class="control-button" onclick="setView('doc1')">Hobbes</button>
-        <button id="btn-doc2" class="control-button" onclick="setView('doc2')">Locke</button>
-        <button id="btn-doc3" class="control-button" onclick="setView('doc3')">Declaration</button>
-        <div class="border-l-2 border-gray-600 h-10 hidden md:block"></div>
-        <select id="font-selector" onchange="changeFont()" class="control-button">
-            <option value="'Inter', sans-serif">Inter</option>
-            <option value="'Georgia', serif">Georgia</option>
-            <option value="'Roboto', sans-serif">Roboto</option>
-            <option value="'Playfair Display', serif">Playfair Display</option>
-            <option value="'Merriweather', serif">Merriweather</option>
+        <select id="view-selector" onchange="handleViewChange(this.value)" class="dropdown-select">
+            <option value="doc1" selected>Change View</option>
+            <option value="doc1">View: Hobbes</option>
+            <option value="doc2">View: Locke</option>
+            <option value="doc3">View: Declaration</option>
+            <option value="doc1-doc3">Compare: Hobbes vs Jefferson</option>
+            <option value="doc2-doc3">Compare: Locke vs Jefferson</option>
         </select>
-        <div class="border-l-2 border-gray-600 h-10 hidden md:block"></div>
-        <button id="btn-questions" class="control-button" onclick="showQuestions()">🤔</button>
-        <button id="btn-context" class="control-button" onclick="showContext()">📜</button>
-        <div class="border-l-2 border-gray-600 h-10 hidden md:block"></div>
-        <button id="btn-compare-13" class="control-button" onclick="setView('doc1', 'doc3')">Compare: Hobbes vs Jefferson</button>
-        <button id="btn-compare-23" class="control-button" onclick="setView('doc2', 'doc3')">Compare: Locke vs Jefferson</button>
+        
+        <select id="tools-selector" onchange="handleToolChange(this.value)" class="dropdown-select">
+            <option value="" selected>Tools</option>
+            <option value="questions">🤔 Key Questions</option>
+            <option value="context">📜 Context</option>
+            <optgroup label="Fonts">
+                <option value="font-Inter">Inter</option>
+                <option value="font-Georgia">Georgia</option>
+                <option value="font-Roboto">Roboto</option>
+                <option value="font-Playfair Display">Playfair Display</option>
+                <option value="font-Merriweather">Merriweather</option>
+            </optgroup>
+        </select>
     </div>
 
     <!-- Document Display Area -->
@@ -230,12 +230,29 @@
         };
 
         const displayArea = document.getElementById('document-display');
-        const buttons = document.querySelectorAll('.control-button');
         const modal = document.getElementById('modal');
         const modalBody = document.getElementById('modal-body');
+        const toolsSelector = document.getElementById('tools-selector');
 
-        function changeFont() {
-            document.body.style.fontFamily = document.getElementById('font-selector').value;
+        function handleViewChange(value) {
+            const parts = value.split('-');
+            setView(parts[0], parts[1] || null);
+        }
+
+        function handleToolChange(value) {
+            if (value.startsWith('font-')) {
+                const fontName = value.split('-')[1];
+                const fontFamily = fontName === 'Playfair Display' || fontName === 'Merriweather' || fontName === 'Georgia'
+                    ? `'${fontName}', serif`
+                    : `'${fontName}', sans-serif`;
+                document.body.style.fontFamily = fontFamily;
+            } else if (value === 'questions') {
+                showQuestions();
+            } else if (value === 'context') {
+                showContext();
+            }
+            // Reset the dropdown to the "Tools" placeholder
+            toolsSelector.selectedIndex = 0;
         }
 
         function createDocumentPane(docId) {
@@ -250,20 +267,9 @@
         }
         
         function setView(docId1, docId2 = null) {
-            currentView = { doc1: docId1, doc2: docId2 };
-            displayArea.innerHTML = docId2 ? createComparisonPanes(docId1, docId2) : createDocumentPane(docId1);
-            updateActiveButton(docId1, docId2);
+            currentView = { doc1: docId1, doc2: doc2 };
+            displayArea.innerHTML = doc2 ? createComparisonPanes(docId1, docId2) : createDocumentPane(docId1);
             addInteractiveListeners();
-        }
-
-        function updateActiveButton(docId1, docId2) {
-            let activeId;
-            if (docId2) activeId = `btn-compare-${docId1.slice(-1)}${docId2.slice(-1)}`;
-            else activeId = `btn-${docId1}`;
-            
-            buttons.forEach(button => button.classList.remove('active'));
-            const activeButton = document.getElementById(activeId);
-            if(activeButton) activeButton.classList.add('active');
         }
         
         function addInteractiveListeners() {
