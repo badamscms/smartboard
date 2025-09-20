@@ -341,10 +341,10 @@
         });
 
         // Initial view on load
-        document.addEventListener('DOMContentLoaded', () => {
+        window.onload = () => {
             setView('doc1');
             viewSelector.value = 'doc1';
-        });
+        };
     </script>
 
 </body>
