@@ -130,7 +130,7 @@
     <!-- Control Panel -->
     <div id="controls" class="flex justify-center items-center flex-wrap gap-4 p-4 bg-gray-800">
         <select id="view-selector" onchange="handleViewChange(this.value)" class="dropdown-select">
-            <option value="doc1" selected>Change View</option>
+            <option value="" selected disabled>Change View</option>
             <option value="doc1">View: Hobbes</option>
             <option value="doc2">View: Locke</option>
             <option value="doc3">View: Declaration</option>
@@ -233,8 +233,10 @@
         const modal = document.getElementById('modal');
         const modalBody = document.getElementById('modal-body');
         const toolsSelector = document.getElementById('tools-selector');
+        const viewSelector = document.getElementById('view-selector');
 
         function handleViewChange(value) {
+            if (!value) return;
             const parts = value.split('-');
             setView(parts[0], parts[1] || null);
         }
@@ -339,7 +341,10 @@
         });
 
         // Initial view on load
-        window.onload = () => { setView('doc1'); };
+        document.addEventListener('DOMContentLoaded', () => {
+            setView('doc1');
+            viewSelector.value = 'doc1';
+        });
     </script>
 
 </body>
