@@ -84,6 +84,61 @@
             opacity: 0.5;
             transform: scale(1.05);
         }
+        /* Compare Tool */
+        .compare-item.selected {
+            background-color: #3B82F6;
+            border-color: #60A5FA;
+            color: white;
+        }
+        .compare-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            position: relative;
+            padding: 2rem 0;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #4B5563;
+        }
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 0 2rem;
+        }
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-left: 5rem;
+        }
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-right: 5rem;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 1rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #F9FAFB;
+            border: 4px solid #4B5563;
+        }
+        .timeline-item:nth-child(odd)::after {
+            right: -10px;
+        }
+         .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 lg:p-8 overflow-hidden">
@@ -142,7 +197,8 @@
                      <div class="sub-nodes mt-6 w-full">
                         <div class="flex flex-col items-center w-full space-y-4">
                             <div class="flowchart-line line-v"></div>
-                            <button class="sub-node-btn text-2xl bg-green-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="democracy">Democracy</button>
+                            <button class="sub-node-btn text-xl bg-green-600 rounded-xl py-4 px-6 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="directDemocracy">Direct Democracy</button>
+                             <button class="sub-node-btn text-xl bg-green-600 rounded-xl py-4 px-6 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="representativeDemocracy">Representative Democracy</button>
                         </div>
                     </div>
                 </div>
@@ -150,11 +206,17 @@
         </main>
         
         <!-- Special Buttons -->
-        <footer class="mt-12 lg:mt-20 flex flex-col md:flex-row gap-6">
-             <button class="special-topic-btn text-2xl font-bold bg-yellow-500 text-gray-900 rounded-2xl py-4 px-8 transition-transform transform hover:scale-105 hover:bg-yellow-400" data-gov="theocracy">
+        <footer class="mt-12 lg:mt-20 flex flex-wrap justify-center gap-6">
+             <button class="special-topic-btn text-xl font-bold bg-yellow-500 text-gray-900 rounded-2xl py-4 px-8 transition-transform transform hover:scale-105 hover:bg-yellow-400" data-gov="theocracy">
                 ✨ Where does Theocracy fit?
             </button>
-            <button id="test-knowledge-btn" class="text-2xl font-bold bg-indigo-600 text-white rounded-2xl py-4 px-8 transition-transform transform hover:scale-105 hover:bg-indigo-500">
+            <button id="compare-btn" class="text-xl font-bold bg-cyan-600 text-white rounded-2xl py-4 px-8 transition-transform transform hover:scale-105 hover:bg-cyan-500">
+                ⚖️ Compare Governments
+            </button>
+             <button id="timeline-btn" class="text-xl font-bold bg-rose-600 text-white rounded-2xl py-4 px-8 transition-transform transform hover:scale-105 hover:bg-rose-500">
+                📜 Historical Timeline
+            </button>
+            <button id="test-knowledge-btn" class="text-xl font-bold bg-indigo-600 text-white rounded-2xl py-4 px-8 transition-transform transform hover:scale-105 hover:bg-indigo-500">
                 🎮 Test Your Knowledge
             </button>
         </footer>
@@ -175,7 +237,55 @@
                         <ul id="modal-characteristics" class="text-xl list-disc list-inside space-y-2">
                             <!-- Characteristics will be injected here -->
                         </ul>
+                        <div id="modal-pros-container" class="mt-6">
+                            <h3 class="text-2xl font-bold mb-3 text-green-400">Strengths:</h3>
+                            <ul id="modal-pros" class="text-xl list-disc list-inside space-y-2">
+                                <!-- Pros will be injected here -->
+                            </ul>
+                        </div>
+                        <div id="modal-cons-container" class="mt-6">
+                            <h3 class="text-2xl font-bold mb-3 text-red-400">Challenges:</h3>
+                            <ul id="modal-cons" class="text-xl list-disc list-inside space-y-2">
+                                <!-- Cons will be injected here -->
+                            </ul>
+                        </div>
                     </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Compare Modal -->
+    <div id="compare-modal" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-gray-800 border-2 border-gray-600 w-full max-w-7xl h-[90vh] rounded-3xl shadow-2xl flex flex-col relative">
+            <header class="p-6 flex justify-between items-center border-b border-gray-700">
+                <h2 class="text-3xl font-black">Compare & Contrast Governments</h2>
+                <button id="compare-close-btn" class="text-4xl text-gray-400 hover:text-white">&times;</button>
+            </header>
+            <main class="p-8 flex-grow flex flex-col gap-4">
+                <div class="text-center">
+                    <p class="text-xl text-gray-300">Select two forms of government to compare them side-by-side.</p>
+                    <button id="compare-reset-btn" class="mt-2 bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">Reset Selection</button>
+                </div>
+                <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="compare-col-1" class="bg-gray-900 p-4 rounded-lg flex flex-col gap-2"></div>
+                    <div id="compare-col-2" class="bg-gray-900 p-4 rounded-lg flex flex-col gap-2"></div>
+                </div>
+                <div id="compare-results" class="mt-4"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Timeline Modal -->
+    <div id="timeline-modal" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-gray-800 border-2 border-gray-600 w-full max-w-5xl h-[90vh] rounded-3xl shadow-2xl flex flex-col relative">
+            <header class="p-6 flex justify-between items-center border-b border-gray-700">
+                <h2 class="text-3xl font-black">A Brief Historical Timeline</h2>
+                <button id="timeline-close-btn" class="text-4xl text-gray-400 hover:text-white">&times;</button>
+            </header>
+            <main class="p-8 flex-grow overflow-y-auto">
+                <div id="timeline-container" class="timeline-container">
+                    <!-- Timeline items will be injected here -->
                 </div>
             </main>
         </div>
@@ -213,7 +323,12 @@
                     'The human state of existence before any governments developed.',
                     'Similar to animals in the wild, with everyone looking out for themselves.',
                     'Anarchists believe people should freely associate without being subject to a government.'
-                ]
+                ],
+                pros: ['Absolute individual freedom.'],
+                cons: ['No protection from crime.', 'Potential for chaos and violence.', 'Lack of public services like roads or schools.'],
+                powerSource: 'None',
+                citizenRole: 'Each person is for themselves.',
+                decisionMaker: 'Individuals'
             },
             monarchy: {
                 title: 'Monarchy',
@@ -222,7 +337,12 @@
                     'Power is passed down through the family line (hereditary).',
                     'In historical times, monarchs held absolute power.',
                     'Modern monarchs often share power and are subject to a constitution (constitutional monarchy).'
-                ]
+                ],
+                pros: ['Clear line of succession, leading to stability.'],
+                cons: ['Quality of leadership depends on the luck of birth.', 'Citizens have little to no say in who rules.'],
+                powerSource: 'Hereditary (family line)',
+                citizenRole: 'Subjects who owe loyalty to the monarch.',
+                decisionMaker: 'The Monarch'
             },
             dictatorship: {
                 title: 'Dictatorship',
@@ -231,7 +351,12 @@
                     'Other parts of government (courts, lawmaking bodies) have no real power.',
                     'The government does not represent the citizens.',
                     'The leader often uses force to maintain control.'
-                ]
+                ],
+                pros: ['Decisions can be made very quickly.'],
+                cons: ['Citizens have no rights or freedoms.', 'Leader can be abusive and make poor decisions.', 'Prone to instability if the leader is overthrown.'],
+                powerSource: 'Often by military force or coup',
+                citizenRole: 'Complete obedience required; no participation.',
+                decisionMaker: 'The Dictator'
             },
             oligarchy: {
                 title: 'Oligarchy',
@@ -240,17 +365,40 @@
                     'Power can be based on social class, race, or political party.',
                     'A junta is a type of oligarchy where military officers rule after taking over by force.',
                     'Operates much like a dictatorship, but power is shared among a few.'
-                ]
+                ],
+                pros: ['Decisions can be made efficiently by a small, knowledgeable group.'],
+                cons: ['The ruling class acts in their own interest.', 'Needs of the citizens are often ignored.'],
+                powerSource: 'Wealth, military power, or social status',
+                citizenRole: 'To serve the interests of the ruling class.',
+                decisionMaker: 'The small ruling group'
             },
-            democracy: {
-                title: 'Democracy',
-                definition: 'Citizens hold the political power.',
+            directDemocracy: {
+                title: 'Direct Democracy',
+                definition: 'Citizens are directly involved in the day-to-day work of governing the country.',
                 characteristics: [
-                    'Two main types: Representative and Direct.',
-                    'In a Representative Democracy, citizens elect leaders to govern for them (e.g., USA, Peru).',
-                    'In a Direct Democracy, citizens are directly involved in governing. This is rare in modern times.',
-                    'Ultimate power rests with the people, who can vote for new leaders.'
-                ]
+                    'All citizens participate in lawmaking and government decisions.',
+                    'No representatives; citizens vote on everything.',
+                    'Very difficult to manage in large countries.'
+                ],
+                pros: ['Every citizen has an equal say on all issues.', 'Promotes a high level of community involvement.'],
+                cons: ['Extremely inefficient for large populations.', 'Requires all citizens to be well-informed on a wide range of topics.'],
+                powerSource: 'The citizenry as a whole',
+                citizenRole: 'Directly participate in making laws and decisions.',
+                decisionMaker: 'All citizens, through voting'
+            },
+            representativeDemocracy: {
+                title: 'Representative Democracy',
+                definition: 'Citizens elect leaders to represent their rights and interests in government.',
+                characteristics: [
+                    'Elected leaders do the day-to-day work of governing.',
+                    'Citizens hold the ultimate power through voting.',
+                    'If citizens are unhappy, they can vote for new representatives.'
+                ],
+                pros: ['More efficient for governing large populations.', 'Representatives can become experts on complex issues.'],
+                cons: ['Representatives may not always act in the best interests of their voters.', 'Citizens may feel disconnected from government decisions.'],
+                powerSource: 'Elections by the people',
+                citizenRole: 'Vote for leaders to represent them.',
+                decisionMaker: 'Elected representatives'
             },
             theocracy: {
                 title: 'Theocracy',
@@ -259,17 +407,33 @@
                     'Religious law is used to rule the people and settle disputes.',
                     'Can be combined with other government types like democracy or monarchy.',
                     'Example: The Republic of Iran is an Islamic theocracy but also holds elections.'
-                ]
+                ],
+                pros: ['Can create a strong sense of community and moral unity.'],
+                cons: ['Can lead to persecution of religious minorities.', 'May stifle dissent and scientific progress.'],
+                powerSource: 'Divine authority or religious texts',
+                citizenRole: 'Follow the religious laws of the state.',
+                decisionMaker: 'Religious leaders'
             }
         };
 
         const activityScenarios = [
             { id: 's1', text: 'A small group of wealthy families has ruled this nation for centuries. They make all the laws to benefit their own businesses.', answer: 'oligarchy' },
             { id: 's2', text: 'The nation is in chaos. There is no one in charge, and people just do whatever they want. It is every person for themselves.', answer: 'anarchy' },
-            { id: 's3', text: 'Citizens vote every four years to choose their president and members of the legislature.', answer: 'democracy' },
+            { id: 's3', text: 'Citizens vote every four years to choose their president and members of the legislature.', answer: 'representativeDemocracy' },
             { id: 's4', text: 'Queen Isabella inherited the throne from her father. Her word is law.', answer: 'monarchy' },
             { id: 's5', text: 'The "Supreme Leader" has total control. He shut down the newspapers and jails anyone who criticizes him.', answer: 'dictatorship' },
             { id: 's6', text: 'The country\'s laws are based on a holy book, and religious leaders hold the most power.', answer: 'theocracy' },
+            { id: 's7', text: 'In the small town of Harmony, all citizens gather monthly to vote on new laws and community projects.', answer: 'directDemocracy' },
+        ];
+        
+        const timelineData = [
+            { year: 'c. 509 BCE', event: 'Roman Republic Established', type: 'A form of Representative Democracy where citizens elected officials.' },
+            { year: 'c. 450 BCE', event: 'Ancient Athens', type: 'The height of Direct Democracy, where eligible citizens voted on laws directly.' },
+            { year: 'c. 800 - 1800s CE', event: 'Feudalism & Absolute Monarchies', type: 'The dominant form of government in Europe, with kings holding supreme power.' },
+            { year: '1215 CE', event: 'Magna Carta Signed', type: 'A key document in England that limited the power of the king, a step towards constitutional monarchy.' },
+            { year: '1776 CE', event: 'U.S. Declaration of Independence', type: 'Established a new nation based on the principles of Representative Democracy.'},
+            { year: '1920s - 1940s CE', event: 'Rise of Totalitarian Dictatorships', type: 'Saw the rise of powerful dictatorships in Germany, Italy, and the Soviet Union.' },
+            { year: 'Post-WWII', event: 'Spread of Democracy', type: 'Many new nations and former colonies adopted democratic forms of government.'}
         ];
 
 
@@ -293,14 +457,33 @@
             document.getElementById('modal-definition').textContent = data.definition;
             const characteristicsList = document.getElementById('modal-characteristics');
             characteristicsList.innerHTML = data.characteristics.map(item => `<li>${item}</li>`).join('');
+
+            const prosContainer = document.getElementById('modal-pros-container');
+            const prosList = document.getElementById('modal-pros');
+            if (data.pros && data.pros.length > 0) {
+                prosList.innerHTML = data.pros.map(item => `<li>${item}</li>`).join('');
+                prosContainer.classList.remove('hidden');
+            } else {
+                prosContainer.classList.add('hidden');
+            }
+
+            const consContainer = document.getElementById('modal-cons-container');
+            const consList = document.getElementById('modal-cons');
+            if (data.cons && data.cons.length > 0) {
+                consList.innerHTML = data.cons.map(item => `<li>${item}</li>`).join('');
+                consContainer.classList.remove('hidden');
+            } else {
+                consContainer.classList.add('hidden');
+            }
             
             infoModal.classList.remove('hidden');
             setTimeout(() => modalContent.classList.remove('scale-95'), 10);
         };
 
-        const closeModal = () => {
-            modalContent.classList.add('scale-95');
-            setTimeout(() => infoModal.classList.add('hidden'), 200);
+        const closeModal = (modal) => {
+            const content = modal.querySelector('div');
+            if (content) content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
         };
 
         document.querySelectorAll('.sub-node-btn, .special-topic-btn').forEach(btn => {
@@ -308,13 +491,143 @@
                 openModal(btn.dataset.gov);
             });
         });
+        
+        modalCloseBtn.addEventListener('click', () => closeModal(infoModal));
+        infoModal.addEventListener('click', e => { if (e.target === infoModal) closeModal(infoModal); });
 
-        modalCloseBtn.addEventListener('click', closeModal);
-        infoModal.addEventListener('click', (e) => {
-            if (e.target === infoModal) {
-                closeModal();
+        // --- Compare Logic ---
+        const compareModal = document.getElementById('compare-modal');
+        const compareBtn = document.getElementById('compare-btn');
+        const compareCloseBtn = document.getElementById('compare-close-btn');
+        const compareCol1 = document.getElementById('compare-col-1');
+        const compareCol2 = document.getElementById('compare-col-2');
+        const compareResults = document.getElementById('compare-results');
+        const compareResetBtn = document.getElementById('compare-reset-btn');
+        let selection1 = null;
+        let selection2 = null;
+
+        const setupCompareTool = () => {
+            selection1 = null;
+            selection2 = null;
+            compareCol1.innerHTML = '<h3>Select First Government:</h3>';
+            compareCol2.innerHTML = '<h3>Select Second Government:</h3>';
+            compareResults.innerHTML = '';
+
+            Object.keys(governmentData).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'compare-item w-full text-left p-2 rounded-lg bg-gray-700 hover:bg-gray-600 border-2 border-transparent';
+                btn.textContent = governmentData[key].title;
+                btn.dataset.govKey = key;
+                compareCol1.appendChild(btn.cloneNode(true));
+                compareCol2.appendChild(btn.cloneNode(true));
+            });
+
+            document.querySelectorAll('.compare-item').forEach(item => {
+                item.addEventListener('click', handleCompareSelection);
+            });
+        };
+
+        const handleCompareSelection = (e) => {
+            const selectedKey = e.target.dataset.govKey;
+            const parentCol = e.target.parentElement;
+
+            if (parentCol.id === 'compare-col-1') {
+                selection1 = selectedKey;
+                highlightSelection(compareCol1, selection1);
+            } else {
+                selection2 = selectedKey;
+                highlightSelection(compareCol2, selection2);
             }
+            
+            if (selection1 && selection2) {
+                displayComparison();
+            }
+        };
+
+        const highlightSelection = (col, key) => {
+            col.querySelectorAll('.compare-item').forEach(item => {
+                item.classList.remove('selected');
+                if (item.dataset.govKey === key) {
+                    item.classList.add('selected');
+                }
+            });
+        };
+
+        const displayComparison = () => {
+            const data1 = governmentData[selection1];
+            const data2 = governmentData[selection2];
+            
+            const tableHTML = `
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-900">
+                            <th class="p-3 border border-gray-600">Feature</th>
+                            <th class="p-3 border border-gray-600 text-xl font-bold">${data1.title}</th>
+                            <th class="p-3 border border-gray-600 text-xl font-bold">${data2.title}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-gray-800">
+                            <td class="p-3 border border-gray-600 font-bold">How is power obtained?</td>
+                            <td class="p-3 border border-gray-600">${data1.powerSource}</td>
+                            <td class="p-3 border border-gray-600">${data2.powerSource}</td>
+                        </tr>
+                        <tr class="bg-gray-700">
+                            <td class="p-3 border border-gray-600 font-bold">What is the role of the citizen?</td>
+                            <td class="p-3 border border-gray-600">${data1.citizenRole}</td>
+                            <td class="p-3 border border-gray-600">${data2.citizenRole}</td>
+                        </tr>
+                        <tr class="bg-gray-800">
+                            <td class="p-3 border border-gray-600 font-bold">Who makes the decisions?</td>
+                            <td class="p-3 border border-gray-600">${data1.decisionMaker}</td>
+                            <td class="p-3 border border-gray-600">${data2.decisionMaker}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+            compareResults.innerHTML = tableHTML;
+        };
+
+        compareBtn.addEventListener('click', () => {
+            setupCompareTool();
+            compareModal.classList.remove('hidden');
         });
+        compareResetBtn.addEventListener('click', setupCompareTool);
+        compareCloseBtn.addEventListener('click', () => closeModal(compareModal));
+        compareModal.addEventListener('click', e => { if (e.target === compareModal) closeModal(compareModal); });
+
+
+        // --- Timeline Logic ---
+        const timelineModal = document.getElementById('timeline-modal');
+        const timelineBtn = document.getElementById('timeline-btn');
+        const timelineCloseBtn = document.getElementById('timeline-close-btn');
+        const timelineContainer = document.getElementById('timeline-container');
+
+        const setupTimeline = () => {
+            timelineContainer.innerHTML = '';
+            timelineData.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'timeline-item mb-8';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'bg-gray-900 p-4 rounded-lg shadow-lg';
+                contentDiv.innerHTML = `
+                    <span class="font-bold text-yellow-400 text-lg">${item.year}</span>
+                    <h3 class="text-2xl font-black mt-1">${item.event}</h3>
+                    <p class="text-gray-300">${item.type}</p>
+                `;
+                itemDiv.appendChild(contentDiv);
+                timelineContainer.appendChild(itemDiv);
+            });
+        };
+        
+        timelineBtn.addEventListener('click', () => {
+            setupTimeline();
+            timelineModal.classList.remove('hidden');
+        });
+        timelineCloseBtn.addEventListener('click', () => closeModal(timelineModal));
+        timelineModal.addEventListener('click', e => { if (e.target === timelineModal) closeModal(timelineModal); });
+
 
         // --- Activity Logic ---
         const activityModal = document.getElementById('activity-modal');
@@ -332,7 +645,6 @@
             scenariosContainer.innerHTML = '';
             answersContainer.innerHTML = '';
 
-            // Shuffle scenarios
             const shuffledScenarios = [...activityScenarios].sort(() => Math.random() - 0.5);
 
             shuffledScenarios.forEach(scenario => {
@@ -414,12 +726,8 @@
             setupActivity();
             activityModal.classList.remove('hidden');
         });
-        activityCloseBtn.addEventListener('click', () => activityModal.classList.add('hidden'));
-        activityModal.addEventListener('click', e => {
-            if (e.target === activityModal) {
-                activityModal.classList.add('hidden');
-            }
-        });
+        activityCloseBtn.addEventListener('click', () => closeModal(activityModal));
+        activityModal.addEventListener('click', e => { if (e.target === activityModal) closeModal(activityModal); });
     </script>
 </body>
 </html>
