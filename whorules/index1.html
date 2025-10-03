@@ -141,7 +141,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4 lg:p-8">
+<body class="min-h-screen flex flex-col items-center justify-center p-4 lg:p-8 overflow-hidden">
 
     <div id="app-container" class="w-full h-full flex flex-col items-center">
         <!-- Header -->
@@ -159,46 +159,46 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-20 w-full max-w-7xl">
                 <!-- Category: NONE -->
                 <div class="category-node flex flex-col items-center" data-category="none">
-                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">🚫 NONE</button>
+                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">NONE</button>
                     <div class="sub-nodes mt-6 w-full">
                         <div class="flex flex-col items-center w-full space-y-4">
                             <div class="flowchart-line line-v"></div>
-                            <button class="sub-node-btn text-2xl bg-blue-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-blue-500" data-gov="anarchy">🚫 Anarchy</button>
+                            <button class="sub-node-btn text-2xl bg-blue-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-blue-500" data-gov="anarchy">Anarchy</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Category: ONE -->
                 <div class="category-node flex flex-col items-center" data-category="one">
-                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">👤 ONE</button>
+                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">ONE</button>
                     <div class="sub-nodes mt-6 w-full">
                         <div class="flex flex-col items-center w-full space-y-4">
                             <div class="flowchart-line line-v"></div>
-                            <button class="sub-node-btn text-2xl bg-purple-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-purple-500" data-gov="monarchy">👑 Monarchy</button>
-                            <button class="sub-node-btn text-2xl bg-purple-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-purple-500" data-gov="dictatorship">🎖️ Dictatorship</button>
+                            <button class="sub-node-btn text-2xl bg-purple-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-purple-500" data-gov="monarchy">Monarchy</button>
+                            <button class="sub-node-btn text-2xl bg-purple-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-purple-500" data-gov="dictatorship">Dictatorship</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Category: FEW -->
                 <div class="category-node flex flex-col items-center" data-category="few">
-                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">👥 FEW</button>
+                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">FEW</button>
                      <div class="sub-nodes mt-6 w-full">
                         <div class="flex flex-col items-center w-full space-y-4">
                             <div class="flowchart-line line-v"></div>
-                            <button class="sub-node-btn text-2xl bg-red-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-red-500" data-gov="oligarchy">👥 Oligarchy</button>
+                            <button class="sub-node-btn text-2xl bg-red-600 rounded-xl py-4 px-8 w-full transition-transform transform hover:scale-105 hover:bg-red-500" data-gov="oligarchy">Oligarchy</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Category: ALL -->
                 <div class="category-node flex flex-col items-center" data-category="all">
-                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">🌍 ALL</button>
+                    <button class="main-category-btn text-3xl font-bold bg-gray-800 border-2 border-gray-600 rounded-2xl py-6 px-12 transition-transform transform hover:scale-105 hover:bg-gray-700 w-full">ALL</button>
                      <div class="sub-nodes mt-6 w-full">
                         <div class="flex flex-col items-center w-full space-y-4">
                             <div class="flowchart-line line-v"></div>
-                            <button class="sub-node-btn text-xl bg-green-600 rounded-xl py-4 px-6 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="directDemocracy">🙋‍♀️ Direct Democracy</button>
-                             <button class="sub-node-btn text-xl bg-green-600 rounded-xl py-4 px-6 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="representativeDemocracy">🗳️ Representative Democracy</button>
+                            <button class="sub-node-btn text-xl bg-green-600 rounded-xl py-4 px-6 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="directDemocracy">Direct Democracy</button>
+                             <button class="sub-node-btn text-xl bg-green-600 rounded-xl py-4 px-6 w-full transition-transform transform hover:scale-105 hover:bg-green-500" data-gov="representativeDemocracy">Representative Democracy</button>
                         </div>
                     </div>
                 </div>
@@ -262,7 +262,7 @@
                 <h2 class="text-3xl font-black">Compare & Contrast Governments</h2>
                 <button id="compare-close-btn" class="text-4xl text-gray-400 hover:text-white">&times;</button>
             </header>
-            <main class="p-8 flex-grow flex flex-col gap-4 overflow-y-auto">
+            <main class="p-8 flex-grow flex flex-col gap-4">
                 <div class="text-center">
                     <p class="text-xl text-gray-300">Select two forms of government to compare them side-by-side.</p>
                     <button id="compare-reset-btn" class="mt-2 bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">Reset Selection</button>
@@ -298,7 +298,7 @@
                 <h2 class="text-3xl font-black">Classify the Government</h2>
                 <button id="activity-close-btn" class="text-4xl text-gray-400 hover:text-white">&times;</button>
             </header>
-            <main class="p-8 flex-grow grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <main class="p-8 flex-grow grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-hidden">
                 <div id="scenarios-container" class="bg-gray-900 rounded-xl p-6 flex flex-col gap-4 overflow-y-auto">
                     <!-- Scenario cards will be injected here -->
                 </div>
@@ -312,17 +312,12 @@
         </div>
     </div>
 
-    <!-- Full Screen Button -->
-    <button id="fullscreen-btn" title="Toggle Fullscreen" class="fixed bottom-6 right-6 z-50 bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500">
-        <svg id="fullscreen-svg" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5"></path></svg>
-        <svg id="exit-fullscreen-svg" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4H4v6m0-6l6 6m10 10h-6v-6m0 6l-6-6m-4-4h6v6m-6-6l6-6m10 10v-6h-6m6 6l-6-6"></path></svg>
-    </button>
 
     <script>
         // --- Data ---
         const governmentData = {
             anarchy: {
-                title: '🚫 Anarchy',
+                title: 'Anarchy',
                 definition: 'Nobody is in control—or everyone is, depending on how you look at it.',
                 characteristics: [
                     'The human state of existence before any governments developed.',
@@ -336,7 +331,7 @@
                 decisionMaker: 'Individuals'
             },
             monarchy: {
-                title: '👑 Monarchy',
+                title: 'Monarchy',
                 definition: 'A king or queen rules the country, known as a monarch.',
                 characteristics: [
                     'Power is passed down through the family line (hereditary).',
@@ -350,7 +345,7 @@
                 decisionMaker: 'The Monarch'
             },
             dictatorship: {
-                title: '🎖️ Dictatorship',
+                title: 'Dictatorship',
                 definition: 'One leader has absolute control over citizens\' lives and the constitution.',
                 characteristics: [
                     'Other parts of government (courts, lawmaking bodies) have no real power.',
@@ -364,7 +359,7 @@
                 decisionMaker: 'The Dictator'
             },
             oligarchy: {
-                title: '👥 Oligarchy',
+                title: 'Oligarchy',
                 definition: 'A small group of people has all the power. From Greek for "rule by a few."',
                 characteristics: [
                     'Power can be based on social class, race, or political party.',
@@ -378,7 +373,7 @@
                 decisionMaker: 'The small ruling group'
             },
             directDemocracy: {
-                title: '🙋‍♀️ Direct Democracy',
+                title: 'Direct Democracy',
                 definition: 'Citizens are directly involved in the day-to-day work of governing the country.',
                 characteristics: [
                     'All citizens participate in lawmaking and government decisions.',
@@ -392,7 +387,7 @@
                 decisionMaker: 'All citizens, through voting'
             },
             representativeDemocracy: {
-                title: '🗳️ Representative Democracy',
+                title: 'Representative Democracy',
                 definition: 'Citizens elect leaders to represent their rights and interests in government.',
                 characteristics: [
                     'Elected leaders do the day-to-day work of governing.',
@@ -406,7 +401,7 @@
                 decisionMaker: 'Elected representatives'
             },
             theocracy: {
-                title: '✨ Theocracy',
+                title: 'Theocracy',
                 definition: 'A government that recognizes God or a divine being as the ultimate authority.',
                 characteristics: [
                     'Religious law is used to rule the people and settle disputes.',
@@ -514,25 +509,29 @@
         const setupCompareTool = () => {
             selection1 = null;
             selection2 = null;
+            compareCol1.innerHTML = '<h3>Select First Government:</h3>';
+            compareCol2.innerHTML = '<h3>Select Second Government:</h3>';
             compareResults.innerHTML = '';
-            
-            compareCol1.innerHTML = '<h3 class="text-xl font-bold mb-2">Select First Government:</h3>';
-            compareCol2.innerHTML = '<h3 class="text-xl font-bold mb-2">Select Second Government:</h3>';
 
             Object.keys(governmentData).forEach(key => {
-                const btnHTML = `<button class="compare-item w-full text-left p-2 rounded-lg bg-gray-700 hover:bg-gray-600 border-2 border-transparent" data-gov-key="${key}">${governmentData[key].title}</button>`;
-                compareCol1.insertAdjacentHTML('beforeend', btnHTML);
-                compareCol2.insertAdjacentHTML('beforeend', btnHTML);
+                const btn = document.createElement('button');
+                btn.className = 'compare-item w-full text-left p-2 rounded-lg bg-gray-700 hover:bg-gray-600 border-2 border-transparent';
+                btn.textContent = governmentData[key].title;
+                btn.dataset.govKey = key;
+                compareCol1.appendChild(btn.cloneNode(true));
+                compareCol2.appendChild(btn.cloneNode(true));
+            });
+
+            document.querySelectorAll('.compare-item').forEach(item => {
+                item.addEventListener('click', handleCompareSelection);
             });
         };
 
-        const handleCompareSelection = (e, colNum) => {
-            const selectedButton = e.target.closest('.compare-item');
-            if (!selectedButton) return;
+        const handleCompareSelection = (e) => {
+            const selectedKey = e.target.dataset.govKey;
+            const parentCol = e.target.parentElement;
 
-            const selectedKey = selectedButton.dataset.govKey;
-
-            if (colNum === 1) {
+            if (parentCol.id === 'compare-col-1') {
                 selection1 = selectedKey;
                 highlightSelection(compareCol1, selection1);
             } else {
@@ -596,10 +595,6 @@
         compareResetBtn.addEventListener('click', setupCompareTool);
         compareCloseBtn.addEventListener('click', () => closeModal(compareModal));
         compareModal.addEventListener('click', e => { if (e.target === compareModal) closeModal(compareModal); });
-
-        // Delegated listeners for the compare tool
-        compareCol1.addEventListener('click', (e) => handleCompareSelection(e, 1));
-        compareCol2.addEventListener('click', (e) => handleCompareSelection(e, 2));
 
 
         // --- Timeline Logic ---
@@ -733,52 +728,6 @@
         });
         activityCloseBtn.addEventListener('click', () => closeModal(activityModal));
         activityModal.addEventListener('click', e => { if (e.target === activityModal) closeModal(activityModal); });
-
-        // --- Full Screen Logic ---
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const fullscreenSvg = document.getElementById('fullscreen-svg');
-        const exitFullscreenSvg = document.getElementById('exit-fullscreen-svg');
-        const docElem = document.documentElement;
-
-        const toggleFullScreen = () => {
-            if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                if (docElem.requestFullscreen) {
-                    docElem.requestFullscreen();
-                } else if (docElem.msRequestFullscreen) { // IE/Edge
-                    docElem.msRequestFullscreen();
-                } else if (docElem.mozRequestFullScreen) { // Firefox
-                    docElem.mozRequestFullScreen();
-                } else if (docElem.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    docElem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.msExitFullscreen) { // IE/Edge
-                    document.msExitFullscreen();
-                } else if (document.mozCancelFullScreen) { // Firefox
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
-                    document.webkitExitFullscreen();
-                }
-            }
-        };
-        
-        const updateFullscreenButton = () => {
-             if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-                fullscreenSvg.classList.add('hidden');
-                exitFullscreenSvg.classList.remove('hidden');
-            } else {
-                fullscreenSvg.classList.remove('hidden');
-                exitFullscreenSvg.classList.add('hidden');
-            }
-        };
-
-        fullscreenBtn.addEventListener('click', toggleFullScreen);
-        document.addEventListener('fullscreenchange', updateFullscreenButton);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
-        document.addEventListener('MSFullscreenChange', updateFullscreenButton);
     </script>
 </body>
 </html>
