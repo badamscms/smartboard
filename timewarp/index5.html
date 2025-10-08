@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Warp: Government Through Time</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .game-container {
+            background: linear-gradient(135deg, #1a237e 0%, #0d123b 100%);
+            border: 2px solid #57a6ff;
+            box-shadow: 0 0 20px rgba(87, 166, 255, 0.5);
+        }
+        .btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background-color: #57a6ff;
+            border: 1px solid #80bfff;
+        }
+        .btn-primary:hover {
+            background-color: #3d8de5;
+        }
+        .btn-secondary {
+            background-color: #2c3e50;
+            border: 1px solid #4a6582;
+        }
+        .btn-secondary:hover {
+            background-color: #1a2531;
+        }
+        #image-container img {
+            max-height: 40vh;
+            object-fit: contain;
+        }
+        [dir="rtl"] {
+            text-align: right;
+        }
+        /* Custom styles for the select dropdown */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 2.5rem; /* space for arrow */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="absolute top-4 right-4 z-10">
+        <select id="lang-select" class="btn btn-secondary text-sm px-4 py-2 rounded-lg text-white bg-gray-800 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+            <option value="es">Español</option>
+        </select>
+    </div>
+
+    <div id="game-container" class="game-container w-full max-w-4xl mx-auto rounded-2xl p-6 md:p-8">
+        <div id="scene-container">
+            <!-- Game content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const gameData = {
+            "start": {
+                "title": { "en": "Time Warp: Select a Level", "ar": "التشوه الزمني: اختر مستوى", "es": "Time Warp: Selecciona un Nivel" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Time+Warp",
+                "text": { "en": "Select a time period to begin your training simulation.", "ar": "اختر فترة زمنية لبدء محاكاة التدريب الخاصة بك.", "es": "Selecciona un período de tiempo para comenzar tu simulación de entrenamiento." },
+                "choices": [ 
+                    { "text": { "en": "Play Tutorial", "ar": "تشغيل البرنامج التعليمي", "es": "Jugar Tutorial" }, "target": "tutorial_intro" },
+                    { "text": { "en": "Stage 1: Democracy", "ar": "المرحلة 1: الديمقراطية", "es": "Etapa 1: Democracia" }, "target": "democracy_intro" },
+                    { "text": { "en": "Stage 2: Autocracy", "ar": "المرحلة 2: الأوتوقراطية", "es": "Etapa 2: Autocracia" }, "target": "autocracy_intro" },
+                    { "text": { "en": "Stage 3: Feudalism", "ar": "المرحلة 3: الإقطاعية", "es": "Etapa 3: Feudalismo" }, "target": "feudalism_intro" },
+                    { "text": { "en": "Stage 4: Fascism", "ar": "المرحلة 4: الفاشية", "es": "Etapa 4: Fascismo" }, "target": "fascism_intro" },
+                    { "text": { "en": "Stage 5: Anarchy", "ar": "المرحلة 5: الفوضوية", "es": "Etapa 5: Anarquía" }, "target": "anarchy_intro" }
+                ]
+            },
+            "tutorial_intro": {
+                "title": { "en": "Caveman World", "ar": "عالم رجل الكهف", "es": "Mundo Cavernícola" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Caveman+World",
+                "text": { "en": "Welcome to Caveman World - the tutorial level. Even primitive man needed organization and leadership. Can you survive?", "ar": "مرحبًا بك في عالم رجل الكهف - المستوى التعليمي. حتى الإنسان البدائي كان بحاجة إلى التنظيم والقيادة. هل يمكنك البقاء على قيد الحياة؟", "es": "Bienvenido al Mundo Cavernícola - el nivel tutorial. Incluso el hombre primitivo necesitaba organización y liderazgo. ¿Puedes sobrevivir?" },
+                "choices": [ { "text": { "en": "Choose your Character", "ar": "اختر شخصيتك", "es": "Elige tu Personaje" }, "target": "character_select" } ]
+            },
+            "character_select": {
+                "title": { "en": "Choose Your Character!", "ar": "اختر شخصيتك!", "es": "¡Elige tu Personaje!" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Characters",
+                 "text": { "en": "Select a character to begin your journey through time.", "ar": "اختر شخصية لتبدأ رحلتك عبر الزمن.", "es": "Selecciona un personaje para comenzar tu viaje a través del tiempo." },
+                "choices": [
+                    { "text": { "en": "Play as Ogg (The Thinker)", "ar": "العب بشخصية أوج (المفكر)", "es": "Jugar como Ogg (El Pensador)" }, "target": "ogg_story" },
+                    { "text": { "en": "Play as Ugg (The Coward)", "ar": "العب بشخصية أوج (الجبان)", "es": "Jugar como Ugg (El Cobarde)" }, "target": "ugg_story" },
+                    { "text": { "en": "Play as Egg (The Aggressive)", "ar": "العب بشخصية إيج (العدواني)", "es": "Jugar como Egg (El Agresivo)" }, "target": "egg_story" }
+                ]
+            },
+            "ogg_story": {
+                "title": { "en": "Ogg the Thinker", "ar": "أوج المفكر", "es": "Ogg el Pensador" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Ogg",
+                "text": { "en": "You are clearly more advanced than the rest of your tribe. Your innovations might just be what you need to grow your tribe. Who should lead?", "ar": "من الواضح أنك أكثر تقدمًا من بقية أفراد قبيلتك. قد تكون ابتكاراتك هي ما تحتاجه لتنمية قبيلتك. من يجب أن يقود؟", "es": "Eres claramente más avanzado que el resto de tu tribu. Tus innovaciones podrían ser justo lo que necesitas para hacer crecer tu tribu. ¿Quién debería liderar?" },
+                "choices": [
+                    { "text": { "en": "Convince them to let you lead.", "ar": "أقنعهم بأن يدعوك تقود.", "es": "Convéncelos de que te dejen liderar." }, "target": "game_over_thinker" },
+                    { "text": { "en": "Let someone strong like Egg lead.", "ar": "دع شخصًا قويًا مثل إيج يقود.", "es": "Deja que alguien fuerte como Egg lidere." }, "target": "success" }
+                ]
+            },
+            "ugg_story": {
+                "title": { "en": "Ugg the Coward", "ar": "أوج الجبان", "es": "Ugg el Cobarde" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Ugg",
+                "text": { "en": "You see 'coward' as just another word for 'careful'. You can’t get stomped by a mammoth if you’re in your cave! Who should lead?", "ar": "أنت ترى كلمة \"جبان\" ككلمة أخرى لـ \"حذر\". لا يمكن أن يدوسك الماموث إذا كنت في كهفك! من يجب أن يقود؟", "es": "Ves 'cobarde' como otra palabra para 'cuidadoso'. ¡No puedes ser pisoteado por un mamut si estás en tu cueva! ¿Quién debería liderar?" },
+                "choices": [
+                    { "text": { "en": "Ask them to let you lead.", "ar": "اطلب منهم أن يدعوك تقود.", "es": "Pídeles que te dejen liderar." }, "target": "game_over_coward" },
+                    { "text": { "en": "Let someone smart like Ogg lead.", "ar": "دع شخصًا ذكيًا مثل أوج يقود.", "es": "Deja que alguien inteligente como Ogg lidere." }, "target": "game_over_thinker" }
+                ]
+            },
+            "egg_story": {
+                "title": { "en": "Egg the Aggressive", "ar": "إيج العدواني", "es": "Egg el Agresivo" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Egg",
+                "text": { "en": "Your strength is unmatched. With a strong leader, the tribe may conquer its enemies. You mostly just kill stuff. Who should lead?", "ar": "قوتك لا مثيل لها. مع قائد قوي، قد تتمكن القبيلة من قهر أعدائها. أنت في الغالب تقتل الأشياء فقط. من يجب أن يقود؟", "es": "Tu fuerza es inigualable. Con un líder fuerte, la tribu puede conquistar a sus enemigos. Tú principalmente solo matas cosas. ¿Quién debería liderar?" },
+                "choices": [
+                    { "text": { "en": "Demand they let you lead.", "ar": "اطلب منهم أن يدعوك تقود.", "es": "Exige que te dejen liderar." }, "target": "success" },
+                    { "text": { "en": "Let someone smart like Ogg lead.", "ar": "دع شخصًا ذكيًا مثل أوج يقود.", "es": "Deja que alguien inteligente como Ogg lidere." }, "target": "game_over_thinker" }
+                ]
+            },
+            "game_over_thinker": {
+                "title": { "en": "Game Over", "ar": "انتهت اللعبة", "es": "Fin del Juego" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { "en": "Your tribe mates just stare at you blankly. In these times, strength was valued above all. The first governments were built on power and survival.", "ar": "رفاقك في القبيلة يحدقون فيك بذهول. في هذه الأوقات، كانت القوة تُقدَّر فوق كل شيء. بُنيت الحكومات الأولى على القوة والبقاء.", "es": "Tus compañeros de tribu simplemente te miran sin expresión. En estos tiempos, la fuerza se valoraba por encima de todo. Los primeros gobiernos se construyeron sobre el poder y la supervivencia." },
+                "choices": [ { "text": { "en": "Play Again", "ar": "العب مرة أخرى", "es": "Jugar de Nuevo" }, "target": "start" } ]
+            },
+             "game_over_coward": {
+                "title": { "en": "Game Over", "ar": "انتهت اللعبة", "es": "Fin del Juego" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { "en": "You demonstrate your cowardice. The tribe is not inspired. They needed a strong leader to ensure their survival, not a careful one.", "ar": "أنت تُظهر جبنك. القبيلة ليست ملهمة. كانوا بحاجة إلى قائد قوي لضمان بقائهم, وليس قائدًا حذرًا.", "es": "Demuestras tu cobardía. La tribu no se siente inspirada. Necesitaban un líder fuerte para asegurar su supervivencia, no uno cuidadoso." },
+                "choices": [ { "text": { "en": "Play Again", "ar": "العب مرة أخرى", "es": "Jugar de Nuevo" }, "target": "start" } ]
+            },
+            "success": {
+                "title": { "en": "Tutorial Complete!", "ar": "اكتمل البرنامج التعليمي!", "es": "¡Tutorial Completado!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Success!",
+                "text": { "en": "Correct! The first governments were built on power and survival. People gave up some freedom for security, meaning strength was the most important trait in a leader.", "ar": "صحيح! بُنيت الحكومات الأولى على القوة والبقاء. تخلى الناس عن بعض حريتهم من أجل الأمن، مما يعني أن القوة كانت أهم سمة في القائد.", "es": "¡Correcto! Los primeros gobiernos se construyeron sobre el poder y la supervivencia. La gente renunció a parte de su libertad por seguridad, lo que significa que la fuerza era el rasgo más importante en un líder." },
+                "choices": [
+                    { "text": { "en": "Main Menu", "ar": "القائمة الرئيسية", "es": "Menú Principal" }, "target": "start" },
+                    { "text": { "en": "Go to Stage 1: Democracy", "ar": "اذهب إلى المرحلة 1: الديمقراطية", "es": "Ir a la Etapa 1: Democracia" }, "target": "democracy_intro" }
+                ]
+            },
+            // STAGE 1: DEMOCRACY
+            "democracy_intro": {
+                "title": { "en": "Stage 1: Democracy", "ar": "المرحلة 1: الديمقراطية", "es": "Etapa 1: Democracia" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Democracy",
+                "text": { "en": "Democracy means rule by the people. Each individual has a vote. Whatever the most people vote for becomes law. There have been very few true democracies in history. One of those states, Athens, became the world’s first. Let's investigate.", "ar": "الديمقراطية تعني حكم الشعب. لكل فرد صوت. كل ما يصوت عليه معظم الناس يصبح قانونًا. كان هناك عدد قليل جدًا من الديمقراطيات الحقيقية في التاريخ. إحدى تلك الدول، أثينا، أصبحت الأولى في العالم. دعنا نحقق في الأمر.", "es": "Democracia significa gobierno del pueblo. Cada individuo tiene un voto. Lo que la mayoría de la gente vota se convierte en ley. Ha habido muy pocas democracias verdaderas en la historia. Uno de esos estados, Atenas, se convirtió en el primero del mundo. Investiguemos." },
+                "choices": [ { "text": { "en": "Begin Simulation", "ar": "ابدأ المحاكاة", "es": "Iniciar Simulación" }, "target": "athens_start" } ]
+            },
+            "athens_start": {
+                "title": { "en": "Athens, Greece - 399 B.C.", "ar": "أثينا، اليونان - 399 ق.م.", "es": "Atenas, Grecia - 399 a.C." },
+                "image": "https://placehold.co/800x400/16a085/ffffff?text=Athens",
+                "text": { "en": "This is Athens. On the hill overlooking the main town square is the Parthenon. Athens has recently suffered a military defeat at the hands of the Spartans and may be ready for change. You need a disguise to fit in.", "ar": "هذه أثينا. على التل المطل على ساحة المدينة الرئيسية يوجد البارثينون. عانت أثينا مؤخرًا من هزيمة عسكرية على أيدي الإسبرطيين وقد تكون مستعدة للتغيير. أنت بحاجة إلى تمويه لتندمج.", "es": "Esto es Atenas. En la colina que domina la plaza principal de la ciudad está el Partenón. Atenas ha sufrido recientemente una derrota militar a manos de los espartanos y puede que esté lista para un cambio. Necesitas un disfraz para encajar." },
+                "choices": [ { "text": { "en": "Choose a disguise", "ar": "اختر تمويهًا", "es": "Elige un disfraz" }, "target": "choose_disguise" } ]
+            },
+            "choose_disguise": {
+                "title": { "en": "Choose a Disguise", "ar": "اختر تمويهًا", "es": "Elige un Disfraz" },
+                "image": "https://placehold.co/800x400/2c3e50/ffffff?text=Disguise",
+                "text": { "en": "To observe this society, you must blend in. Only one of these will grant you access to the political heart of Athens.", "ar": "لملاحظة هذا المجتمع، يجب أن تندمج. واحد فقط من هؤلاء سيمنحك الوصول إلى قلب أثينا السياسي.", "es": "Para observar esta sociedad, debes mezclarte. Solo uno de estos te dará acceso al corazón político de Atenas." },
+                "choices": [
+                    { "text": { "en": "Man", "ar": "رجل", "es": "Hombre" }, "target": "disguise_man" },
+                    { "text": { "en": "Woman", "ar": "امرأة", "es": "Mujer" }, "target": "disguise_woman" },
+                    { "text": { "en": "Child", "ar": "طفل", "es": "Niño" }, "target": "disguise_child" }
+                ]
+            },
+            "disguise_woman": {
+                "title": { "en": "A Woman's Role", "ar": "دور المرأة", "es": "El Papel de una Mujer" },
+                "image": "https://placehold.co/800x400/8e44ad/ffffff?text=Woman",
+                "text": { "en": "Greek women typically married as teens and had to stay at home. They had little social life and were not involved in politics. This disguise won't get you to the center of the action.", "ar": "كانت النساء اليونانيات يتزوجن عادة في سن المراهقة وعليهن البقاء في المنزل. لم يكن لديهن حياة اجتماعية تذكر ولم يشاركن في السياسة. هذا التمويه لن يوصلك إلى مركز الأحداث.", "es": "Las mujeres griegas generalmente se casaban en la adolescencia y tenían que quedarse en casa. Tenían poca vida social y no participaban en la política. Este disfraz no te llevará al centro de la acción." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "choose_disguise" } ]
+            },
+            "disguise_child": {
+                "title": { "en": "A Child's Role", "ar": "دور الطفل", "es": "El Papel de un Niño" },
+                "image": "https://placehold.co/800x400/f39c12/ffffff?text=Child",
+                "text": { "en": "Children in Athens had no political rights. You would not be able to participate in or observe the democratic process. This disguise won't work.", "ar": "لم يكن للأطفال في أثينا أي حقوق سياسية. لن تكون قادرًا على المشاركة في العملية الديمقراطية أو ملاحظتها. هذا التمويه لن ينجح.", "es": "Los niños en Atenas no tenían derechos políticos. No podrías participar ni observar el proceso democrático. Este disfraz no funcionará." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "choose_disguise" } ]
+            },
+            "disguise_man": {
+                "title": { "en": "An Athenian Man", "ar": "رجل أثيني", "es": "Un Hombre Ateniense" },
+                "image": "https://placehold.co/800x400/2980b9/ffffff?text=Man",
+                "text": { "en": "Perfect. Only adult, free men were considered citizens and could vote or speak in the assembly. You head to the Agora, the central market and meeting place.", "ar": "ممتاز. فقط الرجال البالغون الأحرار كانوا يعتبرون مواطنين ويمكنهم التصويت أو التحدث في الجمعية. تتوجه إلى الأغورا، السوق المركزي ومكان الاجتماع.", "es": "Perfecto. Solo los hombres adultos y libres eran considerados ciudadanos y podían votar o hablar en la asamblea. Te diriges al Ágora, el mercado central y lugar de reunión." },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "socrates_encounter" } ]
+            },
+            "socrates_encounter": {
+                "title": { "en": "The Agora", "ar": "الأغورا", "es": "El Ágora" },
+                "image": "https://placehold.co/800x400/34495e/ffffff?text=Socrates",
+                "text": { "en": "The Agora is bustling. You see a man named Socrates, known for his... persistent questioning. He is challenging people to question everything they think they know. This makes some powerful people uncomfortable.", "ar": "الأغورا صاخبة. ترى رجلاً يدعى سقراط، معروفًا بأسئلته... المستمرة. إنه يتحدى الناس للتشكيك في كل ما يعتقدون أنهم يعرفونه. هذا يجعل بعض الأشخاص الأقوياء غير مرتاحين.", "es": "El Ágora está bulliciosa. Ves a un hombre llamado Sócrates, conocido por sus... preguntas persistentes. Está desafiando a la gente a cuestionar todo lo que creen saber. Esto incomoda a algunas personas poderosas." },
+                "choices": [
+                    { "text": { "en": "Listen to Socrates", "ar": "استمع إلى سقراط", "es": "Escuchar a Sócrates" }, "target": "key1_found" },
+                    { "text": { "en": "Challenge him", "ar": "تحداه", "es": "Desafiarlo" }, "target": "game_over_socrates" }
+                ]
+            },
+            "game_over_socrates": {
+                 "title": { "en": "Desynchronized", "ar": "تمت إزالة المزامنة", "es": "Desincronizado" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { "en": "You try to debate Socrates, but his logic is flawless. He makes you look foolish in front of the crowd. Embarrassed, you've drawn too much attention to yourself. Simulation failed.", "ar": "تحاول مناقشة سقراط، لكن منطقه لا تشوبه شائبة. يجعلك تبدو أحمقًا أمام الحشد. محرجًا، لقد لفتت الكثير من الانتباه إلى نفسك. فشلت المحاكاة.", "es": "Intentas debatir con Sócrates, pero su lógica es impecable. Te hace quedar como un tonto frente a la multitud. Avergonzado, has llamado demasiado la atención. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try Again", "ar": "حاول مرة أخرى", "es": "Intentar de Nuevo" }, "target": "athens_start" } ]
+            },
+            "key1_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "You listen as Socrates explains that decisions are made by the people themselves. He argues that this is the best way to govern. Key 1 Found: In a democracy, decisions are made by the people.", "ar": "تستمع بينما يشرح سقراط أن القرارات يتخذها الشعب نفسه. يجادل بأن هذه هي أفضل طريقة للحكم. تم العثور على المفتاح 1: في الديمقراطية، يتخذ الشعب القرارات.", "es": "Escuchas mientras Sócrates explica que las decisiones las toma el propio pueblo. Argumenta que esta es la mejor manera de gobernar. Llave 1 Encontrada: En una democracia, las decisiones las toma el pueblo." },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "socrates_trial" } ]
+            },
+            "socrates_trial": {
+                "title": { "en": "The Trial of Socrates", "ar": "محاكمة سقراط", "es": "El Juicio de Sócrates" },
+                "image": "https://placehold.co/800x400/c0392b/ffffff?text=Trial",
+                "text": { "en": "The powerful have had enough. Socrates is put on trial for corrupting the youth. A jury of 500 citizens will decide his fate. Socrates is asked what his punishment should be.", "ar": "لقد طفح الكيل بالأقوياء. يُحاكم سقراط بتهمة إفساد الشباب. ستقرر هيئة محلفين مكونة من 500 مواطن مصيره. يُسأل سقراط عن العقوبة التي يجب أن تكون.", "es": "Los poderosos se han hartado. Sócrates es llevado a juicio por corromper a la juventud. Un jurado de 500 ciudadanos decidirá su destino. Se le pregunta a Sócrates cuál debería ser su castigo." },
+                "choices": [
+                    { "text": { "en": "He suggests a small fine.", "ar": "يقترح غرامة صغيرة.", "es": "Sugiere una pequeña multa." }, "target": "game_over_trial" },
+                    { "text": { "en": "He says he should be rewarded.", "ar": "يقول إنه يجب أن يُكافأ.", "es": "Dice que debería ser recompensado." }, "target": "key2_found" }
+                ]
+            },
+            "game_over_trial": {
+                "title": { "en": "Desynchronized", "ar": "تمت إزالة المزامنة", "es": "Desincronizado" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { "en": "Socrates suggests a small fine. This is not enough to satisfy the angry crowd. The jury is insulted by his lack of seriousness and sentences him to the harshest penalty. You did not witness the true historical outcome.", "ar": "يقترح سقراط غرامة صغيرة. هذا لا يكفي لإرضاء الحشد الغاضب. هيئة المحلفين مهانة بسبب عدم جديته وتحكم عليه بأقسى عقوبة. لم تشهد النتيجة التاريخية الحقيقية.", "es": "Sócrates sugiere una pequeña multa. Esto no es suficiente para satisfacer a la multitud enojada. El jurado se siente insultado por su falta de seriedad y lo condena a la pena más dura. No presenciaste el verdadero resultado histórico." },
+                "choices": [ { "text": { "en": "Try Again", "ar": "حاول مرة أخرى", "es": "Intentar de Nuevo" }, "target": "socrates_trial" } ]
+            },
+            "key2_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "Socrates defiantly says he should be rewarded with a great meal for his service to Athens. He accepts their decision to sentence him to death. The jury of citizens votes 360 to 140 for death. Key 2 Found: A weakness of democracy is that minority opinions can be crushed by the majority.", "ar": "يقول سقراط بتحدٍ إنه يجب أن يُكافأ بوجبة رائعة لخدمته لأثينا. يقبل قرارهم بالحكم عليه بالإعدام. تصوت هيئة المحلفين من المواطنين 360 مقابل 140 لصالح الموت. تم العثور على المفتاح 2: من نقاط ضعف الديمقراطية أن آراء الأقلية يمكن سحقها من قبل الأغلبية.", "es": "Sócrates dice desafiante que debería ser recompensado con una gran comida por su servicio a Atenas. Acepta su decisión de sentenciarlo a muerte. El jurado de ciudadanos vota 360 a 140 por la muerte. Llave 2 Encontrada: Una debilidad de la democracia es que las opiniones de las minorías pueden ser aplastadas por la mayoría." },
+                "choices": [ { "text": { "en": "Attempt to Warp", "ar": "محاولة التشوه الزمني", "es": "Intentar Salto Temporal" }, "target": "democracy_complete" } ]
+            },
+            "democracy_complete": {
+                 "title": { "en": "Stage 1 Complete!", "ar": "اكتملت المرحلة 1!", "es": "¡Etapa 1 Completada!" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Complete!",
+                "text": { "en": "You have found both keys of knowledge for this era. You understand the core principles and a key weakness of a direct democracy. Prepare to warp to the next stage.", "ar": "لقد وجدت كلا مفتاحي المعرفة لهذه الحقبة. أنت تفهم المبادئ الأساسية ونقطة ضعف رئيسية للديمقراطية المباشرة. استعد للتشوه الزمني إلى المرحلة التالية.", "es": "Has encontrado ambas llaves del conocimiento para esta era. Comprendes los principios básicos y una debilidad clave de una democracia directa. Prepárate para saltar a la siguiente etapa." },
+                "choices": [
+                     { "text": { "en": "Go to Stage 2: Autocracy", "ar": "اذهب إلى المرحلة 2: الأوتوقراطية", "es": "Ir a la Etapa 2: Autocracia" }, "target": "autocracy_intro" },
+                     { "text": { "en": "Main Menu", "ar": "القائمة الرئيسية", "es": "Menú Principal" }, "target": "start" }
+                ]
+            },
+            // STAGE 2: AUTOCRACY
+            "autocracy_intro": {
+                "title": { "en": "Stage 2: Autocracy", "ar": "المرحلة 2: الأوتوقراطية", "es": "Etapa 2: Autocracia" },
+                "image": "https://placehold.co/800x400/c0392b/ffffff?text=Autocracy",
+                "text": { "en": "Autocracy is a system of government where one person has absolute power. This person is called an autocrat. We are traveling to ancient China, ruled by its first emperor, Qin Shi Huang.", "ar": "الأوتوقراطية هي نظام حكم يمتلك فيه شخص واحد السلطة المطلقة. يُدعى هذا الشخص بالأوتوقراطي. نحن نسافر إلى الصين القديمة، التي حكمها أول إمبراطور لها، تشين شي هوانج.", "es": "La autocracia es un sistema de gobierno donde una persona tiene el poder absoluto. Esta persona se llama autócrata. Viajamos a la antigua China, gobernada por su primer emperador, Qin Shi Huang." },
+                "choices": [ { "text": { "en": "Begin Simulation", "ar": "ابدأ المحاكاة", "es": "Iniciar Simulación" }, "target": "china_start" } ]
+            },
+            "china_start": {
+                "title": { "en": "China - 221 B.C.", "ar": "الصين - 221 ق.م.", "es": "China - 221 a.C." },
+                "image": "https://placehold.co/800x400/e74c3c/ffffff?text=Ancient+China",
+                "text": { "en": "Emperor Qin Shi Huang has united the warring states of China into one empire. He rules with an iron fist. To observe this society, you'll need to blend in.", "ar": "لقد وحّد الإمبراطور تشين شي هوانج الممالك المتحاربة في الصين في إمبراطورية واحدة. إنه يحكم بقبضة من حديد. لملاحظة هذا المجتمع، ستحتاج إلى الاندماج.", "es": "El emperador Qin Shi Huang ha unido los estados en guerra de China en un solo imperio. Gobierna con mano de hierro. Para observar esta sociedad, necesitarás mezclarte." },
+                "choices": [ { "text": { "en": "Choose a disguise", "ar": "اختر تمويهًا", "es": "Elige un disfraz" }, "target": "autocracy_choose_disguise" } ]
+            },
+            "autocracy_choose_disguise": {
+                "title": { "en": "Choose a Disguise", "ar": "اختر تمويهًا", "es": "Elige un Disfraz" },
+                "image": "https://placehold.co/800x400/2c3e50/ffffff?text=Disguise",
+                "text": { "en": "Your disguise will determine what you can see and do. Choose carefully.", "ar": "سيحدد تمويهك ما يمكنك رؤيته والقيام به. اختر بعناية.", "es": "Tu disfraz determinará lo que puedes ver y hacer. Elige con cuidado." },
+                "choices": [
+                    { "text": { "en": "Soldier", "ar": "جندي", "es": "Soldado" }, "target": "disguise_soldier" },
+                    { "text": { "en": "Farmer", "ar": "مزارع", "es": "Granjero" }, "target": "disguise_farmer" },
+                    { "text": { "en": "Scholar", "ar": "عالم", "es": "Erudito" }, "target": "disguise_scholar" }
+                ]
+            },
+            "disguise_farmer": {
+                "title": { "en": "A Farmer's Life", "ar": "حياة المزارع", "es": "La Vida de un Granjero" },
+                "image": "https://placehold.co/800x400/f39c12/ffffff?text=Farmer",
+                "text": { "en": "As a farmer, you work long hours and see little beyond your fields. You have no influence and are not privy to the workings of the empire. This disguise is not suitable.", "ar": "كمزارع، تعمل لساعات طويلة ولا ترى سوى القليل خارج حقلك. ليس لديك أي تأثير ولست مطلعًا على أعمال الإمبراطورية. هذا التمويه غير مناسب.", "es": "Como granjero, trabajas muchas horas y ves poco más allá de tus campos. No tienes influencia y no estás al tanto de los tejemanejes del imperio. Este disfraz no es adecuado." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "autocracy_choose_disguise" } ]
+            },
+            "disguise_scholar": {
+                "title": { "en": "A Dangerous Path", "ar": "طريق خطير", "es": "Un Camino Peligroso" },
+                "image": "https://placehold.co/800x400/8e44ad/ffffff?text=Scholar",
+                "text": { "en": "Emperor Qin distrusts intellectuals. Soon after you arrive, you are arrested during the 'burning of books and burying of scholars' event. Simulation failed.", "ar": "الإمبراطور تشين لا يثق بالمثقفين. بعد وقت قصير من وصولك، يتم القبض عليك خلال حدث \"حرق الكتب ودفن العلماء\". فشلت المحاكاة.", "es": "El emperador Qin desconfía de los intelectuales. Poco después de tu llegada, eres arrestado durante el evento de 'quema de libros y entierro de eruditos'. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "autocracy_choose_disguise" } ]
+            },
+            "disguise_soldier": {
+                "title": { "en": "A Soldier's Duty", "ar": "واجب الجندي", "es": "El Deber de un Soldado" },
+                "image": "https://placehold.co/800x400/2980b9/ffffff?text=Soldier",
+                "text": { "en": "An excellent choice. As a soldier, you are respected and feared. You are assigned to guard a group of scholars tasked with standardizing writing across the empire.", "ar": "اختيار ممتاز. كجندي، أنت محترم ومهاب. تم تكليفك بحراسة مجموعة من العلماء المكلفين بتوحيد الكتابة في جميع أنحاء الإمبراطورية.", "es": "Una elección excelente. Como soldado, eres respetado y temido. Se te asigna la tarea de vigilar a un grupo de eruditos encargados de estandarizar la escritura en todo el imperio." },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "scholar_scene" } ]
+            },
+            "scholar_scene": {
+                "title": { "en": "Whispers of Dissent", "ar": "همسات المعارضة", "es": "Susurros de Descontento" },
+                "image": "https://placehold.co/800x400/34495e/ffffff?text=Scholars",
+                "text": { "en": "You overhear the scholars complaining about the Emperor's tyranny. They criticize his harsh laws and burning of books. Another soldier glances at you, waiting to see what you will do.", "ar": "تسمع العلماء يتذمرون من طغيان الإمبراطور. ينتقدون قوانينه القاسية وحرق الكتب. يلقي جندي آخر نظرة عليك، منتظرًا ليرى ماذا ستفعل.", "es": "Escuchas a los eruditos quejarse de la tiranía del Emperador. Critican sus duras leyes y la quema de libros. Otro soldado te mira, esperando ver qué harás." },
+                "choices": [
+                    { "text": { "en": "Report them to the authorities.", "ar": "أبلغ السلطات عنهم.", "es": "Informar a las autoridades." }, "target": "autocracy_key1_found" },
+                    { "text": { "en": "Listen quietly and do nothing.", "ar": "استمع بهدوء ولا تفعل شيئًا.", "es": "Escuchar en silencio y no hacer nada." }, "target": "listen_quietly_game_over" }
+                ]
+            },
+            "listen_quietly_game_over": {
+                "title": { "en": "Desynchronized", "ar": "تمت إزالة المزامنة", "es": "Desincronizado" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { "en": "The other soldier reports the scholars... and you for failing to do your duty. In an autocracy, loyalty is paramount. You are executed alongside the scholars. Simulation failed.", "ar": "الجندي الآخر يبلغ عن العلماء... وعنك لعدم قيامك بواجبك. في الأوتوقراطية، الولاء هو الأهم. يتم إعدامك إلى جانب العلماء. فشلت المحاكاة.", "es": "El otro soldado informa sobre los eruditos... y sobre ti por no cumplir con tu deber. En una autocracia, la lealtad es primordial. Eres ejecutado junto a los eruditos. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try Again", "ar": "حاول مرة أخرى", "es": "Intentar de Nuevo" }, "target": "china_start" } ]
+            },
+            "autocracy_key1_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "You report the scholars, who are promptly executed. You are rewarded for your loyalty. Key 1 Found: In an autocracy, one person holds all the power, and their decisions are final.", "ar": "تبلغ عن العلماء، الذين يتم إعدامهم على الفور. تتم مكافأتك على ولائك. تم العثور على المفتاح 1: في الأوتوقراطية، يمتلك شخص واحد كل السلطة، وقراراته نهائية.", "es": "Informas sobre los eruditos, que son ejecutados rápidamente. Eres recompensado por tu lealtad. Llave 1 Encontrada: En una autocracia, una persona tiene todo el poder y sus decisiones son definitivas." },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "great_wall_scene" } ]
+            },
+            "great_wall_scene": {
+                "title": { "en": "The Great Wall", "ar": "سور الصين العظيم", "es": "La Gran Muralla" },
+                "image": "https://placehold.co/800x400/7f8c8d/ffffff?text=Great+Wall",
+                "text": { "en": "You are reassigned to oversee workers building the Great Wall. It's a monumental project, completed with incredible speed. But the laborers are forced conscripts working in brutal conditions. You see a worker collapse from exhaustion.", "ar": "تمت إعادة تكليفك بالإشراف على العمال الذين يبنون سور الصين العظيم. إنه مشروع ضخم، تم إنجازه بسرعة لا تصدق. لكن العمال هم مجندون قسراً يعملون في ظروف وحشية. ترى عاملاً ينهار من الإرهاق.", "es": "Se te reasigna para supervisar a los trabajadores que construyen la Gran Muralla. Es un proyecto monumental, completado a una velocidad increíble. Pero los trabajadores son reclutas forzados que trabajan en condiciones brutales. Ves a un trabajador desplomarse por el agotamiento." },
+                "choices": [
+                    { "text": { "en": "Help the worker.", "ar": "ساعد العامل.", "es": "Ayudar al trabajador." }, "target": "help_worker_game_over" },
+                    { "text": { "en": "Ignore him.", "ar": "تجاهله.", "es": "Ignorarlo." }, "target": "autocracy_key2_found" }
+                ]
+            },
+            "help_worker_game_over": {
+                "title": { "en": "Desynchronized", "ar": "تمت إزالة المزامنة", "es": "Desincronizado" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { "en": "Your act of compassion is seen as weakness and a potential challenge to authority. The overseer has you beaten and left for dead. The project's progress is more important than any single life. Simulation failed.", "ar": "يُنظر إلى عملك الرحيم على أنه ضعف وتحدٍ محتمل للسلطة. يأمر المشرف بضربك وتركك للموت. تقدم المشروع أهم من أي حياة فردية. فشلت المحاكاة.", "es": "Tu acto de compasión es visto como una debilidad y un posible desafío a la autoridad. El supervisor te hace golpear y te da por muerto. El progreso del proyecto es más importante que cualquier vida individual. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try Again", "ar": "حاول مرة أخرى", "es": "Intentar de Nuevo" }, "target": "great_wall_scene" } ]
+            },
+            "autocracy_key2_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "You ignore the worker, who is dragged away. The work continues without pause. The wall gets built in record time, a testament to the Emperor's will. Key 2 Found: A benefit of autocracy is that decisions can be made and enacted quickly, leading to rapid progress on large projects.", "ar": "تتجاهل العامل، الذي يتم جره بعيدًا. يستمر العمل دون توقف. يتم بناء السور في وقت قياسي، وهو شهادة على إرادة الإمبراطور. تم العثور على المفتاح 2: من فوائد الأوتوقراطية أنه يمكن اتخاذ القرارات وتنفيذها بسرعة، مما يؤدي إلى تقدم سريع في المشاريع الكبيرة.", "es": "Ignoras al trabajador, que es arrastrado. El trabajo continúa sin pausa. La muralla se construye en tiempo récord, un testimonio de la voluntad del Emperador. Llave 2 Encontrada: Un beneficio de la autocracia es que las decisiones se pueden tomar y promulgar rápidamente, lo que lleva a un rápido progreso en grandes proyectos." },
+                "choices": [ { "text": { "en": "Attempt to Warp", "ar": "محاولة التشوه الزمني", "es": "Intentar Salto Temporal" }, "target": "autocracy_complete" } ]
+            },
+            "autocracy_complete": {
+                 "title": { "en": "Stage 2 Complete!", "ar": "اكتملت المرحلة 2!", "es": "¡Etapa 2 Completada!" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Complete!",
+                "text": { "en": "You have found both keys of knowledge. You've seen the power and the peril of autocratic rule. Prepare for the next simulation.", "ar": "لقد وجدت كلا مفتاحي المعرفة. لقد رأيت قوة وخطر الحكم الأوتوقراطي. استعد للمحاكاة التالية.", "es": "Has encontrado ambas llaves del conocimiento. Has visto el poder y el peligro del gobierno autocrático. Prepárate para la siguiente simulación." },
+                "choices": [
+                     { "text": { "en": "Go to Stage 3: Feudalism", "ar": "اذهب إلى المرحلة 3: الإقطاعية", "es": "Ir a la Etapa 3: Feudalismo" }, "target": "feudalism_intro" },
+                     { "text": { "en": "Main Menu", "ar": "القائمة الرئيسية", "es": "Menú Principal" }, "target": "start" }
+                ]
+            },
+            // STAGE 3: FEUDALISM
+            "feudalism_intro": {
+                "title": { "en": "Stage 3: Feudalism", "ar": "المرحلة 3: الإقطاعية", "es": "Etapa 3: Feudalismo" },
+                "image": "https://placehold.co/800x400/95a5a6/ffffff?text=Feudalism",
+                "text": { "en": "Feudalism is a system built on rigid hierarchies. People are born into their social class and remain there. We're traveling to Japan, during a time of civil war that gave rise to this system.", "ar": "الإقطاعية هي نظام مبني على تسلسلات هرمية صارمة. يولد الناس في طبقتهم الاجتماعية ويبقون فيها. نحن نسافر إلى اليابان، خلال فترة حرب أهلية أدت إلى ظهور هذا النظام.", "es": "El feudalismo es un sistema construido sobre jerarquías rígidas. Las personas nacen en su clase social y permanecen allí. Viajamos a Japón, durante una época de guerra civil que dio origen a este sistema." },
+                "choices": [ { "text": { "en": "Begin Simulation", "ar": "ابدأ المحاكاة", "es": "Iniciar Simulación" }, "target": "japan_start" } ]
+            },
+            "japan_start": {
+                "title": { "en": "Japan - 1190 A.D.", "ar": "اليابان - 1190 م.", "es": "Japón - 1190 d.C." },
+                "image": "https://placehold.co/800x400/2c3e50/ffffff?text=Feudal+Japan",
+                "text": { "en": "A civil war has divided Japan. The emperor's power is fading, and local warlords, known as daimyo, are claiming territory. The lack of national unity is immediately obvious. Key 1 Found: Feudalism divides nations into small groups that lack unity. You need a disguise.", "ar": "حرب أهلية قسمت اليابان. قوة الإمبراطور تتلاشى، وأمراء الحرب المحليون، المعروفون باسم الدايميو، يطالبون بالأراضي. نقص الوحدة الوطنية واضح على الفور. تم العثور على المفتاح 1: الإقطاعية تقسم الأمم إلى مجموعات صغيرة تفتقر إلى الوحدة. أنت بحاجة إلى تمويه.", "es": "Una guerra civil ha dividido Japón. El poder del emperador se está desvaneciendo y los señores de la guerra locales, conocidos como daimyo, reclaman territorio. La falta de unidad nacional es inmediatamente obvia. Llave 1 Encontrada: El feudalismo divide a las naciones en pequeños grupos que carecen de unidad. Necesitas un disfraz." },
+                "choices": [ { "text": { "en": "Choose a disguise", "ar": "اختر تمويهًا", "es": "Elige un disfraz" }, "target": "feudalism_choose_disguise" } ]
+            },
+            "feudalism_choose_disguise": {
+                "title": { "en": "Choose a Disguise", "ar": "اختر تمويهًا", "es": "Elige un Disfraz" },
+                "image": "https://placehold.co/800x400/34495e/ffffff?text=Disguise",
+                "text": { "en": "To understand this society, you must choose your place within it.", "ar": "لفهم هذا المجتمع، يجب أن تختار مكانك فيه.", "es": "Para entender esta sociedad, debes elegir tu lugar dentro de ella." },
+                "choices": [
+                    { "text": { "en": "Samurai", "ar": "ساموراي", "es": "Samurái" }, "target": "disguise_samurai" },
+                    { "text": { "en": "Peasant", "ar": "فلاح", "es": "Campesino" }, "target": "disguise_peasant" },
+                    { "text": { "en": "Merchant", "ar": "تاجر", "es": "Comerciante" }, "target": "disguise_merchant" }
+                ]
+            },
+            "disguise_peasant": {
+                "title": { "en": "A Peasant's Toil", "ar": "كَدْح الفلاح", "es": "El Trabajo de un Campesino" },
+                "image": "https://placehold.co/800x400/f1c40f/ffffff?text=Peasant",
+                "text": { "en": "As a peasant, you are tied to the land. You have no rights and no opportunity for advancement. You cannot learn the secrets of this government from the bottom. Simulation failed.", "ar": "كفلاح، أنت مرتبط بالأرض. ليس لديك حقوق ولا فرصة للتقدم. لا يمكنك تعلم أسرار هذه الحكومة من الأسفل. فشلت المحاكاة.", "es": "Como campesino, estás atado a la tierra. No tienes derechos ni oportunidades de ascenso. No puedes aprender los secretos de este gobierno desde abajo. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "feudalism_choose_disguise" } ]
+            },
+            "disguise_merchant": {
+                "title": { "en": "A Merchant's Status", "ar": "مكانة التاجر", "es": "El Estatus de un Comerciante" },
+                "image": "https://placehold.co/800x400/e67e22/ffffff?text=Merchant",
+                "text": { "en": "Merchants are considered the lowest class in Japanese feudalism because they produce nothing of their own. You are distrusted and have no access to the warrior class that runs society. Simulation failed.", "ar": "يعتبر التجار أدنى طبقة في الإقطاعية اليابانية لأنهم لا ينتجون شيئًا بأنفسهم. أنت غير موثوق به وليس لديك وصول إلى طبقة المحاربين التي تدير المجتمع. فشلت المحاكاة.", "es": "Los comerciantes son considerados la clase más baja en el feudalismo japonés porque no producen nada propio. Se desconfía de ti y no tienes acceso a la clase guerrera que dirige la sociedad. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "feudalism_choose_disguise" } ]
+            },
+            "disguise_samurai": {
+                "title": { "en": "The Way of the Warrior", "ar": "طريق المحارب", "es": "El Camino del Guerrero" },
+                "image": "https://placehold.co/800x400/c0392b/ffffff?text=Samurai",
+                "text": { "en": "As a samurai, you are part of the ruling class. You witness a daimyo brutally punish a peasant for a minor offense. The peasants cannot challenge him.", "ar": "كساموراي، أنت جزء من الطبقة الحاكمة. تشهد على دايو يعاقب فلاحًا بوحشية على جريمة بسيطة. لا يستطيع الفلاحون تحديه.", "es": "Como samurái, eres parte de la clase dominante. Presencias a un daimyo castigando brutalmente a un campesino por una ofensa menor. Los campesinos no pueden desafiarlo." },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "feudalism_key2_found" } ]
+            },
+            "feudalism_key2_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "You see that society is rigidly structured. A person's status is determined by birth. Key 2 Found: Feudal classes are based on birth; there is little chance for growth.", "ar": "ترى أن المجتمع منظم بشكل صارم. يتم تحديد مكانة الشخص بالولادة. تم العثور على المفتاح 2: الطبقات الإقطاعية تعتمد على الولادة؛ هناك فرصة ضئيلة للنمو.", "es": "Ves que la sociedad está rígidamente estructurada. El estatus de una persona está determinado por el nacimiento. Llave 2 Encontrada: Las clases feudales se basan en el nacimiento; hay pocas posibilidades de crecimiento." },
+                "choices": [ { "text": { "en": "Attempt to Warp", "ar": "محاولة التشوه الزمني", "es": "Intentar Salto Temporal" }, "target": "feudalism_complete" } ]
+            },
+            "feudalism_complete": {
+                 "title": { "en": "Stage 3 Complete!", "ar": "اكتملت المرحلة 3!", "es": "¡Etapa 3 Completada!" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Complete!",
+                "text": { "en": "You have found both keys of knowledge for feudalism. You've seen how a lack of unity and a rigid class system define this era.", "ar": "لقد وجدت كلا مفتاحي المعرفة للإقطاعية. لقد رأيت كيف أن نقص الوحدة ونظام الطبقات الصارم يحددان هذه الحقبة.", "es": "Has encontrado ambas llaves del conocimiento para el feudalismo. Has visto cómo la falta de unidad y un sistema de clases rígido definen esta era." },
+                "choices": [
+                     { "text": { "en": "Go to Stage 4: Fascism", "ar": "اذهب إلى المرحلة 4: الفاشية", "es": "Ir a la Etapa 4: Fascismo" }, "target": "fascism_intro" },
+                     { "text": { "en": "Main Menu", "ar": "القائمة الرئيسية", "es": "Menú Principal" }, "target": "start" }
+                ]
+            },
+             // STAGE 4: FASCISM
+            "fascism_intro": {
+                "title": { "en": "Stage 4: Fascism", "ar": "المرحلة 4: الفاشية", "es": "Etapa 4: Fascismo" },
+                "image": "https://placehold.co/800x400/7f8c8d/ffffff?text=Fascism",
+                "text": { "en": "Fascism is similar to autocracy but uses extreme nationalism to control the populace. Citizens are expected to serve the state above all else. We're going to Italy at the very beginning of this ideology.", "ar": "الفاشية تشبه الأوتوقراطية ولكنها تستخدم القومية المتطرفة للسيطرة على السكان. يُتوقع من المواطنين خدمة الدولة فوق كل شيء آخر. نحن نذهب إلى إيطاليا في بداية هذه الأيديولوجية.", "es": "El fascismo es similar a la autocracia pero utiliza un nacionalismo extremo para controlar a la población. Se espera que los ciudadanos sirvan al estado por encima de todo. Vamos a Italia al comienzo de esta ideología." },
+                "choices": [ { "text": { "en": "Begin Simulation", "ar": "ابدأ المحاكاة", "es": "Iniciar Simulación" }, "target": "italy_start" } ]
+            },
+            "italy_start": {
+                "title": { "en": "Italy - 1922 A.D.", "ar": "إيطاليا - 1922 م.", "es": "Italia - 1922 d.C." },
+                "image": "https://placehold.co/800x400/e67e22/ffffff?text=Italy+1922",
+                "text": { "en": "You've landed in post-WWI Italy. The country is humiliated, and a new political movement is rising, blaming socialists and promising to restore national pride.", "ar": "لقد هبطت في إيطاليا ما بعد الحرب العالمية الأولى. البلد مهان، وحركة سياسية جديدة آخذة في الظهور، تلوم الاشتراكيين وتعد باستعادة الكبرياء الوطني.", "es": "Has aterrizado en la Italia posterior a la Primera Guerra Mundial. El país está humillado y un nuevo movimiento político está en auge, culpando a los socialistas y prometiendo restaurar el orgullo nacional." },
+                "choices": [ { "text": { "en": "Choose a disguise", "ar": "اختر تمويهًا", "es": "Elige un disfraz" }, "target": "fascism_choose_disguise" } ]
+            },
+            "fascism_choose_disguise": {
+                "title": { "en": "Choose a Disguise", "ar": "اختر تمويهًا", "es": "Elige un Disfraz" },
+                "image": "https://placehold.co/800x400/34495e/ffffff?text=Disguise",
+                "text": { "en": "Your disguise will grant you access to different parts of this turbulent society.", "ar": "تمويهك سيمنحك الوصول إلى أجزاء مختلفة من هذا المجتمع المضطرب.", "es": "Tu disfraz te dará acceso a diferentes partes de esta sociedad turbulenta." },
+                "choices": [
+                    { "text": { "en": "Soldier", "ar": "جندي", "es": "Soldado" }, "target": "disguise_fascist_soldier" },
+                    { "text": { "en": "Russian Tourist", "ar": "سائح روسي", "es": "Turista Ruso" }, "target": "disguise_russian" }
+                ]
+            },
+            "disguise_russian": {
+                "title": { "en": "A Fatal Misunderstanding", "ar": "سوء فهم قاتل", "es": "Un Malentendido Fatal" },
+                "image": "https://placehold.co/800x400/e74c3c/ffffff?text=Tourist",
+                "text": { "en": "You approach a group of men in black shirts, assuming they are fellow socialists. They are Mussolini's Fascists. Your communist beliefs are not welcome here. They beat you senseless. Simulation failed.", "ar": "تقترب من مجموعة من الرجال يرتدون قمصانًا سوداء، مفترضًا أنهم رفاق اشتراكيون. إنهم فاشيو موسوليني. معتقداتك الشيوعية ليست موضع ترحيب هنا. يضربونك حتى تفقد الوعي. فشلت المحاكاة.", "es": "Te acercas a un grupo de hombres con camisas negras, asumiendo que son compañeros socialistas. Son los fascistas de Mussolini. Tus creencias comunistas no son bienvenidas aquí. Te golpean hasta dejarte sin sentido. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "fascism_choose_disguise" } ]
+            },
+            "disguise_fascist_soldier": {
+                "title": { "en": "The Blackshirts", "ar": "القمصان السوداء", "es": "Los Camisas Negras" },
+                "image": "https://placehold.co/800x400/2c3e50/ffffff?text=Blackshirts",
+                "text": { "en": "You join the 'Blackshirts,' Mussolini's paramilitary wing. You attend a rally where a speaker declares, 'We live for the state, we die for the state! Everything for the state, nothing against the state!'", "ar": "تنضم إلى 'القمصان السوداء'، الجناح شبه العسكري لموسوليني. تحضر تجمعًا حيث يعلن متحدث، 'نحن نعيش للدولة، نموت من أجل الدولة! كل شيء للدولة، لا شيء ضد الدولة!'", "es": "Te unes a los 'Camisas Negras', el ala paramilitar de Mussolini. Asistes a un mitin donde un orador declara: '¡Vivimos para el estado, morimos por el estado! ¡Todo por el estado, nada contra el estado!'" },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "fascism_key1_found" } ]
+            },
+            "fascism_key1_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "The message is clear. The individual is nothing; the state is everything. Key 1 Found: In fascism, citizens are considered to be servants of the state.", "ar": "الرسالة واضحة. الفرد لا شيء؛ الدولة هي كل شيء. تم العثور على المفتاح 1: في الفاشية، يعتبر المواطنون خدمًا للدولة.", "es": "El mensaje es claro. El individuo no es nada; el estado lo es todo. Llave 1 Encontrada: En el fascismo, los ciudadanos son considerados sirvientes del estado." },
+                "choices": [ { "text": { "en": "Witness the March on Rome", "ar": "شاهد المسيرة إلى روما", "es": "Presenciar la Marcha sobre Roma" }, "target": "fascism_key2_found" } ]
+            },
+            "fascism_key2_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "You witness Mussolini's 'March on Rome.' It's a show of force, not a revolution. The king, fearing civil war, simply hands power to Mussolini. One man now holds absolute control. Key 2 Found: Fascism is most like an Autocracy.", "ar": "تشهد 'المسيرة إلى روما' لموسوليني. إنها استعراض للقوة، وليست ثورة. الملك، خوفًا من الحرب الأهلية، يسلم السلطة ببساطة إلى موسوليني. رجل واحد الآن يسيطر سيطرة مطلقة. تم العثور على المفتاح 2: الفاشية تشبه إلى حد كبير الأوتوقراطية.", "es": "Presencias la 'Marcha sobre Roma' de Mussolini. Es una demostración de fuerza, no una revolución. El rey, temiendo una guerra civil, simplemente le entrega el poder a Mussolini. Un hombre ahora tiene el control absoluto. Llave 2 Encontrada: El fascismo se parece mucho a una autocracia." },
+                "choices": [ { "text": { "en": "Attempt to Warp", "ar": "محاولة التشوه الزمني", "es": "Intentar Salto Temporal" }, "target": "fascism_complete" } ]
+            },
+            "fascism_complete": {
+                 "title": { "en": "Stage 4 Complete!", "ar": "اكتملت المرحلة 4!", "es": "¡Etapa 4 Completada!" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Complete!",
+                "text": { "en": "You have found both keys of knowledge on fascism, seeing how nationalism can create a powerful, single-ruler state.", "ar": "لقد وجدت كلا مفتاحي المعرفة حول الفاشية، ورأيت كيف يمكن للقومية أن تخلق دولة قوية ذات حاكم واحد.", "es": "Has encontrado ambas llaves del conocimiento sobre el fascismo, viendo cómo el nacionalismo puede crear un estado poderoso con un solo gobernante." },
+                "choices": [
+                     { "text": { "en": "Go to Stage 5: Anarchy", "ar": "اذهب إلى المرحلة 5: الفوضوية", "es": "Ir a la Etapa 5: Anarquía" }, "target": "anarchy_intro" },
+                     { "text": { "en": "Main Menu", "ar": "القائمة الرئيسية", "es": "Menú Principal" }, "target": "start" }
+                ]
+            },
+            // STAGE 5: ANARCHY
+            "anarchy_intro": {
+                "title": { "en": "Stage 5: Anarchy", "ar": "المرحلة 5: الفوضوية", "es": "Etapa 5: Anarquía" },
+                "image": "https://placehold.co/800x400/1abc9c/ffffff?text=Anarchy",
+                "text": { "en": "Anarchy is the absence of government. Proponents say it offers ultimate freedom, while opponents predict chaos. We're traveling to a recent, real-world example: the Capitol Hill Occupied Protest (CHOP) in Seattle.", "ar": "الفوضوية هي غياب الحكومة. يقول المؤيدون إنها توفر الحرية المطلقة، بينما يتوقع المعارضون الفوضى. نحن نسافر إلى مثال حديث من العالم الحقيقي: احتجاج الكابيتول هيل المحتل (CHOP) في سياتل.", "es": "La anarquía es la ausencia de gobierno. Los defensores dicen que ofrece la máxima libertad, mientras que los oponentes predicen el caos. Viajamos a un ejemplo reciente del mundo real: la Protesta Ocupada de Capitol Hill (CHOP) en Seattle." },
+                "choices": [ { "text": { "en": "Begin Simulation", "ar": "ابدأ المحاكاة", "es": "Iniciar Simulación" }, "target": "chop_start" } ]
+            },
+            "chop_start": {
+                "title": { "en": "Seattle, USA - 2020 A.D.", "ar": "سياتل، الولايات المتحدة الأمريكية - 2020 م.", "es": "Seattle, EE. UU. - 2020 d.C." },
+                "image": "https://placehold.co/800x400/2ecc71/ffffff?text=CHOP+Zone",
+                "text": { "en": "This is the CHOP zone, a protest area that declared itself police-free. The goal was a society without leaders or authorities. Key 1 Found: In anarchy, no one is supposed to have more authority than another. This could be dangerous.", "ar": "هذه هي منطقة CHOP، وهي منطقة احتجاج أعلنت نفسها خالية من الشرطة. كان الهدف هو مجتمع بدون قادة أو سلطات. تم العثور على المفتاح 1: في الفوضوية، لا يُفترض أن يكون لأحد سلطة أكبر من الآخر. قد يكون هذا خطيرًا.", "es": "Esta es la zona CHOP, un área de protesta que se declaró libre de policía. El objetivo era una sociedad sin líderes ni autoridades. Llave 1 Encontrada: En la anarquía, se supone que nadie tiene más autoridad que otro. Esto podría ser peligroso." },
+                "choices": [ { "text": { "en": "Choose a disguise", "ar": "اختر تمويهًا", "es": "Elige un disfraz" }, "target": "anarchy_choose_disguise" } ]
+            },
+            "anarchy_choose_disguise": {
+                "title": { "en": "Choose a Disguise", "ar": "اختر تمويهًا", "es": "Elige un Disfraz" },
+                "image": "https://placehold.co/800x400/3498db/ffffff?text=Disguise",
+                "text": { "en": "How will you present yourself in this leaderless zone?", "ar": "كيف ستقدم نفسك في هذه المنطقة التي لا قائد لها؟", "es": "¿Cómo te presentarás en esta zona sin líderes?" },
+                "choices": [
+                    { "text": { "en": "Police Officer", "ar": "ضابط شرطة", "es": "Oficial de Policía" }, "target": "disguise_police" },
+                    { "text": { "en": "Jobless Millennial", "ar": "شاب عاطل من جيل الألفية", "es": "Millennial Desempleado" }, "target": "disguise_millennial" }
+                ]
+            },
+            "disguise_police": {
+                "title": { "en": "Unwelcome Authority", "ar": "سلطة غير مرحب بها", "es": "Autoridad no Deseada" },
+                "image": "https://placehold.co/800x400/e74c3c/ffffff?text=Police",
+                "text": { "en": "Are you serious? This is a police-free zone. The protestors immediately identify you as a symbol of the authority they reject and run you out of the area. Simulation failed.", "ar": "هل أنت جاد؟ هذه منطقة خالية من الشرطة. المتظاهرون يتعرفون عليك فورًا كرمز للسلطة التي يرفضونها ويطردونك من المنطقة. فشلت المحاكاة.", "es": "¿Hablas en serio? Esta es una zona libre de policía. Los manifestantes te identifican inmediatamente como un símbolo de la autoridad que rechazan y te expulsan de la zona. La simulación ha fallado." },
+                "choices": [ { "text": { "en": "Try another disguise", "ar": "جرب تمويهًا آخر", "es": "Prueba otro disfraz" }, "target": "anarchy_choose_disguise" } ]
+            },
+            "disguise_millennial": {
+                "title": { "en": "Fitting In", "ar": "الاندماج", "es": "Encajando" },
+                "image": "https://placehold.co/800x400/9b59b6/ffffff?text=Protestor",
+                "text": { "en": "You blend in easily. At first, there is a strong sense of community. But without laws or enforcement, arguments and violence begin to break out. A shooting occurs, and with no police to investigate, the area descends into chaos.", "ar": "تندمج بسهولة. في البداية، هناك شعور قوي بالمجتمع. ولكن بدون قوانين أو إنفاذ، تبدأ المشاحنات والعنف في الظهور. يقع إطلاق نار، ومع عدم وجود شرطة للتحقيق، تنحدر المنطقة إلى الفوضى.", "es": "Te mezclas fácilmente. Al principio, hay un fuerte sentido de comunidad. Pero sin leyes ni aplicación, comienzan a estallar discusiones y violencia. Ocurre un tiroteo y, sin policía que investigue, la zona se sume en el caos." },
+                "choices": [ { "text": { "en": "Continue", "ar": "استمر", "es": "Continuar" }, "target": "anarchy_key2_found" } ]
+            },
+            "anarchy_key2_found": {
+                "title": { "en": "Key of Knowledge Found!", "ar": "تم العثور على مفتاح المعرفة!", "es": "¡Llave del Conocimiento Encontrada!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Key+Found",
+                "text": { "en": "The experiment fails. The city eventually moves in to clear the area. You've witnessed firsthand why this system doesn't last. Key 2 Found: Anarchy has never lasted long because it leads to chaos.", "ar": "فشلت التجربة. المدينة تتحرك في النهاية لتطهير المنطقة. لقد شهدت بنفسك لماذا لا يدوم هذا النظام. تم العثور على المفتاح 2: الفوضوية لم تدم طويلاً أبدًا لأنها تؤدي إلى الفوضى.", "es": "El experimento falla. La ciudad finalmente interviene para despejar la zona. Has sido testigo de primera mano de por qué este sistema no dura. Llave 2 Encontrada: La anarquía nunca ha durado mucho porque conduce al caos." },
+                "choices": [ { "text": { "en": "Attempt to Warp", "ar": "محاولة التشوه الزمني", "es": "Intentar Salto Temporal" }, "target": "anarchy_complete" } ]
+            },
+            "anarchy_complete": {
+                 "title": { "en": "Simulation Complete!", "ar": "اكتملت المحاكاة!", "es": "¡Simulación Completada!" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Congratulations!",
+                "text": { "en": "Congratulations! You have experienced governments throughout time. You should now realize that no system is perfect, but some are clearly worse than others. Even the best ones require constant vigilance from citizens.", "ar": "تهانينا! لقد اختبرت الحكومات عبر الزمن. يجب أن تدرك الآن أنه لا يوجد نظام مثالي، لكن بعضها أسوأ من البعض الآخر بشكل واضح. حتى أفضلها يتطلب يقظة مستمرة من المواطنين.", "es": "¡Felicidades! Has experimentado gobiernos a lo largo del tiempo. Ahora deberías darte cuenta de que ningún sistema es perfecto, pero algunos son claramente peores que otros. Incluso los mejores requieren una vigilancia constante por parte de los ciudadanos." },
+                "choices": [
+                     { "text": { "en": "Return to Main Menu", "ar": "العودة إلى القائمة الرئيسية", "es": "Volver al Menú Principal" }, "target": "start" }
+                ]
+            }
+        };
+
+        let currentScene = 'start';
+        let currentLang = 'en';
+        
+        const sceneContainer = document.getElementById('scene-container');
+        const langSelect = document.getElementById('lang-select');
+        const htmlEl = document.documentElement;
+
+        function renderScene() {
+            const scene = gameData[currentScene];
+            htmlEl.lang = currentLang;
+            htmlEl.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            langSelect.value = currentLang;
+
+            sceneContainer.innerHTML = `
+                <div class="text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-4 font-orbitron">${scene.title[currentLang]}</h1>
+                    <div id="image-container" class="my-6 w-full flex justify-center">
+                       <img src="${scene.image}" alt="${scene.title[currentLang]}" class="rounded-lg shadow-lg">
+                    </div>
+                    <p class="text-lg md:text-xl mb-8">${scene.text[currentLang]}</p>
+                    <div id="choices" class="flex flex-wrap flex-col md:flex-row gap-4 justify-center">
+                        ${scene.choices.map(choice => `
+                            <button data-target="${choice.target}" class="btn btn-primary text-lg w-full md:w-auto px-6 py-3 rounded-lg font-bold">
+                                ${choice.text[currentLang]}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            addChoiceListeners();
+        }
+
+        function addChoiceListeners() {
+            const choiceButtons = document.querySelectorAll('#choices button');
+            choiceButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const targetScene = e.currentTarget.getAttribute('data-target');
+                    if(targetScene) {
+                       currentScene = targetScene;
+                       renderScene();
+                    }
+                });
+            });
+        }
+        
+        langSelect.addEventListener('change', (e) => {
+            currentLang = e.target.value;
+            renderScene();
+        });
+
+        // Initial render
+        renderScene();
+    </script>
+</body>
+</html>
+
