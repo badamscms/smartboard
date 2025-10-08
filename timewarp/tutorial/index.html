@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Warp: Government Through Time</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .game-container {
+            background: linear-gradient(135deg, #1a237e 0%, #0d123b 100%);
+            border: 2px solid #57a6ff;
+            box-shadow: 0 0 20px rgba(87, 166, 255, 0.5);
+        }
+        .btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background-color: #57a6ff;
+            border: 1px solid #80bfff;
+        }
+        .btn-primary:hover {
+            background-color: #3d8de5;
+        }
+        .btn-secondary {
+            background-color: #2c3e50;
+            border: 1px solid #4a6582;
+        }
+        .btn-secondary:hover {
+            background-color: #1a2531;
+        }
+        #image-container img {
+            max-height: 40vh;
+            object-fit: contain;
+        }
+        [dir="rtl"] {
+            text-align: right;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="absolute top-4 right-4 z-10">
+        <button id="lang-toggle" class="btn btn-secondary text-sm px-4 py-2 rounded-lg">
+            <span id="lang-text">العربية</span>
+        </button>
+    </div>
+
+    <div id="game-container" class="game-container w-full max-w-4xl mx-auto rounded-2xl p-6 md:p-8">
+        <div id="scene-container">
+            <!-- Game content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const gameData = {
+            "start": {
+                "title": {
+                    "en": "Time Warp VI: Government Through Time",
+                    "ar": "التشوه الزمني 6: الحكومة عبر الزمن"
+                },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Time+Warp",
+                "text": {
+                    "en": "Abstergo Industries has given you access to our advanced training simulator. You will virtually experience life in a series of different governments throughout history. Your goal is to find two keys of knowledge in each level.",
+                    "ar": "لقد منحتك شركة أبسترجو إندستريز إمكانية الوصول إلى جهاز محاكاة التدريب المتقدم الخاص بنا. سوف تختبر افتراضيًا الحياة في سلسلة من الحكومات المختلفة عبر التاريخ. هدفك هو العثور على مفتاحي معرفة في كل مستوى."
+                },
+                "choices": [
+                    { "text": { "en": "Play Tutorial", "ar": "تشغيل البرنامج التعليمي" }, "target": "tutorial_intro" }
+                ]
+            },
+            "tutorial_intro": {
+                "title": {
+                    "en": "Caveman World",
+                    "ar": "عالم رجل الكهف"
+                },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Caveman+World",
+                "text": {
+                    "en": "Welcome to Caveman World - the tutorial level. Even primitive man needed organization and leadership. Can you survive?",
+                    "ar": "مرحبًا بك في عالم رجل الكهف - المستوى التعليمي. حتى الإنسان البدائي كان بحاجة إلى التنظيم والقيادة. هل يمكنك البقاء على قيد الحياة؟"
+                },
+                "choices": [
+                    { "text": { "en": "Choose your Character", "ar": "اختر شخصيتك" }, "target": "character_select" }
+                ]
+            },
+            "character_select": {
+                "title": {
+                    "en": "Choose Your Character!",
+                    "ar": "اختر شخصيتك!"
+                },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Characters",
+                 "text": {
+                    "en": "Select a character to begin your journey through time.",
+                    "ar": "اختر شخصية لتبدأ رحلتك عبر الزمن."
+                },
+                "choices": [
+                    { "text": { "en": "Play as Ogg (The Thinker)", "ar": "العب بشخصية أوج (المفكر)" }, "target": "ogg_story" },
+                    { "text": { "en": "Play as Ugg (The Coward)", "ar": "العب بشخصية أوج (الجبان)" }, "target": "ugg_story" },
+                    { "text": { "en": "Play as Egg (The Aggressive)", "ar": "العب بشخصية إيج (العدواني)" }, "target": "egg_story" }
+                ]
+            },
+            "ogg_story": {
+                "title": { "en": "Ogg the Thinker", "ar": "أوج المفكر" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Ogg",
+                "text": { 
+                    "en": "You are clearly more advanced than the rest of your tribe. Your innovations might just be what you need to grow your tribe. Who should lead?",
+                    "ar": "من الواضح أنك أكثر تقدمًا من بقية أفراد قبيلتك. قد تكون ابتكاراتك هي ما تحتاجه لتنمية قبيلتك. من يجب أن يقود؟" 
+                },
+                "choices": [
+                    { "text": { "en": "Convince them to let you lead.", "ar": "أقنعهم بأن يدعوك تقود." }, "target": "game_over_thinker" },
+                    { "text": { "en": "Let someone strong like Egg lead.", "ar": "دع شخصًا قويًا مثل إيج يقود." }, "target": "success" }
+                ]
+            },
+            "ugg_story": {
+                "title": { "en": "Ugg the Coward", "ar": "أوج الجبان" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Ugg",
+                "text": { 
+                    "en": "You see 'coward' as just another word for 'careful'. You can’t get stomped by a mammoth if you’re in your cave! Who should lead?",
+                    "ar": "أنت ترى كلمة \"جبان\" ككلمة أخرى لـ \"حذر\". لا يمكن أن يدوسك الماموث إذا كنت في كهفك! من يجب أن يقود؟"
+                },
+                "choices": [
+                    { "text": { "en": "Ask them to let you lead.", "ar": "اطلب منهم أن يدعوك تقود." }, "target": "game_over_coward" },
+                    { "text": { "en": "Let someone smart like Ogg lead.", "ar": "دع شخصًا ذكيًا مثل أوج يقود." }, "target": "game_over_thinker" }
+                ]
+            },
+            "egg_story": {
+                "title": { "en": "Egg the Aggressive", "ar": "إيج العدواني" },
+                "image": "https://placehold.co/800x400/0d123b/57a6ff?text=Egg",
+                "text": { 
+                    "en": "Your strength is unmatched. With a strong leader, the tribe may conquer its enemies. You mostly just kill stuff. Who should lead?",
+                    "ar": "قوتك لا مثيل لها. مع قائد قوي، قد تتمكن القبيلة من قهر أعدائها. أنت في الغالب تقتل الأشياء فقط. من يجب أن يقود؟"
+                },
+                "choices": [
+                    { "text": { "en": "Demand they let you lead.", "ar": "اطلب منهم أن يدعوك تقود." }, "target": "success" },
+                    { "text": { "en": "Let someone smart like Ogg lead.", "ar": "دع شخصًا ذكيًا مثل أوج يقود." }, "target": "game_over_thinker" }
+                ]
+            },
+            "game_over_thinker": {
+                "title": { "en": "Game Over", "ar": "انتهت اللعبة" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { 
+                    "en": "Your tribe mates just stare at you blankly. In these times, strength was valued above all. The first governments were built on power and survival.",
+                    "ar": "رفاقك في القبيلة يحدقون فيك بذهول. في هذه الأوقات، كانت القوة تُقدَّر فوق كل شيء. بُنيت الحكومات الأولى على القوة والبقاء."
+                },
+                "choices": [
+                    { "text": { "en": "Play Again", "ar": "العب مرة أخرى" }, "target": "start" }
+                ]
+            },
+             "game_over_coward": {
+                "title": { "en": "Game Over", "ar": "انتهت اللعبة" },
+                "image": "https://placehold.co/800x400/0d123b/e74c3c?text=Game+Over",
+                "text": { 
+                    "en": "You demonstrate your cowardice. The tribe is not inspired. They needed a strong leader to ensure their survival, not a careful one.",
+                    "ar": "أنت تُظهر جبنك. القبيلة ليست ملهمة. كانوا بحاجة إلى قائد قوي لضمان بقائهم، وليس قائدًا حذرًا."
+                },
+                "choices": [
+                    { "text": { "en": "Play Again", "ar": "العب مرة أخرى" }, "target": "start" }
+                ]
+            },
+            "success": {
+                "title": { "en": "Tutorial Complete!", "ar": "اكتمل البرنامج التعليمي!" },
+                "image": "https://placehold.co/800x400/0d123b/2ecc71?text=Success!",
+                "text": { 
+                    "en": "Correct! The first governments were built on power and survival. People gave up some freedom for security, meaning strength was the most important trait in a leader.",
+                    "ar": "صحيح! بُنيت الحكومات الأولى على القوة والبقاء. تخلى الناس عن بعض حريتهم من أجل الأمن، مما يعني أن القوة كانت أهم سمة في القائد."
+                },
+                "choices": [
+                    { "text": { "en": "Play Again", "ar": "العب مرة أخرى" }, "target": "start" },
+                    { "text": { "en": "Go to Stage 1 (Coming Soon!)", "ar": "اذهب إلى المرحلة 1 (قريبًا!)" }, "target": "start" }
+                ]
+            }
+        };
+
+        let currentScene = 'start';
+        let currentLang = 'en';
+
+        const sceneContainer = document.getElementById('scene-container');
+        const langToggleButton = document.getElementById('lang-toggle');
+        const langText = document.getElementById('lang-text');
+        const htmlEl = document.documentElement;
+
+        function renderScene() {
+            const scene = gameData[currentScene];
+            htmlEl.lang = currentLang;
+            htmlEl.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            langText.textContent = currentLang === 'en' ? 'العربية' : 'English';
+
+            sceneContainer.innerHTML = `
+                <div class="text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-4 font-orbitron">${scene.title[currentLang]}</h1>
+                    <div id="image-container" class="my-6 w-full flex justify-center">
+                       <img src="${scene.image}" alt="${scene.title[currentLang]}" class="rounded-lg shadow-lg">
+                    </div>
+                    <p class="text-lg md:text-xl mb-8">${scene.text[currentLang]}</p>
+                    <div id="choices" class="flex flex-col md:flex-row gap-4 justify-center">
+                        ${scene.choices.map(choice => `
+                            <button data-target="${choice.target}" class="btn btn-primary text-lg w-full md:w-auto px-6 py-3 rounded-lg font-bold">
+                                ${choice.text[currentLang]}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            addChoiceListeners();
+        }
+
+        function addChoiceListeners() {
+            const choiceButtons = document.querySelectorAll('#choices button');
+            choiceButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const targetScene = e.currentTarget.getAttribute('data-target');
+                    if(targetScene) {
+                       currentScene = targetScene;
+                       renderScene();
+                    }
+                });
+            });
+        }
+        
+        langToggleButton.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            renderScene();
+        });
+
+        // Initial render
+        renderScene();
+    </script>
+</body>
+</html>
