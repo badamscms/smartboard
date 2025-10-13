@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundations of Republican Government</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 100px; /* Add padding to prevent content from being hidden by the fixed nav */
+        }
+        /* Style for the fixed header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: background-color 0.3s;
+        }
+        /* Custom styles for 4K display readability */
+        h1, h2, h3 {
+            font-weight: 900;
+        }
+        .text-4xl, .text-5xl, .text-6xl {
+            letter-spacing: -0.05em;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+        }
+        .quiz-option:hover {
+            transform: scale(1.02);
+            background-color: #e0f2fe; /* light sky blue */
+        }
+        .correct {
+            background-color: #dcfce7 !important; /* light green */
+            border-color: #22c55e;
+        }
+        .incorrect {
+            background-color: #fee2e2 !important; /* light red */
+            border-color: #ef4444;
+        }
+        main > section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Vocabulary Focus Styles */
+        .vocab-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+        }
+        .vocab-container.has-focus .vocab-card:not(.is-focused) {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        .vocab-card.is-focused {
+            transform: scale(1.08);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.3);
+            border-color: #0ea5e9; /* sky-500 */
+            border-width: 2px;
+            opacity: 1;
+        }
+        /* Image Lightbox Styles */
+        .img-clickable {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .img-clickable:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .lightbox {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .lightbox-img {
+            animation: zoomIn 0.3s ease-in-out;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+        /* Styles for RTL (right-to-left) languages */
+        html[dir="rtl"] .text-left {
+            text-align: right;
+        }
+        html[dir="rtl"] .border-l-8 {
+            border-left-width: 0;
+            border-right-width: 8px;
+        }
+        html[dir="rtl"] .border-l-4 {
+            border-left-width: 0;
+            border-right-width: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Header / Navigation --><header id="header" class="header bg-white/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 hidden sm:block" data-translate-key="header_title">🏛️ Foundations of Government</h1>
+            <div id="progress-indicator" class="text-center text-lg md:text-xl font-bold text-slate-700">
+                <!-- Progress will be injected by JS --></div>
+            <div class="relative">
+                <select id="language-selector" class="block appearance-none w-full bg-white border border-slate-300 hover:border-slate-400 px-3 py-1 pr-8 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="ar">العربية</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-20">
+
+        <!-- Section 1: What is a Republic? --><section class="text-center min-h-[70vh] flex flex-col justify-center items-center">
+            <h2 class="text-5xl md:text-7xl font-black mb-4" data-translate-key="republic_title">What is a <span class="text-sky-600">Republic</span>?</h2>
+            <p class="text-xl md:text-2xl max-w-4xl mx-auto text-slate-600 mb-8" data-translate-key="republic_subtitle">
+                The Founders learned from history that the best way to govern was to have citizens elect trustworthy leaders to represent them and serve the common good.
+            </p>
+            <div class="w-full max-w-5xl bg-white p-8 rounded-2xl shadow-lg border">
+                 <p class="text-2xl md:text-3xl font-bold text-center" data-translate-key="republic_definition">A country where the power is held by the people who <span class="text-sky-600">elect representatives</span> to govern for them.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Key Vocabulary --><section id="vocab-section" class="py-20 md:py-32 hidden">
+            <h2 class="text-4xl md:text-6xl font-black text-center mb-16" data-translate-key="vocab_header">Key Vocabulary 📖</h2>
+            <div class="vocab-container grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Vocab 1: Republic --><div class="vocab-card bg-white p-6 rounded-xl shadow-lg border cursor-pointer">
+                    <h3 class="text-2xl font-bold mb-2 text-sky-700" data-translate-key="vocab_term_republic">Republic</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="vocab_def_republic">A country where power is held by the people who elect representatives to govern for them.</p>
+                </div>
+                <!-- Vocab 2: Direct Democracy --><div class="vocab-card bg-white p-6 rounded-xl shadow-lg border cursor-pointer">
+                    <h3 class="text-2xl font-bold mb-2 text-sky-700" data-translate-key="vocab_term_direct_democracy">Direct Democracy</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="vocab_def_direct_democracy">A form of government where citizens vote on all laws and major decisions directly.</p>
+                </div>
+                <!-- Vocab 3: Common Good --><div class="vocab-card bg-white p-6 rounded-xl shadow-lg border cursor-pointer">
+                    <h3 class="text-2xl font-bold mb-2 text-sky-700" data-translate-key="vocab_term_common_good">Common Good</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="vocab_def_common_good">Doing what is best for the entire community, not just a single person or group.</p>
+                </div>
+                <!-- Vocab 4: Civic Virtue --><div class="vocab-card bg-white p-6 rounded-xl shadow-lg border cursor-pointer">
+                    <h3 class="text-2xl font-bold mb-2 text-teal-700" data-translate-key="vocab_term_civic_virtue">Civic Virtue</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="vocab_def_civic_virtue">The dedication of citizens to the common good, even if it means setting aside personal interests.</p>
+                </div>
+                <!-- Vocab 5: Factions --><div class="vocab-card bg-white p-6 rounded-xl shadow-lg border cursor-pointer">
+                    <h3 class="text-2xl font-bold mb-2 text-amber-700" data-translate-key="vocab_term_factions">Factions</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="vocab_def_factions">Interest groups that might work for their own benefit rather than for the common good.</p>
+                </div>
+                <!-- Vocab 6: Representative --><div class="vocab-card bg-white p-6 rounded-xl shadow-lg border cursor-pointer">
+                    <h3 class="text-2xl font-bold mb-2 text-sky-700" data-translate-key="vocab_term_representative">Representative</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="vocab_def_representative">A person elected by citizens to make decisions on their behalf in government.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Key Concepts --><section class="py-20 md:py-32 hidden">
+            <h2 class="text-4xl md:text-6xl font-black text-center mb-16" data-translate-key="concepts_header">Key Concepts to Understand</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Card 1: Common Good --><div class="card bg-white p-8 rounded-2xl shadow-xl border-t-4 border-sky-500">
+                    <h3 class="text-3xl font-bold mb-4" data-translate-key="concept_title_common_good">🤝 The Common Good</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="concept_text_common_good">
+                        This means doing what is best for the entire community, not just for a single person or a small group. Representatives in a republic are expected to work for everyone's benefit.
+                    </p>
+                </div>
+                <!-- Card 2: Civic Virtue --><div class="card bg-white p-8 rounded-2xl shadow-xl border-t-4 border-teal-500">
+                    <h3 class="text-3xl font-bold mb-4" data-translate-key="concept_title_civic_virtue">❤️ Civic Virtue</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="concept_text_civic_virtue">
+                        This is the dedication of citizens to the common good, even if it means putting aside their own personal interests. It's about being a responsible and selfless member of society.
+                    </p>
+                </div>
+                <!-- Card 3: Factions --><div class="card bg-white p-8 rounded-2xl shadow-xl border-t-4 border-amber-500">
+                    <h3 class="text-3xl font-bold mb-4" data-translate-key="concept_title_factions">🗣️ Factions</h3>
+                    <p class="text-lg text-slate-600" data-translate-key="concept_text_factions">
+                        These are what we might call interest groups today. The Founders, especially James Madison, were worried that factions would work only for their own self-interest instead of for the common good.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Cincinnatus --><section class="py-20 md:py-32 hidden">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="text-center lg:text-left">
+                    <h2 class="text-4xl md:text-6xl font-black mb-6" data-translate-key="cincinnatus_header">The Model of Civic Virtue: <span class="text-teal-600">Cincinnatus</span></h2>
+                    <p class="text-xl text-slate-600 mb-4" data-translate-key="cincinnatus_text_1">
+                        The Founders were inspired by the story of Cincinnatus, a Roman farmer. He was given absolute power to save Rome from an invasion.
+                    </p>
+                    <p class="text-xl text-slate-600" data-translate-key="cincinnatus_text_2">
+                        After defeating the enemy in just 16 days, he did something amazing: he <span class="font-bold">gave up all his power</span> and returned to his farm. He chose the good of Rome over personal glory, making him the perfect example of civic virtue. George Washington was often called the "American Cincinnatus."
+                    </p>
+                </div>
+                <div class="img-clickable">
+                    <img src="https://content3.cdnprado.net/imagenes/Documentos/imgsem/4b/4bab/4bab2a1d-efac-4ed7-bd79-034365bea7ff/9fbde174-2efb-49ad-aa57-13c9a32752a5.jpg" alt="An artist's depiction of Cincinnatus being called from his plow to lead the Roman army." class="rounded-2xl shadow-2xl w-full h-auto object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Pros & Cons --><section class="py-20 md:py-32 bg-slate-100 rounded-2xl hidden">
+            <h2 class="text-4xl md:text-6xl font-black text-center mb-16" data-translate-key="pros_cons_header">Advantages vs. Disadvantages</h2>
+            <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+                <!-- Advantages --><div class="bg-white p-8 rounded-2xl shadow-lg border-l-8 border-green-500">
+                    <h3 class="text-3xl font-bold mb-6 text-green-600" data-translate-key="pros_title">👍 Advantages</h3>
+                    <ul class="space-y-4 text-lg text-slate-700">
+                        <li data-translate-key="pro_1">✅ Representatives are elected to serve the common good.</li>
+                        <li data-translate-key="pro_2">✅ Having representatives make laws is more efficient and practical.</li>
+                        <li data-translate-key="pro_3">✅ The people have a say in their government.</li>
+                        <li data-translate-key="pro_4">✅ Representatives are responsible to the people and can be voted out.</li>
+                    </ul>
+                </div>
+                <!-- Disadvantages --><div class="bg-white p-8 rounded-2xl shadow-lg border-l-8 border-red-500">
+                    <h3 class="text-3xl font-bold mb-6 text-red-600" data-translate-key="cons_title">👎 Disadvantages</h3>
+                    <ul class="space-y-4 text-lg text-slate-700">
+                        <li data-translate-key="con_1">❌ A republican government works best in small communities with similar people.</li>
+                        <li data-translate-key="con_2">❌ In a large, diverse republic, people might divide into factions.</li>
+                        <li data-translate-key="con_3">❌ Factions might work against the common good.</li>
+                        <li data-translate-key="con_4">❌ Representatives could put self-interest first.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Madison's View --><section class="py-20 md:py-32 hidden">
+             <div class="grid lg:grid-cols-2 gap-16 items-center">
+                 <div class="img-clickable">
+                    <img src="https://d1y822qhq55g6.cloudfront.net/default/_superImage/James-Madison_161207_161215.jpg" alt="Portrait of James Madison" class="rounded-2xl shadow-2xl w-full h-auto object-cover">
+                </div>
+                <div class="text-center lg:text-left">
+                    <h2 class="text-4xl md:text-6xl font-black mb-6" data-translate-key="madison_header">Madison's Great Idea</h2>
+                    <p class="text-xl text-slate-600 mb-6" data-translate-key="madison_text_1">
+                        James Madison, "The Father of the Constitution," believed that relying on everyone's civic virtue was not enough. He knew people are often motivated by self-interest.
+                    </p>
+                    <div class="bg-white border-l-4 border-sky-500 p-6 rounded-lg shadow-md">
+                        <p class="text-xl italic text-slate-800" data-translate-key="madison_text_2">
+                            He argued that the government needed a structure that would encourage civic virtue while also having a system of <span class="font-bold">checks and balances</span> to prevent any one person or faction from gaining too much power.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 7: Quiz Time! --><section id="quiz" class="py-20 md:py-32 bg-slate-100 rounded-2xl hidden">
+            <h2 class="text-4xl md:text-6xl font-black text-center mb-16" data-translate-key="quiz_header">Check Your Knowledge! 🧠</h2>
+            <div id="quiz-container" class="max-w-4xl mx-auto space-y-12">
+                <!-- Question 1 --><div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <p class="text-2xl font-bold mb-6" data-translate-key="quiz_q1">1. The story of Cincinnatus is used as a classical example of...</p>
+                    <div class="grid md:grid-cols-2 gap-4 text-lg">
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="1" data-answer="a" data-translate-key="quiz_q1_a">A) The need for a king</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="1" data-answer="b" data-translate-key="quiz_q1_b">B) Civic virtue</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="1" data-answer="c" data-translate-key="quiz_q1_c">C) The danger of factions</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="1" data-answer="d" data-translate-key="quiz_q1_d">D) A direct democracy</button>
+                    </div>
+                </div>
+                <!-- Question 2 --><div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <p class="text-2xl font-bold mb-6" data-translate-key="quiz_q2">2. James Madison believed the government needed a system of "checks and balances" because...</p>
+                    <div class="grid md:grid-cols-2 gap-4 text-lg">
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="2" data-answer="a" data-translate-key="quiz_q2_a">A) He didn't trust farmers like Cincinnatus.</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="2" data-answer="b" data-translate-key="quiz_q2_b">B) He wanted the government to be complicated.</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="2" data-answer="c" data-translate-key="quiz_q2_c">C) He knew people often act out of self-interest.</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="2" data-answer="d" data-translate-key="quiz_q2_d">D) Ancient Rome did not have checks and balances.</button>
+                    </div>
+                </div>
+                 <!-- Question 3 --><div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <p class="text-2xl font-bold mb-6" data-translate-key="quiz_q3">3. What is the "common good"?</p>
+                    <div class="grid md:grid-cols-2 gap-4 text-lg">
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="3" data-answer="a" data-translate-key="quiz_q3_a">A) What is best for the entire community.</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="3" data-answer="b" data-translate-key="quiz_q3_b">B) What the richest people want.</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="3" data-answer="c" data-translate-key="quiz_q3_c">C) A law that is very popular.</button>
+                        <button class="quiz-option p-4 rounded-lg border-2 border-slate-200 text-left" data-question="3" data-answer="d" data-translate-key="quiz_q3_d">D) The interests of a single faction.</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Controls --><div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-200 shadow-t-xl">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <button id="prev-btn" class="px-6 py-3 bg-slate-300 text-slate-600 rounded-lg shadow font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-slate-400" data-translate-key="nav_prev">
+                &larr; Previous
+            </button>
+            <div id="section-title-display" class="text-lg font-bold text-slate-700 hidden lg:block">
+                <!-- Title will be injected by JS --></div>
+            <button id="next-btn" class="px-6 py-3 bg-sky-600 text-white rounded-lg shadow font-bold text-lg hover:bg-sky-700 transition disabled:opacity-50 disabled:cursor-not-allowed" data-translate-key="nav_next">
+                Next &rarr;
+            </button>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="lightbox" class="lightbox fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-[100]">
+        <span id="lightbox-close" class="absolute top-4 right-6 text-white text-5xl font-bold cursor-pointer hover:text-slate-300">&times;</span>
+        <img id="lightbox-img" src="" alt="Enlarged view" class="lightbox-img max-w-[90vw] max-h-[90vh] rounded-lg shadow-2xl">
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = Array.from(document.querySelectorAll('main > section'));
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const progressIndicator = document.getElementById('progress-indicator');
+            const sectionTitleDisplay = document.getElementById('section-title-display');
+
+            let currentSectionIndex = 0;
+
+            const sectionTitles = [
+                "What is a Republic?",
+                "Key Vocabulary",
+                "Key Concepts",
+                "The Model of Civic Virtue",
+                "Advantages vs. Disadvantages",
+                "Madison's Great Idea",
+                "Check Your Knowledge!"
+            ];
+
+            function updateView() {
+                // Hide all sections, then show the current one
+                sections.forEach((section, index) => {
+                    if (index === currentSectionIndex) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+
+                // Update button states
+                prevBtn.disabled = currentSectionIndex === 0;
+                nextBtn.disabled = currentSectionIndex === sections.length - 1;
+
+                // Update header progress indicator and bottom bar title
+                const currentTitle = sectionTitles[currentSectionIndex] || 'Lesson Section';
+                if (progressIndicator) {
+                    const lang = document.getElementById('language-selector').value || 'en';
+                    const progressTexts = {
+                        en: { prefix: "Section", of: "of" },
+                        es: { prefix: "Sección", of: "de" },
+                        ar: { prefix: "القسم", of: "من" }
+                    };
+                    const translatedTitle = translations[lang][`section_title_${currentTitle.toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, '')}`] || currentTitle;
+                    progressIndicator.textContent = `${progressTexts[lang].prefix} ${currentSectionIndex + 1} ${progressTexts[lang].of} ${sections.length}: ${translatedTitle}`;
+                }
+                if (sectionTitleDisplay) {
+                    const lang = document.getElementById('language-selector').value || 'en';
+                    const currentTitleKey = `section_title_${sectionTitles[currentSectionIndex].toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, '')}`;
+                    sectionTitleDisplay.textContent = translations[lang][currentTitleKey] || sectionTitles[currentSectionIndex];
+                }
+
+                // Scroll to the top of the page
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            // Make updateView globally accessible AFTER it has been defined.
+            window.updateView = updateView;
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSectionIndex > 0) {
+                    currentSectionIndex--;
+                    updateView();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSectionIndex < sections.length - 1) {
+                    currentSectionIndex++;
+                    updateView();
+                }
+            });
+
+            // Vocabulary focus logic
+            const vocabContainer = document.querySelector('.vocab-container');
+            if (vocabContainer) {
+                vocabContainer.addEventListener('click', (e) => {
+                    const clickedCard = e.target.closest('.vocab-card');
+
+                    if (!clickedCard && vocabContainer.classList.contains('has-focus')) {
+                        vocabContainer.classList.remove('has-focus');
+                        document.querySelectorAll('.vocab-card.is-focused').forEach(c => c.classList.remove('is-focused'));
+                        return;
+                    }
+
+                    if (!clickedCard) return;
+
+                    const isAlreadyFocused = clickedCard.classList.contains('is-focused');
+                    
+                    document.querySelectorAll('.vocab-card.is-focused').forEach(c => c.classList.remove('is-focused'));
+
+                    if (isAlreadyFocused) {
+                        vocabContainer.classList.remove('has-focus');
+                    } else {
+                        clickedCard.classList.add('is-focused');
+                        vocabContainer.classList.add('has-focus');
+                    }
+                });
+            }
+
+            // Image Lightbox Logic
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox) {
+                const lightboxImg = document.getElementById('lightbox-img');
+                const lightboxClose = document.getElementById('lightbox-close');
+                const clickableImages = document.querySelectorAll('.img-clickable');
+
+                clickableImages.forEach(imgContainer => {
+                    imgContainer.addEventListener('click', () => {
+                        const img = imgContainer.querySelector('img');
+                        lightbox.classList.remove('hidden');
+                        lightbox.classList.add('flex');
+                        lightboxImg.src = img.src;
+                    });
+                });
+
+                const closeLightbox = () => {
+                    lightbox.classList.add('hidden');
+                    lightbox.classList.remove('flex');
+                    lightboxImg.src = ''; // Clear src
+                };
+
+                lightboxClose.addEventListener('click', closeLightbox);
+                lightbox.addEventListener('click', (e) => {
+                    // Close if the background is clicked, not the image itself
+                    if (e.target === lightbox) {
+                        closeLightbox();
+                    }
+                });
+            }
+
+
+            // Initial setup
+            const savedLang = localStorage.getItem('lessonLanguage') || 'en';
+            document.getElementById('language-selector').value = savedLang;
+            translatePage(savedLang); // This will call updateView internally
+
+
+        });
+
+
+        // Simple Quiz Logic
+        const correctAnswers = {
+            '1': 'b',
+            '2': 'c',
+            '3': 'a'
+        };
+
+        const quizContainer = document.getElementById('quiz-container');
+        quizContainer.addEventListener('click', function(event) {
+            const target = event.target.closest('.quiz-option');
+            if (!target) return;
+
+            const question = target.dataset.question;
+            const answer = target.dataset.answer;
+
+            const options = document.querySelectorAll(`.quiz-option[data-question="${question}"]`);
+            
+            // Disable all buttons for this question after an answer is selected
+            options.forEach(opt => {
+                opt.disabled = true; 
+            });
+
+            if (answer === correctAnswers[question]) {
+                target.classList.add('correct');
+            } else {
+                target.classList.add('incorrect');
+                // Also show the correct answer
+                const correctOption = document.querySelector(`.quiz-option[data-question="${question}"][data-answer="${correctAnswers[question]}"]`);
+                correctOption.classList.add('correct');
+            }
+        });
+
+        // Translation Logic
+        const translations = {
+            en: {
+                header_title: "🏛️ Foundations of Government",
+                section_title_what_is_a_republic: "What is a Republic?",
+                section_title_key_vocabulary: "Key Vocabulary",
+                section_title_key_concepts: "Key Concepts",
+                section_title_the_model_of_civic_virtue: "The Model of Civic Virtue",
+                section_title_advantages_vs_disadvantages: "Advantages vs. Disadvantages",
+                section_title_madisons_great_idea: "Madison's Great Idea",
+                section_title_check_your_knowledge: "Check Your Knowledge!",
+                republic_title: 'What is a <span class="text-sky-600">Republic</span>?',
+                republic_subtitle: "The Founders learned from history that the best way to govern was to have citizens elect trustworthy leaders to represent them and serve the common good.",
+                republic_definition: 'A country where the power is held by the people who <span class="text-sky-600">elect representatives</span> to govern for them.',
+                vocab_header: "Key Vocabulary 📖",
+                vocab_term_republic: "Republic",
+                vocab_def_republic: "A country where power is held by the people who elect representatives to govern for them.",
+                vocab_term_direct_democracy: "Direct Democracy",
+                vocab_def_direct_democracy: "A form of government where citizens vote on all laws and major decisions directly.",
+                vocab_term_common_good: "Common Good",
+                vocab_def_common_good: "Doing what is best for the entire community, not just a single person or group.",
+                vocab_term_civic_virtue: "Civic Virtue",
+                vocab_def_civic_virtue: "The dedication of citizens to the common good, even if it means setting aside personal interests.",
+                vocab_term_factions: "Factions",
+                vocab_def_factions: "Interest groups that might work for their own benefit rather than for the common good.",
+                vocab_term_representative: "Representative",
+                vocab_def_representative: "A person elected by citizens to make decisions on their behalf in government.",
+                concepts_header: "Key Concepts to Understand",
+                concept_title_common_good: "🤝 The Common Good",
+                concept_text_common_good: "This means doing what is best for the entire community, not just for a single person or a small group. Representatives in a republic are expected to work for everyone's benefit.",
+                concept_title_civic_virtue: "❤️ Civic Virtue",
+                concept_text_civic_virtue: "This is the dedication of citizens to the common good, even if it means putting aside their own personal interests. It's about being a responsible and selfless member of society.",
+                concept_title_factions: "🗣️ Factions",
+                concept_text_factions: "These are what we might call interest groups today. The Founders, especially James Madison, were worried that factions would work only for their own self-interest instead of for the common good.",
+                cincinnatus_header: 'The Model of Civic Virtue: <span class="text-teal-600">Cincinnatus</span>',
+                cincinnatus_text_1: "The Founders were inspired by the story of Cincinnatus, a Roman farmer. He was given absolute power to save Rome from an invasion.",
+                cincinnatus_text_2: 'After defeating the enemy in just 16 days, he did something amazing: he <span class="font-bold">gave up all his power</span> and returned to his farm. He chose the good of Rome over personal glory, making him the perfect example of civic virtue. George Washington was often called the "American Cincinnatus."',
+                pros_cons_header: "Advantages vs. Disadvantages",
+                pros_title: "👍 Advantages",
+                pro_1: "✅ Representatives are elected to serve the common good.",
+                pro_2: "✅ Having representatives make laws is more efficient and practical.",
+                pro_3: "✅ The people have a say in their government.",
+                pro_4: "✅ Representatives are responsible to the people and can be voted out.",
+                cons_title: "👎 Disadvantages",
+                con_1: "❌ A republican government works best in small communities with similar people.",
+                con_2: "❌ In a large, diverse republic, people might divide into factions.",
+                con_3: "❌ Factions might work against the common good.",
+                con_4: "❌ Representatives could put self-interest first.",
+                madison_header: "Madison's Great Idea",
+                madison_text_1: 'James Madison, "The Father of the Constitution," believed that relying on everyone\'s civic virtue was not enough. He knew people are often motivated by self-interest.',
+                madison_text_2: 'He argued that the government needed a structure that would encourage civic virtue while also having a system of <span class="font-bold">checks and balances</span> to prevent any one person or faction from gaining too much power.',
+                quiz_header: "Check Your Knowledge! 🧠",
+                quiz_q1: "1. The story of Cincinnatus is used as a classical example of...",
+                quiz_q1_a: "A) The need for a king",
+                quiz_q1_b: "B) Civic virtue",
+                quiz_q1_c: "C) The danger of factions",
+                quiz_q1_d: "D) A direct democracy",
+                quiz_q2: '2. James Madison believed the government needed a system of "checks and balances" because...',
+                quiz_q2_a: "A) He didn't trust farmers like Cincinnatus.",
+                quiz_q2_b: "B) He wanted the government to be complicated.",
+                quiz_q2_c: "C) He knew people often act out of self-interest.",
+                quiz_q2_d: "D) Ancient Rome did not have checks and balances.",
+                quiz_q3: '3. What is the "common good"?',
+                quiz_q3_a: "A) What is best for the entire community.",
+                quiz_q3_b: "B) What the richest people want.",
+                quiz_q3_c: "C) A law that is very popular.",
+                quiz_q3_d: "D) The interests of a single faction.",
+                nav_prev: "&larr; Previous",
+                nav_next: "Next &rarr;",
+            },
+            es: {
+                header_title: "🏛️ Fundamentos del Gobierno",
+                section_title_what_is_a_republic: "Qué es una República",
+                section_title_key_vocabulary: "Vocabulario Clave",
+                section_title_key_concepts: "Conceptos Clave",
+                section_title_the_model_of_civic_virtue: "El Modelo de Virtud Cívica",
+                section_title_advantages_vs_disadvantages: "Ventajas y Desventajas",
+                section_title_madisons_great_idea: "La Gran Idea de Madison",
+                section_title_check_your_knowledge: "¡Comprueba tu Conocimiento!",
+                republic_title: '¿Qué es una <span class="text-sky-600">República</span>?',
+                republic_subtitle: "Los Fundadores aprendieron de la historia que la mejor manera de gobernar era hacer que los ciudadanos eligieran líderes de confianza para representarlos y servir al bien común.",
+                republic_definition: 'Un país donde el poder reside en el pueblo que <span class="text-sky-600">elige representantes</span> para que gobiernen por ellos.',
+                vocab_header: "Vocabulario Clave 📖",
+                vocab_term_republic: "República",
+                vocab_def_republic: "Un país donde el poder reside en el pueblo que elige representantes para que gobiernen por ellos.",
+                vocab_term_direct_democracy: "Democracia Directa",
+                vocab_def_direct_democracy: "Una forma de gobierno donde los ciudadanos votan directamente sobre todas las leyes y decisiones importantes.",
+                vocab_term_common_good: "Bien Común",
+                vocab_def_common_good: "Hacer lo que es mejor para toda la comunidad, no solo para una persona o grupo.",
+                vocab_term_civic_virtue: "Virtud Cívica",
+                vocab_def_civic_virtue: "La dedicación de los ciudadanos al bien común, incluso si significa dejar de lado los intereses personales.",
+                vocab_term_factions: "Facciones",
+                vocab_def_factions: "Grupos de interés que podrían trabajar para su propio beneficio en lugar del bien común.",
+                vocab_term_representative: "Representante",
+                vocab_def_representative: "Una persona elegida por los ciudadanos para tomar decisiones en su nombre en el gobierno.",
+                concepts_header: "Conceptos Clave para Entender",
+                concept_title_common_good: "🤝 El Bien Común",
+                concept_text_common_good: "Esto significa hacer lo que es mejor para toda la comunidad, no solo para una persona o un grupo pequeño. Se espera que los representantes en una república trabajen para el beneficio de todos.",
+                concept_title_civic_virtue: "❤️ Virtud Cívica",
+                concept_text_civic_virtue: "Esta es la dedicación de los ciudadanos al bien común, incluso si significa dejar de lado sus propios intereses personales. Se trata de ser un miembro responsable y desinteresado de la sociedad.",
+                concept_title_factions: "🗣️ Facciones",
+                concept_text_factions: "Estos son lo que hoy podríamos llamar grupos de interés. A los Fundadores, especialmente a James Madison, les preocupaba que las facciones trabajaran solo para su propio interés en lugar del bien común.",
+                cincinnatus_header: 'El Modelo de Virtud Cívica: <span class="text-teal-600">Cincinato</span>',
+                cincinnatus_text_1: "Los Fundadores se inspiraron en la historia de Cincinato, un granjero romano. Se le dio poder absoluto para salvar a Roma de una invasión.",
+                cincinnatus_text_2: 'Después de derrotar al enemigo en solo 16 días, hizo algo asombroso: <span class="font-bold">renunció a todo su poder</span> y regresó a su granja. Eligió el bien de Roma por encima de la gloria personal, convirtiéndose en el ejemplo perfecto de virtud cívica. A George Washington a menudo se le llamaba el "Cincinato Americano".',
+                pros_cons_header: "Ventajas y Desventajas",
+                pros_title: "👍 Ventajas",
+                pro_1: "✅ Los representantes son elegidos para servir al bien común.",
+                pro_2: "✅ Tener representantes que hagan las leyes es más eficiente y práctico.",
+                pro_3: "✅ El pueblo tiene voz en su gobierno.",
+                pro_4: "✅ Los representantes son responsables ante el pueblo y pueden ser destituidos.",
+                cons_title: "👎 Desventajas",
+                con_1: "❌ Un gobierno republicano funciona mejor en comunidades pequeñas con personas similares.",
+                con_2: "❌ En una república grande y diversa, la gente podría dividirse en facciones.",
+                con_3: "❌ Las facciones podrían trabajar en contra del bien común.",
+                con_4: "❌ Los representantes podrían anteponer sus propios intereses.",
+                madison_header: "La Gran Idea de Madison",
+                madison_text_1: 'James Madison, "El Padre de la Constitución", creía que no bastaba con confiar en la virtud cívica de todos. Sabía que las personas a menudo se mueven por interés propio.',
+                madison_text_2: 'Argumentó que el gobierno necesitaba una estructura que fomentara la virtud cívica y al mismo tiempo tuviera un sistema de <span class="font-bold">frenos y contrapesos</span> para evitar que una persona o facción obtuviera demasiado poder.',
+                quiz_header: "¡Comprueba tu Conocimiento! 🧠",
+                quiz_q1: "1. La historia de Cincinato se utiliza como un ejemplo clásico de...",
+                quiz_q1_a: "A) La necesidad de un rey",
+                quiz_q1_b: "B) Virtud cívica",
+                quiz_q1_c: "C) El peligro de las facciones",
+                quiz_q1_d: "D) Una democracia directa",
+                quiz_q2: '2. James Madison creía que el gobierno necesitaba un sistema de "frenos y contrapesos" porque...',
+                quiz_q2_a: "A) No confiaba en granjeros como Cincinato.",
+                quiz_q2_b: "B) Quería que el gobierno fuera complicado.",
+                quiz_q2_c: "C) Sabía que las personas a menudo actúan por interés propio.",
+                quiz_q2_d: "D) La antigua Roma no tenía frenos y contrapesos.",
+                quiz_q3: '3. ¿Qué es el "bien común"?',
+                quiz_q3_a: "A) Lo que es mejor para toda la comunidad.",
+                quiz_q3_b: "B) Lo que quieren los más ricos.",
+                quiz_q3_c: "C) Una ley que es muy popular.",
+                quiz_q3_d: "D) Los intereses de una sola facción.",
+                nav_prev: "&larr; Anterior",
+                nav_next: "Siguiente &rarr;",
+            },
+            ar: {
+                header_title: "🏛️ أسس الحكومة",
+                section_title_what_is_a_republic: "ما هي الجمهورية؟",
+                section_title_key_vocabulary: "المفردات الرئيسية",
+                section_title_key_concepts: "المفاهيم الرئيسية",
+                section_title_the_model_of_civic_virtue: "نموذج الفضيلة المدنية",
+                section_title_advantages_vs_disadvantages: "المزايا والعيوب",
+                section_title_madisons_great_idea: "فكرة ماديسون العظيمة",
+                section_title_check_your_knowledge: "اختبر معلوماتك!",
+                republic_title: 'ما هي <span class="text-sky-600">الجمهورية</span>؟',
+                republic_subtitle: "تعلم المؤسسون من التاريخ أن أفضل طريقة للحكم هي أن ينتخب المواطنون قادة جديرين بالثقة لتمثيلهم وخدمة الصالح العام.",
+                republic_definition: 'دولة تكون فيها السلطة للشعب الذي <span class="text-sky-600">ينتخب ممثلين</span> ليحكموا نيابة عنه.',
+                vocab_header: "المفردات الرئيسية 📖",
+                vocab_term_republic: "الجمهورية",
+                vocab_def_republic: "دولة تكون فيها السلطة للشعب الذي ينتخب ممثلين ليحكموا نيابة عنه.",
+                vocab_term_direct_democracy: "الديمقراطية المباشرة",
+                vocab_def_direct_democracy: "شكل من أشكال الحكم يصوت فيه المواطنون على جميع القوانين والقرارات الرئيسية بشكل مباشر.",
+                vocab_term_common_good: "الصالح العام",
+                vocab_def_common_good: "فعل ما هو أفضل للمجتمع بأسره، وليس لشخص واحد أو مجموعة واحدة فقط.",
+                vocab_term_civic_virtue: "الفضيلة المدنية",
+                vocab_def_civic_virtue: "تفاني المواطنين في خدمة الصالح العام، حتى لو كان ذلك يعني التخلي عن المصالح الشخصية.",
+                vocab_term_factions: "الفصائل",
+                vocab_def_factions: "جماعات المصالح التي قد تعمل لصالحها الخاص بدلاً من الصالح العام.",
+                vocab_term_representative: "الممثل",
+                vocab_def_representative: "شخص ينتخبه المواطنون لاتخاذ القرارات نيابة عنهم في الحكومة.",
+                concepts_header: "مفاهيم أساسية للفهم",
+                concept_title_common_good: "🤝 الصالح العام",
+                concept_text_common_good: "هذا يعني فعل ما هو أفضل للمجتمع بأسره، وليس لشخص واحد أو مجموعة صغيرة. يتوقع من الممثلين في الجمهورية أن يعملوا لصالح الجميع.",
+                concept_title_civic_virtue: "❤️ الفضيلة المدنية",
+                concept_text_civic_virtue: "هذا هو تفاني المواطنين في خدمة الصالح العام، حتى لو كان ذلك يعني تنحية مصالحهم الشخصية جانبًا. يتعلق الأمر بكونك عضوًا مسؤولًا ونكران الذات في المجتمع.",
+                concept_title_factions: "🗣️ الفصائل",
+                concept_text_factions: "هذه هي ما قد نسميه اليوم جماعات المصالح. كان المؤسسون، وخاصة جيمس ماديسون، قلقين من أن الفصائل ستعمل فقط من أجل مصلحتها الذاتية بدلاً من الصالح العام.",
+                cincinnatus_header: 'نموذج الفضيلة المدنية: <span class="text-teal-600">سينسيناتوس</span>',
+                cincinnatus_text_1: "استلهم المؤسسون من قصة سينسيناتوس، وهو مزارع روماني. تم منحه سلطة مطلقة لإنقاذ روما من غزو.",
+                cincinnatus_text_2: 'بعد هزيمة العدو في 16 يومًا فقط، فعل شيئًا مذهلاً: <span class="font-bold">تخلى عن كل سلطته</span> وعاد إلى مزرعته. لقد اختار مصلحة روما على المجد الشخصي، مما جعله المثال المثالي للفضيلة المدنية. غالبًا ما كان يُطلق على جورج واشنطن لقب "سينسيناتوس الأمريكي".',
+                pros_cons_header: "المزايا والعيوب",
+                pros_title: "👍 المزايا",
+                pro_1: "✅ يتم انتخاب الممثلين لخدمة الصالح العام.",
+                pro_2: "✅ وجود ممثلين يسنون القوانين أكثر كفاءة وعملية.",
+                pro_3: "✅ للشعب رأي في حكومتهم.",
+                pro_4: "✅ الممثلون مسؤولون أمام الشعب ويمكن عزلهم بالتصويت.",
+                cons_title: "👎 العيوب",
+                con_1: "❌ تعمل الحكومة الجمهورية بشكل أفضل في المجتمعات الصغيرة ذات الأشخاص المتشابهين.",
+                con_2: "❌ في جمهورية كبيرة ومتنوعة، قد ينقسم الناس إلى فصائل.",
+                con_3: "❌ قد تعمل الفصائل ضد الصالح العام.",
+                con_4: "❌ يمكن للممثلين أن يضعوا المصلحة الذاتية أولاً.",
+                madison_header: "فكرة ماديسون العظيمة",
+                madison_text_1: 'جيمس ماديسون، "أبو الدستور"، اعتقد أن الاعتماد على الفضيلة المدنية للجميع لم يكن كافياً. كان يعلم أن الناس غالبًا ما يكونون مدفوعين بالمصلحة الذاتية.',
+                madison_text_2: 'لقد جادل بأن الحكومة بحاجة إلى هيكل من شأنه أن يشجع الفضيلة المدنية مع وجود نظام <span class="font-bold">للضوابط والتوازنات</span> لمنع أي شخص أو فصيل واحد من اكتساب الكثير من السلطة.',
+                quiz_header: "اختبر معلوماتك! 🧠",
+                quiz_q1: "1. تستخدم قصة سينسيناتوس كمثال كلاسيكي على...",
+                quiz_q1_a: "أ) الحاجة إلى ملك",
+                quiz_q1_b: "ب) الفضيلة المدنية",
+                quiz_q1_c: "ج) خطر الفصائل",
+                quiz_q1_d: "د) الديمقراطية المباشرة",
+                quiz_q2: '2. اعتقد جيمس ماديسون أن الحكومة بحاجة إلى نظام "الضوابط والتوازنات" لأن...',
+                quiz_q2_a: "أ) لم يكن يثق في المزارعين مثل سينسيناتوس.",
+                quiz_q2_b: "ب) أراد أن تكون الحكومة معقدة.",
+                quiz_q2_c: "ج) كان يعلم أن الناس غالبًا ما يتصرفون بدافع المصلحة الذاتية.",
+                quiz_q2_d: "د) لم تكن روما القديمة لديها ضوابط وتوازنات.",
+                quiz_q3: '3. ما هو "الصالح العام"؟',
+                quiz_q3_a: "أ) ما هو الأفضل للمجتمع بأسره.",
+                quiz_q3_b: "ب) ما يريده أغنى الناس.",
+                quiz_q3_c: "ج) قانون يحظى بشعبية كبيرة.",
+                quiz_q3_d: "د) مصالح فصيل واحد.",
+                nav_prev: "&larr; السابق",
+                nav_next: "التالي &rarr;",
+            }
+        };
+
+        function translatePage(language) {
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (translations[language] && translations[language][key]) {
+                    element.innerHTML = translations[language][key];
+                }
+            });
+            // Handle RTL for Arabic
+            if (language === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+            }
+            // After translating, we need to re-run the view update to fix the header text.
+            // A bit of a hack, but we can call it directly from the global scope.
+            if (window.updateView) {
+                window.updateView();
+            }
+        }
+
+        const languageSelector = document.getElementById('language-selector');
+        languageSelector.addEventListener('change', (event) => {
+            const selectedLanguage = event.target.value;
+            localStorage.setItem('lessonLanguage', selectedLanguage);
+            translatePage(selectedLanguage);
+        });
+
+    </script>
+</body>
+</html>
+
+
