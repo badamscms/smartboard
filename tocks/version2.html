@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tocks Island Dam Debate - Classroom Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #1d4ed8; /* blue-700 */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* High-contrast focus for accessibility on smart board */
+        .nav-button:focus, .timer-button:focus {
+            outline: 4px solid #3b82f6; /* blue-500 */
+            outline-offset: 2px;
+        }
+        .stakeholder-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stakeholder-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        /* Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem;
+            padding-left: 2.5rem;
+            border-left: 4px solid #93c5fd; /* blue-300 */
+        }
+        .timeline-item:last-child {
+            border-left: 4px solid transparent;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -11px;
+            top: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-4 lg:p-8">
+
+        <!-- Header and Navigation -->
+        <header class="bg-white rounded-xl shadow-lg p-4 mb-8">
+            <h1 class="text-4xl lg:text-5xl font-bold text-center text-blue-800">The Tocks Island Dam Debate</h1>
+            <nav class="flex flex-wrap justify-center gap-2 lg:gap-4 mt-6 text-sm lg:text-lg">
+                <button data-target="intro" class="nav-button active font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">Introduction</button>
+                <button data-target="timeline" class="nav-button font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">Timeline</button>
+                <button data-target="stakeholders" class="nav-button font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">The Stakeholders</button>
+                <button data-target="guide" class="nav-button font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">Debate Guide</button>
+                <button data-target="timer" class="nav-button font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">Debate Timer</button>
+                <button data-target="concepts" class="nav-button font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">Key Concepts</button>
+                <button data-target="outcome" class="nav-button font-semibold py-2 px-4 rounded-lg bg-gray-200 hover:bg-blue-600 hover:text-white">The Outcome</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Introduction Section -->
+            <section id="intro" class="section active text-center bg-white p-8 rounded-xl shadow-lg animate-fade-in">
+                <h2 class="text-5xl lg:text-7xl font-bold text-gray-700 mb-6">Essential Question:</h2>
+                <p class="text-4xl lg:text-6xl text-blue-600 leading-tight">How do we decide what is for the <span class="font-extrabold text-blue-800">common good</span> when people disagree?</p>
+                <div class="mt-8 text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto">
+                    <p>Today, we will step back in time to 1970. The U.S. government has a massive plan: to dam the Delaware River. This project promises progress, but at a great cost. Your task is to debate whether the Tocks Island Dam should be built.</p>
+                </div>
+            </section>
+
+            <!-- Timeline Section -->
+            <section id="timeline" class="section bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-4xl font-bold mb-8 text-center">Timeline of Events</h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-red-600">1955: Hurricane Diane</h3>
+                        <p class="text-lg">A massive hurricane causes the worst flood in the Delaware River's recorded history, leading to widespread destruction and calls for better flood control.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-blue-600">1962: Project Authorized</h3>
+                        <p class="text-lg">The U.S. Congress authorizes the Army Corps of Engineers to build the Tocks Island Dam for flood control, water supply, and hydroelectric power.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-yellow-600">1965-1970s: Land Acquisition & Protests</h3>
+                        <p class="text-lg">The government begins buying thousands of acres of private land, forcing families to move. Local residents and a growing environmental movement begin to organize protests against the dam.</p>
+                    </div>
+                     <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-green-600">1975: The Project is Halted</h3>
+                        <p class="text-lg">Facing immense public opposition, environmental concerns, and rising costs, the governors of the surrounding states vote to de-authorize the project. The dam is never built.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stakeholders Section -->
+            <section id="stakeholders" class="section">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+                    <!-- Card 1: Local Residents -->
+                    <div class="stakeholder-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4">🏡</div>
+                        <h3 class="text-3xl font-bold text-green-700 mb-3">Local Residents</h3>
+                        <p class="text-lg">"This is our home. Our families have lived here for 200 years. The 'common good' shouldn't mean destroying our community for the benefit of distant cities."</p>
+                    </div>
+                    <!-- Card 2: City Officials -->
+                    <div class="stakeholder-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4">🏙️</div>
+                        <h3 class="text-3xl font-bold text-red-700 mb-3">City Officials</h3>
+                        <p class="text-lg">"We represent millions. We need clean water and protection from floods. The common good is about ensuring the safety and health of the largest number of people."</p>
+                    </div>
+                    <!-- Card 3: Environmental Activists -->
+                    <div class="stakeholder-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4">🌿</div>
+                        <h3 class="text-3xl font-bold text-teal-700 mb-3">Environmental Activists</h3>
+                        <p class="text-lg">"A free-flowing river is a priceless natural treasure. The common good must include protecting our planet for future generations. We can't sacrifice nature for concrete."</p>
+                    </div>
+                    <!-- Card 4: Army Corps of Engineers -->
+                    <div class="stakeholder-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+                        <div class="text-6xl mb-4">⚙️</div>
+                        <h3 class="text-3xl font-bold text-gray-700 mb-3">Army Corps of Engineers</h3>
+                        <p class="text-lg">"This is progress. Our design will provide flood control, clean water, and hydroelectric power. We are using science to solve problems for the good of the entire region."</p>
+                    </div>
+                </div>
+            </section>
+
+             <!-- Debate Guide Section -->
+            <section id="guide" class="section bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-4xl font-bold mb-8 text-center">Debate Guide</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-lg">
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-4">Rules of Engagement</h3>
+                        <ul class="list-disc list-inside space-y-2 text-2xl">
+                            <li>One person speaks at a time.</li>
+                            <li>Listen respectfully to opposing views.</li>
+                            <li>Attack the idea, not the person.</li>
+                            <li>Use evidence from the reading.</li>
+                            <li>Be prepared to explain your reasoning.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-green-800 mb-4">Teacher's Discussion Prompts</h3>
+                        <ul class="list-disc list-inside space-y-2 text-xl">
+                            <li>How do you justify your sacrifice for the 'common good'?</li>
+                            <li>Is it possible to achieve your goals without harming others?</li>
+                            <li>What is the long-term value of your position?</li>
+                            <li>Whose vision of the future is better for the most people?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Debate Timer Section -->
+            <section id="timer" class="section text-center bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-4xl font-bold mb-6">Debate Timer</h2>
+                <div id="timer-display" class="text-9xl font-mono font-bold text-blue-800 my-8">
+                    01:00
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <button onclick="setTimer(60)" class="timer-button text-xl font-semibold py-3 px-6 rounded-lg bg-gray-200 hover:bg-gray-300">1 min (Opening)</button>
+                    <button onclick="setTimer(180)" class="timer-button text-xl font-semibold py-3 px-6 rounded-lg bg-gray-200 hover:bg-gray-300">3 min (Rebuttal)</button>
+                    <button onclick="setTimer(300)" class="timer-button text-xl font-semibold py-3 px-6 rounded-lg bg-gray-200 hover:bg-gray-300">5 min (Discussion)</button>
+                </div>
+                <div class="flex justify-center gap-6">
+                    <button id="start-pause-btn" class="timer-button text-3xl font-bold py-4 px-10 rounded-lg bg-green-500 text-white hover:bg-green-600">Start</button>
+                    <button id="reset-btn" class="timer-button text-3xl font-bold py-4 px-10 rounded-lg bg-red-500 text-white hover:bg-red-600">Reset</button>
+                </div>
+            </section>
+
+            <!-- Key Concepts Section -->
+            <section id="concepts" class="section bg-white p-8 rounded-xl shadow-lg">
+                 <h2 class="text-4xl font-bold mb-8 text-center">Key Concepts</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-lg">
+                    <div class="p-4 border-l-4 border-blue-500 bg-blue-50">
+                        <h3 class="text-2xl font-bold text-blue-800">Common Good</h3>
+                        <p>The benefit or interests of all. Decisions made for the common good are meant to help everyone in a community, not just a small group.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-green-500 bg-green-50">
+                        <h3 class="text-2xl font-bold text-green-800">Civic Virtue</h3>
+                        <p>The dedication of citizens to the common welfare of their community, even at the cost of their individual interests. It's about being an active, responsible participant in society.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-red-500 bg-red-50">
+                        <h3 class="text-2xl font-bold text-red-800">Eminent Domain</h3>
+                        <p>The right of a government to take private property for public use, with payment of compensation.</p>
+                    </div>
+                 </div>
+            </section>
+
+            <!-- Outcome Section -->
+            <section id="outcome" class="section bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-4xl font-bold text-center mb-8">The Outcome</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center p-4">
+                        <h3 class="text-3xl font-bold text-gray-600 mb-4">The Plan (1962)</h3>
+                        <img src="https://placehold.co/600x400/cccccc/333333?text=Dam+Blueprint" alt="Blueprint of the proposed Tocks Island Dam" class="rounded-lg shadow-md mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found';">
+                        <p class="mt-4 text-xl">A 37-mile lake for flood control, water supply, and recreation.</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <h3 class="text-3xl font-bold text-green-600 mb-4">The Reality (Today)</h3>
+                        <img src="https://placehold.co/600x400/22c55e/ffffff?text=Delaware+Water+Gap" alt="A scenic view of the Delaware Water Gap National Recreation Area" class="rounded-lg shadow-md mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x400/22c55e/ffffff?text=Image+Not+Found';">
+                        <p class="mt-4 text-xl">The project was cancelled in 1975, creating the Delaware Water Gap National Recreation Area.</p>
+                    </div>
+                </div>
+                 <p class="text-center text-2xl mt-8 text-blue-800 font-semibold">Citizen action and changing priorities led to the preservation of the river valley.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Navigation Logic ---
+        const navButtons = document.querySelectorAll('.nav-button');
+        const sections = document.querySelectorAll('.section');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update button styles
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Show the correct section
+                const targetId = button.dataset.target;
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // --- Timer Logic ---
+        const timerDisplay = document.getElementById('timer-display');
+        const startPauseBtn = document.getElementById('start-pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        let countdown;
+        let timeLeft;
+        let isPaused = true;
+        let initialTime = 60; // Default to 1 minute
+
+        function displayTimeLeft(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainderSeconds = seconds % 60;
+            const display = `${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+            timerDisplay.textContent = display;
+            document.title = `${display} - Tocks Island Debate`;
+        }
+
+        function timer(seconds) {
+            clearInterval(countdown);
+            isPaused = false;
+            startPauseBtn.textContent = 'Pause';
+
+            const now = Date.now();
+            const then = now + seconds * 1000;
+            displayTimeLeft(seconds);
+
+            countdown = setInterval(() => {
+                const secondsLeft = Math.round((then - Date.now()) / 1000);
+
+                if (secondsLeft < 0) {
+                    clearInterval(countdown);
+                    playEndSound();
+                    startPauseBtn.textContent = 'Start';
+                    isPaused = true;
+                    return;
+                }
+                timeLeft = secondsLeft;
+                displayTimeLeft(timeLeft);
+            }, 1000);
+        }
+        
+        function toggleTimer() {
+            if (isPaused) {
+                timer(timeLeft || initialTime);
+            } else {
+                clearInterval(countdown);
+                isPaused = true;
+                startPauseBtn.textContent = 'Resume';
+            }
+        }
+
+        function setTimer(seconds) {
+            clearInterval(countdown);
+            initialTime = seconds;
+            timeLeft = seconds;
+            isPaused = true;
+            startPauseBtn.textContent = 'Start';
+            displayTimeLeft(seconds);
+        }
+
+        function resetTimer() {
+            clearInterval(countdown);
+            isPaused = true;
+            startPauseBtn.textContent = 'Start';
+            timeLeft = initialTime;
+            displayTimeLeft(initialTime);
+        }
+        
+        function playEndSound() {
+             // Create a silent audio context to play a sound without needing external files
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 1);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 1);
+            } catch (e) {
+                console.error("Could not play sound:", e);
+            }
+        }
+
+        startPauseBtn.addEventListener('click', toggleTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        // Set initial timer display
+        displayTimeLeft(initialTime);
+    </script>
+
+</body>
+</html>
+
