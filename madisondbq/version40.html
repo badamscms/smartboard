@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madison DBQ Smartboard</title>
+    <!-- 
+      This <style> block contains all custom styles, including:
+      1. Base font styles and CSS variables.
+      2. Custom highlighting styles.
+      3. Custom High Contrast styles.
+      4. Custom Dark Mode styles (now default).
+      5. Right-to-Left (RTL) support for Arabic.
+    -->
+    <style>
+        :root {
+            /* Set the base font size for scaling */
+            --base-font-size: 1.75rem; /* Large base for smartboard */
+            --base-line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Base styles for document text */
+        .doc-text p, .doc-text ol {
+            font-size: var(--base-font-size);
+            line-height: var(--base-line-height);
+            margin-bottom: 1.5rem;
+        }
+        .doc-text h2 {
+            font-size: calc(var(--base-font-size) * 1.5);
+            line-height: 1.3;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+        }
+        .doc-text h3 {
+            font-size: calc(var(--base-font-size) * 1.2);
+            line-height: 1.4;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .doc-text ol {
+            list-style-type: decimal;
+            padding-left: 40px;
+        }
+        
+        /* Simplifier: Clickable term link */
+        .simplifier {
+            color: #2563eb; /* blue-600 */
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+        }
+        html.dark .simplifier {
+            color: #60a5fa; /* blue-400 */
+        }
+
+        /* Active tab button style */
+        .tab-btn.active {
+            background-color: #3b82f6; /* blue-500 */
+            color: #ffffff;
+        }
+        html.dark .tab-btn.active {
+            background-color: #60a5fa; /* blue-400 */
+            color: #111827; /* gray-900 */
+        }
+        
+        /* Accessibility control button active style */
+        .control-btn.active-toggle {
+            background-color: #3b82f6; /* blue-500 */
+            color: #ffffff;
+        }
+        html.dark .control-btn.active-toggle {
+            background-color: #60a5fa; /* blue-400 */
+            color: #111827; /* gray-900 */
+        }
+
+        /* Reading Ruler (Focus Mode) */
+        #reading-ruler {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Adjust height as needed */
+            background-color: #3b82f6; /* blue-500 */
+            opacity: 0.3;
+            pointer-events: none; /* Allows clicks to pass through */
+            display: none; /* Hidden by default */
+            z-index: 9998;
+        }
+        html.dark #reading-ruler {
+            background-color: #60a5fa; /* blue-400 */
+        }
+
+        /* Highlighter Styles */
+        .highlight {
+            background-color: #fef08a; /* yellow-200 */
+            cursor: pointer;
+        }
+        html.dark .highlight {
+            background-color: #facc15; /* yellow-500 */
+            color: #1f2937; /* gray-800 */
+        }
+        
+        /* MANUAL DARK MODE STYLES (Default) */
+        html.dark {
+            background-color: #1f2937; /* gray-800 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark body {
+            background-color: #1f2937; /* gray-800 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark .tab-btn {
+            background-color: #374151; /* gray-700 */
+            color: #d1d5db; /* gray-300 */
+        }
+        html.dark .tab-btn:hover {
+            background-color: #4b5563; /* gray-600 */
+        }
+        html.dark .control-btn {
+            background-color: #4b5563; /* gray-600 */
+            color: #f3f4f6; /* gray-100 */
+        }
+        html.dark .control-btn:hover {
+            background-color: #52525b; /* zinc-600 */
+        }
+        html.dark .doc-content {
+            background-color: #374151; /* gray-700 */
+            border-color: #4b5563; /* gray-600 */
+        }
+        html.dark .modal-content {
+            background-color: #374151; /* gray-700 */
+        }
+        html.dark .modal-header {
+            background-color: #4b5563; /* gray-600 */
+            color: #ffffff;
+        }
+        html.dark #main-title {
+            color: #f9fafb; /* gray-50 */
+        }
+        html.dark #lang-switcher a {
+            color: #d1d5db; /* gray-300 */
+        }
+
+        /* MANUAL LIGHT MODE STYLES (Opt-in) */
+        html:not(.dark) {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #111827; /* gray-900 */
+        }
+        html:not(.dark) body {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #111827; /* gray-900 */
+        }
+        html:not(.dark) .tab-btn {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #1f2937; /* gray-800 */
+        }
+        html:not(.dark) .tab-btn:hover {
+            background-color: #d1d5db; /* gray-300 */
+        }
+        html:not(.dark) .control-btn {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #1f2937; /* gray-800 */
+        }
+        html:not(.dark) .control-btn:hover {
+            background-color: #d1d5db; /* gray-300 */
+        }
+        html:not(.dark) .doc-content {
+            background-color: #ffffff; /* white */
+            border-color: #e5e7eb; /* gray-200 */
+        }
+        html:not(.dark) .modal-content {
+            background-color: #ffffff; /* white */
+        }
+        html:not(.dark) .modal-header {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #111827; /* gray-900 */
+        }
+        html:not(.dark) #main-title {
+            color: #111827; /* gray-900 */
+        }
+        html:not(.dark) #lang-switcher a {
+            color: #374151; /* gray-700 */
+        }
+
+
+        /* HIGH CONTRAST MODE STYLES */
+        #app-container.high-contrast {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        #app-container.high-contrast .tab-btn,
+        #app-container.high-contrast .control-btn {
+            background-color: #000000;
+            color: #ffff00; /* Yellow text */
+            border: 2px solid #ffff00;
+        }
+        #app-container.high-contrast .tab-btn.active,
+        #app-container.high-contrast .control-btn.active-toggle {
+            background-color: #ffff00; /* Yellow background */
+            color: #000000; /* Black text */
+        }
+        #app-container.high-contrast .doc-content {
+            background-color: #000000;
+            border-color: #ffff00;
+        }
+        #app-container.high-contrast .simplifier {
+            color: #00ffff; /* Cyan links */
+            text-decoration: underline;
+        }
+        #app-container.high-contrast .modal-content {
+            background-color: #000000;
+            border: 2px solid #ffff00;
+        }
+        #app-container.high-contrast .modal-header {
+            background-color: #ffff00;
+            color: #000000;
+        }
+        #app-container.high-contrast #main-title,
+        #app-container.high-contrast #lang-switcher a {
+            color: #ffff00;
+        }
+        
+        /* Right-to-Left (RTL) Styles for Arabic */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        [dir="rtl"] ol {
+            padding-left: 0;
+            padding-right: 40px; /* RTL padding */
+        }
+        [dir="rtl"] .tab-nav {
+            justify-content: flex-end; /* Align tabs to the right */
+        }
+        [dir="rtl"] #lang-switcher {
+            left: 1rem; /* Move to top-left */
+            right: auto;
+        }
+        [dir="rtl"] .doc-content {
+            margin-left: 0;
+            margin-right: auto;
+        }
+        [dir="rtl"] .control-btn {
+            flex-direction: row-reverse; /* Flip icon and text */
+        }
+        [dir="rtl"] .modal-header {
+            flex-direction: row-reverse;
+        }
+        [dir="rtl"] .modal-close {
+            margin-left: 0;
+            margin-right: auto;
+        }
+        /* Style for the new simplified text toggle */
+        [dir="rtl"] .simplify-toggle-btn {
+            float: left; /* Move to the left in RTL */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-8 relative">
+
+        <!-- Language Switcher -->
+        <div id="lang-switcher" class="absolute top-4 right-4 z-20">
+            <a href="#" class="lang-select font-bold py-1 px-2 rounded-lg" data-lang="en">🇺🇸 EN</a>
+            <a href="#" class="lang-select py-1 px-2 rounded-lg" data-lang="es">🇪🇸 ES</a>
+            <a href="#" class="lang-select py-1 px-2 rounded-lg" data-lang="ar">🇸🇦 AR</a>
+        </div>
+
+        <!-- Header -->
+        <header class="text-center pt-16 md:pt-2 pb-8">
+            <h1 id="main-title" class="text-4xl md:text-6xl font-bold" data-key="main_title">Madison & the Republic</h1>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="mb-6">
+            <ul class="tab-nav flex flex-wrap justify-center gap-2 md:gap-4">
+                <li><button class="tab-btn active text-lg md:text-2xl font-semibold py-3 px-5 rounded-lg transition-colors duration-200" data-tab="questions" data-key="tab_questions">Key Questions ❓</button></li>
+                <li><button class="tab-btn text-lg md:text-2xl font-semibold py-3 px-5 rounded-lg transition-colors duration-200" data-tab="fed10" data-key="tab_fed10">Fed. 10 📜</button></li>
+                <li><button class="tab-btn text-lg md:text-2xl font-semibold py-3 px-5 rounded-lg transition-colors duration-200" data-tab="fed39" data-key="tab_fed39">Fed. 39 🏛️</button></li>
+                <li><button class="tab-btn text-lg md:text-2xl font-semibold py-3 px-5 rounded-lg transition-colors duration-200" data-tab="fed51" data-key="tab_fed51">Fed. 51 ⚖️</button></li>
+            </ul>
+        </nav>
+
+        <!-- Content Area -->
+        <main>
+            <!-- Socratic Seminar Tab Content (Replaced Key Questions) -->
+            <div id="questions" class="tab-content doc-content p-6 md:p-10 rounded-lg shadow-lg">
+                <div class="doc-text">
+                    <h2 data-key="socratic_heading">Socratic Seminar Questions</h2>
+                    <!-- Using <ol> for numbered list -->
+                    <ol class="space-y-4">
+                        <li data-key="s_q1">Madison seems very worried about "<span class="simplifier" data-term="faction">factions</span>" (Fed 10). Do you agree that this is the biggest danger in a democracy? Why or why not?</li>
+                        <li data-key="s_q2">What is the main difference between a "<span class="simplifier" data-term="pure_democracy">pure democracy</span>" and a "<span class="simplifier" data-term="republic">republic</span>"? Why does Madison believe a republic is safer? (Fed 10)</li>
+                        <li data-key="s_q3">According to Madison, where does a government's power come from? (Fed 39). How does this connect to the idea of "<span class="simplifier" data-term="dependence_people">dependence on the people</span>"? (Fed 51)</li>
+                        <li data-key="s_q4">Madison says, "If men were angels, no government would be necessary" (Fed 51). What does he mean by this? How does this idea justify the need for "<span class="simplifier" data-term="auxiliary_precautions">auxiliary precautions</span>"?</li>
+                        <li data-key="s_q5">Can "ambition... be made to counteract ambition" (Fed 51)? Can you think of a modern example where one part of the government (or one person) "checks" another?</li>
+                        <li data-key="s_q6">Is Madison's system of a large republic (Fed 10) and <span class="simplifier" data-term="internal_controls">internal controls</span> (Fed 51) enough to protect the rights of a minority group? When might it fail?</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Federalist 10 Tab Content -->
+            <div id="fed10" class="tab-content doc-content p-6 md:p-10 rounded-lg shadow-lg hidden">
+                <!-- NEW: Modern Translation Toggle -->
+                <button class="simplify-toggle-btn tab-btn text-lg md:text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 mb-4 inline-flex items-center gap-2 float-right" data-doc="fed10">
+                    <span data-key="show_translation">Show Modern Translation 📖</span>
+                </button>
+                <button class="show-main-idea-btn tab-btn text-lg md:text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 mb-4 inline-flex items-center gap-2" data-key="main_idea_fed10" data-idea="idea_fed10">
+                    💡 <span data-key="show_main_idea">Show Main Idea</span>
+                </button>
+                <div class="doc-text">
+                    <!-- NEW: Original Text Container -->
+                    <div class="doc-original">
+                        <h2>Federalist No. 10 (1787)</h2>
+                        <p>A <span class="simplifier" data-term="pure_democracy">pure democracy</span>, by which I mean a society consisting of a small number of citizens, who assemble and administer the government in person, can admit of no cure for the <span class="simplifier" data-term="mischiefs_faction">mischiefs of faction</span>. A common passion or interest will, in almost every case, be felt by a majority of the whole...and there is nothing to check the inducements to sacrifice the weaker party or an obnoxious individual.</p>
+                        <p>A <span class="simplifier" data-term="republic">republic</span>, by which I mean a government in which the scheme of <span class="simplifier" data-term="representation">representation</span> takes place, opens a different prospect, and promises the cure for which we are seeking. The two great points of difference between a democracy and a republic are: first, the delegation of the government, in the latter, to a small number of citizens elected by the rest; secondly, the greater number of citizens, and greater sphere of country, over which the latter may be extended.</p>
+                    </div>
+                    <!-- NEW: Modern Translation Container -->
+                    <div class="doc-simplified hidden">
+                        <h2 data-key="simple_fed10_h">Federalist No. 10 (Modern Translation)</h2>
+                        <p data-key="simple_fed10_p1"></p>
+                        <p data-key="simple_fed10_p2"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Federalist 39 Tab Content -->
+            <div id="fed39" class="tab-content doc-content p-6 md:p-10 rounded-lg shadow-lg hidden">
+                <!-- NEW: Modern Translation Toggle -->
+                <button class="simplify-toggle-btn tab-btn text-lg md:text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 mb-4 inline-flex items-center gap-2 float-right" data-doc="fed39">
+                    <span data-key="show_translation">Show Modern Translation 📖</span>
+                </button>
+                <button class="show-main-idea-btn tab-btn text-lg md:text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 mb-4 inline-flex items-center gap-2" data-key="main_idea_fed39" data-idea="idea_fed39">
+                    💡 <span data-key="show_main_idea">Show Main Idea</span>
+                </button>
+                <div class="doc-text">
+                    <!-- NEW: Original Text Container -->
+                    <div class="doc-original">
+                        <h2>Federalist No. 39 (1788)</h2>
+                        <p>We may define a <span class="simplifier" data-term="republic">republic</span> to be...a government which derives all its powers directly or indirectly from the <span class="simplifier" data-term="great_body">great body of the people</span>, and is administered by persons holding their offices during pleasure, for a limited period, or during good behavior. It is ESSENTIAL to such a government that it be derived from the great body of the society, not from an inconsiderable proportion, or a <span class="simplifier" data-term="favored_class">favored class</span> of it... It is SUFFICIENT for such a government that the persons administering it be appointed, either directly or indirectly, by the people.</p>
+                    </div>
+                    <!-- NEW: Modern Translation Container -->
+                    <div class="doc-simplified hidden">
+                        <h2 data-key="simple_fed39_h">Federalist No. 39 (Modern Translation)</h2>
+                        <p data-key="simple_fed39_p1"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Federalist 51 Tab Content -->
+            <div id="fed51" class="tab-content doc-content p-6 md:p-10 rounded-lg shadow-lg hidden">
+                <!-- NEW: Modern Translation Toggle -->
+                <button class="simplify-toggle-btn tab-btn text-lg md:text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 mb-4 inline-flex items-center gap-2 float-right" data-doc="fed51">
+                    <span data-key="show_translation">Show Modern Translation 📖</span>
+                </button>
+                <button class="show-main-idea-btn tab-btn text-lg md:text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 mb-4 inline-flex items-center gap-2" data-key="main_idea_fed51" data-idea="idea_fed51">
+                    💡 <span data-key="show_main_idea">Show Main Idea</span>
+                </button>
+                <div class="doc-text">
+                    <!-- NEW: Original Text Container -->
+                    <div class="doc-original">
+                        <h2>Federalist No. 51 (1788)</h2>
+                        <p>"If men were angels, no government would be necessary. If angels were to govern men, neither external nor <span class="simplifier" data-term="internal_controls">internal controls</span> on government would be necessary. In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself."</p>
+                        <p>A <span class="simplifier" data-term="dependence_people">dependence on the people</span> is, no doubt, the primary control on the government; but experience has taught mankind the necessity of <span class="simplifier" data-term="auxiliary_precautions">auxiliary precautions</span>... Ambition must be made to counteract ambition. The interest of the man must be connected with the constitutional rights of the place.</p>
+                    </div>
+                    <!-- NEW: Modern Translation Container -->
+                    <div class="doc-simplified hidden">
+                        <h2 data-key="simple_fed51_h">Federalist No. 51 (Modern Translation)</h2>
+                        <p data-key="simple_fed51_p1"></p>
+                        <p data-key="simple_fed51_p2"></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Accessibility Footer -->
+    <footer class="sticky bottom-0 z-10">
+        <div id="tools-header" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <button id="toggle-tools-btn" class="control-btn w-full py-3 px-5 text-2xl font-bold rounded-t-lg transition-colors duration-200" data-key="toggle_tools">
+                Accessibility Tools 🛠️
+            </button>
+        </div>
+        
+        <div id="tools-panel" class="hidden py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                
+                <!-- Font Size -->
+                <div class="flex items-center gap-3">
+                    <button id="font-decrease" class="control-btn py-4 px-6 text-3xl" aria-label="Decrease font size">
+                        A-
+                    </button>
+                    <button id="font-increase" class="control-btn py-4 px-6 text-3xl" aria-label="Increase font size">
+                        A+
+                    </button>
+                </div>
+
+                <!-- Read Aloud -->
+                <div class="flex items-center gap-3">
+                    <button id="read-aloud" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Read text aloud">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.972 7.972 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" /></svg>
+                        <span data-key="read_aloud">Speak 🗣️</span>
+                    </button>
+                </div>
+
+                <!-- High Contrast -->
+                <div class="flex items-center gap-3">
+                    <button id="contrast-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle high contrast mode">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 10a.5.5 0 000 0h.01a.5.5 0 000 0H8zm2 0a.5.5 0 000 0h.01a.5.5 0 000 0H10zM
+                        m-4 0a.5.5 0 000 0h.01a.5.5 0 000 0H6z" clip-rule="evenodd" /><path d="M10 2a8 8 0 100 16v-2a6 6 0 110-12V2z" /></svg>
+                        <span data-key="high_contrast">Contrast 🟡</span>
+                    </button>
+                </div>
+                
+                <!-- Reading Ruler -->
+                <div class="flex items-center gap-3">
+                    <button id="ruler-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle reading ruler">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM13 10a1 1 0 011-1h3a1 1 0 011 1v2a1 1 0 01-1 1h-3a1 1 0 01-1-1v-2z" /></svg>
+                        <span data-key="focus">Focus 👁️</span>
+                    </button>
+                </div>
+
+                <!-- Highlighter -->
+                <div class="flex items-center gap-3">
+                    <button id="highlighter-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle highlighter mode">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                        <span data-key="highlighter">Highlighter  highlighter</span>
+                    </button>
+                </div>
+
+                <!-- Light Mode Toggle -->
+                <div class="flex items-center gap-3">
+                    <button id="light-mode-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle light mode">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm-7.071-.707a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 10a1 1 0 011-1h1a1 1 0 110 2H4a1 1 0 01-1-1zm14 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm-8.293-6.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM6.293 13.707a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707z" clip-rule="evenodd" /></svg>
+                        <span data-key="dark_mode">Light Mode ☀️</span>
+                    </button>
+                </div>
+                
+                <!-- Full Screen Toggle -->
+                <div class="flex items-center gap-3">
+                    <button id="fullscreen-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle full screen">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 110 2H5v3a1 1 0 11-2 0V4zm14 0a1 1 0 011 1v3a1 1 0 11-2 0V5h-3a1 1 0 110-2h4zM3 16a1 1 0 011 1v-3a1 1 0 11-2 0v3a1 1 0 011-1zm14 0a1 1 0 011 1v-3a1 1 0 11-2 0v3h-3a1 1 0 110 2h4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                        <span data-key="fullscreen">Full Screen</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Reading Ruler Element -->
+    <div id="reading-ruler"></div>
+
+    <!-- Modal for Definitions -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="modal-content w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden">
+            <div class="modal-header flex items-center justify-between p-4">
+                <h2 id="modal-term" class="text-3xl font-bold">Term</h2>
+                <button id="modal-close" class="modal-close text-4xl font-light leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <p id="modal-definition" class="text-2xl">Definition</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            const appContainer = document.getElementById('app-container');
+            let activeTab = 'questions'; // Default tab
+            let currentLang = 'en'; // Default language
+
+            // *** FONT SIZE LOGIC ***
+            const fontDecreaseBtn = document.getElementById('font-decrease');
+            const fontIncreaseBtn = document.getElementById('font-increase');
+            const root = document.documentElement;
+
+            function changeFontSize(direction) {
+                let currentSizeString = getComputedStyle(root).getPropertyValue('--base-font-size');
+                let currentSize = parseFloat(currentSizeString);
+                
+                if (direction === 'increase') {
+                    currentSize += 0.1;
+                } else if (direction === 'decrease') {
+                    currentSize = Math.max(1, currentSize - 0.1);
+                }
+                root.style.setProperty('--base-font-size', `${currentSize}rem`);
+            }
+
+            fontIncreaseBtn.addEventListener('click', () => changeFontSize('increase'));
+            fontDecreaseBtn.addEventListener('click', () => changeFontSize('decrease'));
+            // *** END OF FONT SIZE LOGIC ***
+
+
+            // --- Translation Data ---
+            const translations = {
+                en: {
+                    main_title: "Madison & the Republic",
+                    tab_questions: "Key Questions ❓",
+                    tab_fed10: "Fed. 10 📜",
+                    tab_fed39: "Fed. 39 🏛️",
+                    tab_fed51: "Fed. 51 ⚖️",
+                    // SOCRATIC SEMINAR QUESTIONS
+                    socratic_heading: "Socratic Seminar Questions",
+                    s_q1: "Madison seems very worried about 'factions' (Fed 10). Do you agree that this is the biggest danger in a democracy? Why or why not?",
+                    s_q2: "What is the main difference between a 'pure democracy' and a 'republic'? Why does Madison believe a republic is safer? (Fed 10)",
+                    s_q3: "According to Madison, where does a government's power come from? (Fed 39). How does this connect to the idea of 'dependence on the people'? (Fed 51)",
+                    s_q4: "Madison says, 'If men were angels, no government would be necessary' (Fed 51). What does he mean by this? How does this idea justify the need for 'auxiliary precautions'?",
+                    s_q5: "Can 'ambition... be made to counteract ambition' (Fed 51)? Can you think of a modern example where one part of the government (or one person) 'checks' another?",
+                    s_q6: "Is Madison's system of a large republic (Fed 10) and 'internal controls' (Fed 51) enough to protect the rights of a minority group? When might it fail?",
+                    // END SOCRATIC
+                    show_main_idea: "Show Main Idea",
+                    // Main Idea Text
+                    idea_fed10: "A large republic is better than a small democracy at controlling the problems caused by 'factions' (groups of citizens with a common interest).",
+                    idea_fed39: "A republic is a government that gets its power from the people, not from a small or 'favored' group.",
+                    idea_fed51: "Because people aren't angels, government must be set up with 'auxiliary precautions' (checks and balances) to control itself.",
+                    idea_title_fed10: "Main Idea: Federalist 10",
+                    idea_title_fed39: "Main Idea: Federalist 39",
+                    idea_title_fed51: "Main Idea: Federalist 51",
+                    // *** NEW: Modern Translation Keys ***
+                    show_translation: "Show Modern Translation 📖",
+                    show_original: "Show Original Text 📜",
+                    simple_fed10_h: "Federalist No. 10 (Modern Translation)",
+                    simple_fed10_p1: "A 'pure democracy' (where all citizens vote on everything) can't fix the problem of 'factions' (groups that harm others). If a majority wants to do something bad, there's nothing to stop them from hurting the minority.",
+                    simple_fed10_p2: "A 'republic' (where we elect representatives) is different and offers a solution. The two big differences are: 1) We give the job of governing to a small, elected group. 2) A republic can work for a much larger country with more citizens.",
+                    simple_fed39_h: "Federalist No. 39 (Modern Translation)",
+                    simple_fed39_p1: "A republic is a government that gets its power from the people, not from a small, favored group. It's 'essential' that the government represents the whole society. It's 'sufficient' that the leaders are chosen by the people, either directly or indirectly.",
+                    simple_fed51_h: "Federalist No. 51 (Modern Translation)",
+                    simple_fed51_p1: "If people were angels, we wouldn't need government. If angels were in charge, we wouldn't need controls on them. But we have humans governing humans, so the government must be able to control the people, and it must also be forced to control itself.",
+                    simple_fed51_p2: "Elections (depending on the people) are the main control. But experience shows we also need 'auxiliary precautions' (backup systems). We must use ambition to check ambition, connecting a leader's personal interests to their official duties.",
+                    // Tools
+                    toggle_tools: "Accessibility Tools 🛠️",
+                    read_aloud: "Speak 🗣️",
+                    high_contrast: "Contrast 🟡",
+                    focus: "Focus 👁️",
+                    highlighter: "Highlighter  highlighter",
+                    dark_mode: "Light Mode ☀️",
+                    fullscreen: "Full Screen"
+                },
+                es: {
+                    main_title: "Madison y la República",
+                    tab_questions: "Preguntas Clave ❓",
+                    tab_fed10: "Fed. 10 📜",
+                    tab_fed39: "Fed. 39 🏛️",
+                    tab_fed51: "Fed. 51 ⚖️",
+                    // SOCRATIC SEMINAR QUESTIONS
+                    socratic_heading: "Preguntas del Seminario Socrático",
+                    s_q1: "Madison parece muy preocupado por las 'facciones' (Fed 10). ¿Estás de acuerdo en que este es el mayor peligro en una democracia? ¿Por qué o por qué no?",
+                    s_q2: "¿Cuál es la principal diferencia entre una 'democracia pura' y una 'república'? ¿Por qué cree Madison que una república es más segura? (Fed 10)",
+                    s_q3: "Según Madison, ¿de dónde proviene el poder de un gobierno? (Fed 39). ¿Cómo se conecta esto con la idea de 'dependencia del pueblo'? (Fed 51)",
+                    s_q4: "Madison dice: 'Si los hombres fueran ángeles, no sería necesario ningún gobierno' (Fed 51). ¿Qué quiere decir con esto? ¿Cómo justifica esta idea la necesidad de 'precauciones auxiliares'?",
+                    s_q5: "¿Puede la 'ambición... contrarrestar a la ambición' (Fed 51)? ¿Puedes pensar en un ejemplo moderno en el que una parte del gobierno (o una persona) 'controle' a otra?",
+                    s_q6: "¿Es el sistema de Madison de una gran república (Fed 10) y 'controles internos' (Fed 51) suficiente para proteger los derechos de un grupo minoritario? ¿Cuándo podría fallar?",
+                    // END SOCRATIC
+                    show_main_idea: "Mostrar Idea Principal",
+                    // Main Idea Text
+                    idea_fed10: "Una república grande es mejor que una democracia pequeña para controlar los problemas causados por 'facciones' (grupos de ciudadanos con un interés común).",
+                    idea_fed39: "Una república es un gobierno que obtiene su poder del pueblo, no de un grupo pequeño o 'favorecido'.",
+                    idea_fed51: "Dado que las personas no son ángeles, el gobierno debe establecerse con 'precauciones auxiliares' (controles y equilibrios) para controlarse a sí mismo.",
+                    idea_title_fed10: "Idea Principal: El Federalista 10",
+                    idea_title_fed39: "Idea Principal: El Federalista 39",
+                    idea_title_fed51: "Idea Principal: El Federalista 51",
+                    // *** NEW: Modern Translation Keys ***
+                    show_translation: "Mostrar Traducción Moderna 📖",
+                    show_original: "Mostrar Texto Original 📜",
+                    simple_fed10_h: "El Federalista No. 10 (Traducción Moderna)",
+                    simple_fed10_p1: "Una 'democracia pura' (donde todos los ciudadanos votan por todo) no puede arreglar el problema de las 'facciones' (grupos que dañan a otros). Si una mayoría quiere hacer algo malo, no hay nada que les impida lastimar a la minoría.",
+                    simple_fed10_p2: "Una 'república' (donde elegimos representantes) es diferente y ofrece una solución. Las dos grandes diferencias son: 1) Damos el trabajo de gobernar a un grupo pequeño y electo. 2) Una república puede funcionar para un país mucho más grande con más ciudadanos.",
+                    simple_fed39_h: "El Federalista No. 39 (Traducción Moderna)",
+                    simple_fed39_p1: "Una república es un gobierno que obtiene su poder del pueblo, no de un grupo pequeño o favorecido. Es 'esencial' que el gobierno represente a toda la sociedad. Es 'suficiente' que los líderes sean elegidos por el pueblo, ya sea directa o indirectamente.",
+                    simple_fed51_h: "El Federalista No. 51 (Traducción Moderna)",
+                    simple_fed51_p1: "Si la gente fuera ángeles, no necesitaríamos gobierno. Si los ángeles estuvieran a cargo, no necesitaríamos controles sobre ellos. Pero tenemos humanos gobernando a humanos, por lo que el gobierno debe poder controlar al pueblo, y también debe ser obligado a controlarse a sí mismo.",
+                    simple_fed51_p2: "Las elecciones (depender del pueblo) son el control principal. Pero la experiencia demuestra que también necesitamos 'precauciones auxiliares' (sistemas de respaldo). Debemos usar la ambición para frenar la ambición, conectando los intereses personales de un líder con sus deberes oficiales.",
+                    // Tools
+                    toggle_tools: "Herramientas de Accesibilidad 🛠️",
+                    read_aloud: "Hablar 🗣️",
+                    high_contrast: "Contraste 🟡",
+                    focus: "Enfoque 👁️",
+                    highlighter: "Resaltador highlighter",
+                    dark_mode: "Modo Claro ☀️",
+                    fullscreen: "Pantalla Completa"
+                },
+                ar: {
+                    main_title: "ماديسون والجمهورية",
+                    tab_questions: "أسئلة رئيسية ❓",
+                    tab_fed10: "الفيدرالي 10 📜",
+                    tab_fed39: "الفيدرالي 39 🏛️",
+                    tab_fed51: "الفيدرالي 51 ⚖️",
+                    // SOCRATIC SEMINAR QUESTIONS
+                    socratic_heading: "أسئلة ندوة سقراطية",
+                    s_q1: "يبدو ماديسون قلقًا جدًا بشأن 'الفصائل' (الفيدرالي 10). هل توافق على أن هذا هو الخطر الأكبر في الديمقراطية؟ لماذا أو لماذا لا؟",
+                    s_q2: "ما هو الفرق الرئيسي بين 'الديمقراطية البحتة' و 'الجمهورية'؟ لماذا يعتقد ماديسون أن الجمهورية أكثر أمانًا؟ (الفيدرالي 10)",
+                    s_q3: "وفقًا لماديسون، من أين تستمد الحكومة سلطتها؟ (الفيدرالي 39). كيف يرتبط هذا بفكرة 'الاعتماد على الشعب'؟ (الفيدرالي 51)",
+                    s_q4: "يقول ماديسون: 'لو كان الرجال ملائكة، لما كانت هناك حاجة إلى حكومة' (الفيدرالي 51). ماذا يعني بهذا؟ كيف تبرر هذه الفكرة الحاجة إلى 'احتياطات مساعدة'؟",
+                    s_q5: "هل يمكن 'للطموح... أن يواجه الطموح' (الفيدرالي 51)؟ هل يمكنك التفكير في مثال حديث حيث يقوم جزء من الحكومة (أو شخص واحد) 'بمراقبة' جزء آخر؟",
+                    s_q6: "هل نظام ماديسون للجمهورية الكبيرة (الفيدرالي 10) و 'الضوابط الداخلية' (الفيدرالي 51) كافٍ لحماية حقوق مجموعة أقلية؟ متى قد يفشل؟",
+                    // END SOCRATIC
+                    show_main_idea: "إظهار الفكرة الرئيسية",
+                    // Main Idea Text
+                    idea_fed10: "الجمهورية الكبيرة أفضل من الديمقراطية الصغيرة في السيطرة على المشاكل التي تسببها 'الفصائل' (مجموعات من المواطنين ذوي مصلحة مشتركة).",
+                    idea_fed39: "الجمهورية هي حكومة تستمد سلطتها من الشعب، وليس من مجموعة صغيرة أو 'محظية'.",
+                    idea_fed51: "نظرًا لأن الناس ليسوا ملائكة، يجب إنشاء الحكومة مع 'احتياطات مساعدة' (ضوابط وتوازنات) لتسيطر على نفسها.",
+                    idea_title_fed10: "الفكرة الرئيسية: الفيدرالي 10",
+                    idea_title_fed39: "الفكرة الرئيسية: الفيدرالي 39",
+                    idea_title_fed51: "الفكرة الرئيسية: الفيدرالي 51",
+                    // *** NEW: Modern Translation Keys ***
+                    show_translation: "إظهار الترجمة الحديثة 📖",
+                    show_original: "إظهار النص الأصلي 📜",
+                    simple_fed10_h: "الفيدرالي رقم 10 (ترجمة حديثة)",
+                    simple_fed10_p1: "الديمقراطية البحتة' (حيث يصوت جميع المواطنين على كل شيء) لا يمكنها حل مشكلة 'الفصائل' (الجماعات التي تؤذي الآخرين). إذا أرادت الأغلبية القيام بشيء سيء، فلا يوجد ما يمنعها من إيذاء الأقلية.",
+                    simple_fed10_p2: "الجمهورية' (حيث ننتخب ممثلين) مختلفة وتقدم حلاً. الفروقان الكبيران هما: 1) نعطي مهمة الحكم لمجموعة صغيرة منتخبة. 2) يمكن للجمهورية أن تعمل في بلد أكبر بكثير مع عدد أكبر من المواطنين.",
+                    simple_fed39_h: "الفيدرالي رقم 39 (ترجمة حديثة)",
+                    simple_fed39_p1: "الجمهورية هي حكومة تستمد سلطتها من الشعب، وليس من مجموعة صغيرة أو مفضلة. من 'الأساسي' أن تمثل الحكومة المجتمع بأكمله. ويكفي أن يتم اختيار القادة من قبل الشعب، سواء بشكل مباشر أو غير مباشر.",
+                    simple_fed51_h: "الفيدرالي رقم 51 (ترجمة حديثة)",
+                    simple_fed51_p1: "لو كان الناس ملائكة، لما احتجنا إلى حكومة. ولو كان الملائكة هم الحكام، لما احتجنا إلى ضوابط عليهم. لكن لدينا بشر يحكمون بشراً، لذا يجب أن تكون الحكومة قادرة على السيطرة على الناس، ويجب أيضاً إجبارها على السيطرة على نفسها.",
+                    simple_fed51_p2: "الانتخابات (الاعتماد على الشعب) هي الضابط الرئيسي. لكن التجربة تظهر أننا بحاجة أيضاً إلى 'احتياطات مساعدة' (أنظمة احتياطية). يجب أن نستخدم الطموح لكبح الطموح، وربط المصالح الشخصية للقائد بواجباته الرسمية.",
+                    // Tools
+                    toggle_tools: "أدوات إمكانية الوصول 🛠️",
+                    read_aloud: "تحدث 🗣️",
+                    high_contrast: "تباين 🟡",
+                    focus: "تركيز 👁️",
+                    highlighter: "أداة التمييز highlighter",
+                    dark_mode: "الوضع الفاتح ☀️",
+                    fullscreen: "ملء الشاشة"
+                }
+            };
+            
+            // --- Simplifier (Modal) Data ---
+            const definitions = {
+                en: {
+                    pure_democracy: "A 'pure democracy' (or direct democracy) is a system where all citizens vote directly on every law, rather than electing representatives.",
+                    mischiefs_faction: "The 'mischiefs of faction' are the dangers and problems caused by groups of citizens (factions) who unite to push for goals that ignore the rights of other citizens or the good of the whole country.",
+                    republic: "A 'republic' is a form of government where citizens elect representatives to make laws and decisions for them.",
+                    great_body: "The 'great body of the people' means the entire population or the vast majority of citizens, not just a small, wealthy, or 'favored' group.",
+                    auxiliary_precautions: "'Auxiliary precautions' are the backup systems to control government, like the separation of powers and checks and balances, which are needed in addition to the 'primary control' of elections.",
+                    faction: "A 'faction' is a group of citizens (either a majority or minority) who are united by a common interest or passion that is against the rights of other citizens or the good of the whole community.",
+                    representation: "The 'scheme of representation' is the system where citizens elect a smaller group of people to make laws and govern on their behalf.",
+                    favored_class: "A 'favored class' refers to a privileged group, like an aristocracy or nobility, who might try to rule for their own benefit instead of for the benefit of all citizens.",
+                    dependence_people: "A 'dependence on the people' refers to the government's need to be accountable to the voters through regular and free elections. Madison called this the 'primary control' on government.",
+                    internal_controls: "'Internal controls' are the mechanisms within the government structure that oblige it to control itself, such as the separation of powers between the legislative, executive, and judicial branches."
+                },
+                es: {
+                    pure_democracy: "Una 'democracia pura' (o democracia directa) es un sistema donde todos los ciudadanos votan directamente sobre cada ley, en lugar de elegir representantes.",
+                    mischiefs_faction: "Los 'males de facción' son los peligros y problemas causados por grupos de ciudadanos (facciones) que se unen para impulsar objetivos que ignoran los derechos de otros ciudadanos o el bien de todo el país.",
+                    republic: "Una 'república' es una forma de gobierno donde los ciudadanos eligen representantes para que tomen leyes y decisiones por ellos.",
+                    great_body: "El 'gran cuerpo del pueblo' significa la población entera o la gran mayoría de los ciudadanos, no solo un grupo pequeño, rico o 'favorecido'.",
+                    auxiliary_precautions: "Las 'precauciones auxiliares' son los sistemas de respaldo para controlar al gobierno, como la separación de poderes y los controles y equilibrios, que se necesitan además del 'control primario' de las elecciones.",
+                    faction: "Una 'facción' es un grupo de ciudadanos (ya sea una mayoría o minoría) que están unidos por un interés o pasión común que va en contra de los derechos de otros citizens o del bien de toda la comunidad.",
+                    representation: "El 'esquema de representación' es el sistema donde los ciudadanos eligen a un grupo más pequeño de personas para que hagan leyes y gobiernen en su nombre.",
+                    favored_class: "Una 'clase favorecida' se refiere a un grupo privilegiado, como una aristocracia o nobleza, que podría intentar gobernar para su propio beneficio en lugar de para el beneficio de todos los ciudadanos.",
+                    dependence_people: "Una 'dependencia del pueblo' se refiere a la necesidad del gobierno de rendir cuentas a los votantes a través de elecciones regulares y libres. Madison llamó a esto el 'control primario' sobre el gobierno.",
+                    internal_controls: "Los 'controles internos' son los mecanismos dentro de la estructura del gobierno que lo obligan a controlarse a sí mismo, como la separación de poderes entre las ramas legislativa, ejecutiva y judicial."
+                },
+                ar: {
+                    pure_democracy: "الديمقراطية البحتة' (أو الديمقراطية المباشرة) هي نظام يصوت فيه جميع المواطنين مباشرة على كل قانون، بدلاً من انتخاب ممثلين.",
+                    mischiefs_faction: "'آفات الفصيل' هي المخاطR والمشاكل التي تسببها مجموعات من المواطنين (الفصائل) الذين يتحدون للدفع بأهداف تتجاهل حقوق المواطنين الآخرين أو مصلحة البلد بأكمله.",
+                    republic: "الجمهورية' هي شكل من أشكال الحكم ينتخب فيه المواطنون ممثلين لوضع القوانين واتخاذ القرارات نيابة عنهم.",
+                    great_body: "'الجسم العظيم للشعب' يعني جميع السكان أو الأغلبية الساحقة من المواطنين، وليس مجرد مجموعة صغيرة أو غنية أو 'محظية'.",
+                    auxiliary_precautions: "'الاحتياطات المساعدة' هي أنظمة احتياطية للسيطرة على الحكومة، مثل فصل السلطات والضوابط والتوازنات، والتي تدعو الحاجة إليها بالإضافة إلى 'السيطرة الأساسية' للانتخابات.",
+                    faction: "'الفصيل' هو مجموعة من المواطنين (سواء كانت أغلبية أو أقلية) متحدون بمصلحة أو شغف مشترك يتعارض مع حقوق المواطنين الآخرين أو مصلحة المجتمع بأسره.",
+                    representation: "'مخطط التمثيل' هو النظام الذي ينتخب فيه المواطنون مجموعة أصغر من الأشخاص لسن القوانين والحكم نيابة عنهم.",
+                    favored_class: "تشير 'الطبقة المحظية' إلى مجموعة متميزة، مثل الأرستقراطية أو النبلاء، قد تحاول الحكم لصالحها الخاص بدلاً من صالح جميع المواطنين.",
+                    dependence_people: "يشير 'الاعتماد على الشعب' إلى حاجة الحكومة لأن تكون مسؤولة أمام الناخبين من خلال انتخابات منتظمة وحرة. وصف ماديسون هذا بأنه 'السيطرة الأساسية' على الحكومة.",
+                    internal_controls: "'الضوابط الداخلية' هي الآليات داخل هيكل الحكومة التي تجبرها على السيطرة على نفسها، مثل فصل السلطات بين الفروع التشريعية والتنفيذية والقضائية."
+                }
+            };
+            
+            // --- Function to update all text content based on currentLang ---
+            function updateLanguage(lang) {
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+                // Update all elements with a data-key
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if (translations[lang] && translations[lang][key]) {
+                        el.textContent = translations[lang][key];
+                    }
+                });
+                
+                // Update language switcher active state
+                document.querySelectorAll('.lang-select').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('font-bold');
+                        btn.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    } else {
+                        btn.classList.remove('font-bold');
+                        btn.classList.add('text-gray-500', 'dark:text-gray-400');
+                    }
+                });
+            }
+
+            // --- Language Switcher Event Listeners ---
+            document.querySelectorAll('.lang-select').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    updateLanguage(e.currentTarget.getAttribute('data-lang'));
+                });
+            });
+
+            // --- Tab Switching Logic ---
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    // Get the target tab from data-tab attribute
+                    const targetTab = e.currentTarget.getAttribute('data-tab');
+                    activeTab = targetTab; // Update active tab
+
+                    // Deactivate all tabs and hide all content
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.add('hidden'));
+
+                    // Activate the clicked tab and show its content
+                    e.currentTarget.classList.add('active');
+                    document.getElementById(targetTab).classList.remove('hidden');
+                });
+            });
+
+            // --- Modal (Simplifier) Logic ---
+            const modal = document.getElementById('modal');
+            const modalTerm = document.getElementById('modal-term');
+            const modalDefinition = document.getElementById('modal-definition');
+            const modalClose = document.getElementById('modal-close');
+
+            // This is for arbitrary text, like the "Main Idea"
+            function openSimpleModal(title, text) {
+                modalTerm.textContent = title || "Error";
+                modalDefinition.textContent = text || "Could not find text.";
+                modal.classList.remove('hidden');
+            }
+
+            // This is the original function for the blue links
+            function openModal(term) {
+                if (definitions[currentLang] && definitions[currentLang][term]) {
+                    modalTerm.textContent = term.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    modalDefinition.textContent = definitions[currentLang][term];
+                    modal.classList.remove('hidden');
+                }
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                modalTerm.textContent = "";
+                modalDefinition.textContent = "";
+            }
+            
+            // --- "Show Main Idea" Button Logic ---
+            document.querySelectorAll('.show-main-idea-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent click from bubbling
+                    const ideaKey = e.currentTarget.getAttribute('data-idea'); // 'idea_fed10'
+                    const text = translations[currentLang][ideaKey];
+                    
+                    let titleKey = "show_main_idea"; // A generic fallback
+                    if (ideaKey === 'idea_fed10') titleKey = "idea_title_fed10";
+                    if (ideaKey === 'idea_fed39') titleKey = "idea_title_fed39";
+                    if (ideaKey === 'idea_fed51') titleKey = "idea_title_fed51";
+                    
+                    const title = translations[currentLang][titleKey];
+                    
+                    openSimpleModal(title, text);
+                });
+            });
+
+
+            // --- Simplifier Links Event Listeners ---
+            document.querySelectorAll('.simplifier').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Stop click from bubbling to highlighter
+                    const term = e.currentTarget.getAttribute('data-term');
+                    openModal(term);
+                });
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // --- *** NEW: Modern Translation Toggle Logic *** ---
+            document.querySelectorAll('.simplify-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const docId = e.currentTarget.getAttribute('data-doc');
+                    const contentRoot = document.getElementById(docId);
+                    const originalText = contentRoot.querySelector('.doc-original');
+                    const simplifiedText = contentRoot.querySelector('.doc-simplified');
+                    const buttonSpan = e.currentTarget.querySelector('span');
+
+                    // Toggle visibility
+                    originalText.classList.toggle('hidden');
+                    simplifiedText.classList.toggle('hidden');
+
+                    // Toggle button text
+                    if (originalText.classList.contains('hidden')) {
+                        // We are showing simplified, so button should say "Show Original"
+                        buttonSpan.textContent = translations[currentLang]['show_original'];
+                        buttonSpan.setAttribute('data-key', 'show_original');
+                    } else {
+                        // We are showing original, so button should say "Show Modern Translation"
+                        buttonSpan.textContent = translations[currentLang]['show_translation'];
+                        buttonSpan.setAttribute('data-key', 'show_translation');
+                    }
+                });
+            });
+            // --- *** END OF NEW LOGIC *** ---
+
+
+            // --- Accessibility: Toggle Tools Panel ---
+            const toolsHeader = document.getElementById('tools-header');
+            const toolsPanel = document.getElementById('tools-panel');
+            toolsHeader.addEventListener('click', () => {
+                toolsPanel.classList.toggle('hidden');
+                toolsHeader.querySelector('button').classList.toggle('bg-gray-300');
+                toolsHeader.querySelector('button').classList.toggle('dark:bg-gray-800');
+            });
+            
+            // --- Accessibility: Text-to-Speech ---
+            const readAloudBtn = document.getElementById('read-aloud');
+            const synth = window.speechSynthesis;
+
+            function speakText(text) {
+                if (synth.speaking) {
+                    synth.cancel(); // Stop any current speech
+                    return;
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLang === 'ar' ? 'ar-SA' : (currentLang === 'es' ? 'es-ES' : 'en-US');
+                synth.speak(utterance);
+            }
+
+            readAloudBtn.addEventListener('click', (e) => {
+                let textToSpeak = '';
+                const activeContent = document.getElementById(activeTab);
+                if (activeContent) {
+                    // Check which text is visible: simplified or original
+                    const simpleText = activeContent.querySelector('.doc-simplified:not(.hidden)');
+                    const originalText = activeContent.querySelector('.doc-original:not(.hidden)');
+                    
+                    if (simpleText) {
+                        textToSpeak = simpleText.textContent;
+                    } else if (originalText) {
+                        textToSpeak = originalText.textContent;
+                    } else {
+                         // Fallback for non-doc tabs like "Key Questions"
+                        const docText = activeContent.querySelector('.doc-text');
+                        textToSpeak = (docText || activeContent).textContent;
+                    }
+                }
+                speakText(textToSpeak.trim());
+            });
+
+            // --- Accessibility: High Contrast & Dark/Light Mode Toggles ---
+            const contrastToggle = document.getElementById('contrast-toggle');
+            const lightModeToggle = document.getElementById('light-mode-toggle');
+
+            contrastToggle.addEventListener('click', (e) => {
+                appContainer.classList.toggle('high-contrast');
+                e.currentTarget.classList.toggle('active-toggle');
+                
+                if (appContainer.classList.contains('high-contrast')) {
+                    // High contrast forces dark mode
+                    document.documentElement.classList.add('dark'); 
+                    lightModeToggle.classList.remove('active-toggle'); // Ensure light mode is off
+                }
+            });
+            
+            lightModeToggle.addEventListener('click', (e) => {
+                // Toggle dark mode
+                document.documentElement.classList.toggle('dark');
+                e.currentTarget.classList.toggle('active-toggle');
+
+                // If we are turning light mode ON (removing dark class), we must also turn high contrast OFF
+                if (!document.documentElement.classList.contains('dark')) { 
+                    appContainer.classList.remove('high-contrast');
+                    contrastToggle.classList.remove('active-toggle');
+                }
+            });
+
+            // --- Accessibility: Reading Ruler ---
+            const rulerToggle = document.getElementById('ruler-toggle');
+            const ruler = document.getElementById('reading-ruler');
+
+            rulerToggle.addEventListener('click', (e) => {
+                e.currentTarget.classList.toggle('active-toggle');
+                ruler.style.display = (ruler.style.display === 'block') ? 'none' : 'block';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (ruler.style.display === 'block') {
+                    ruler.style.transform = `translateY(${e.clientY - (ruler.offsetHeight / 2)}px)`;
+                }
+            });
+            
+            // --- Accessibility: Highlighter ---
+            const highlighterToggle = document.getElementById('highlighter-toggle');
+            let highlighterEnabled = false;
+
+            highlighterToggle.addEventListener('click', (e) => {
+                highlighterEnabled = !highlighterEnabled;
+                e.currentTarget.classList.toggle('active-toggle');
+            });
+            
+            appContainer.addEventListener('click', (e) => {
+                if (!highlighterEnabled) return; // Highlighter is off
+                
+                // Check if the click is inside a doc-text area
+                if (!e.target.closest('.doc-text')) return;
+                
+                // Check if the click was on a simplifier link
+                if (e.target.classList.contains('simplifier')) {
+                    return; // Do nothing, let the simplifier logic run
+                }
+                
+                // Check if the click was on an existing highlight
+                if (e.target.classList.contains('highlight')) {
+                    const parent = e.target.parentNode;
+                    parent.replaceChild(document.createTextNode(e.target.textContent), e.target);
+                    parent.normalize(); // Merges text nodes
+                    return;
+                }
+
+                // If a selection is made, wrap it
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                    const range = selection.getRangeAt(0);
+                    
+                    // Check if selection is inside a doc-text area
+                    if (!range.startContainer.parentElement.closest('.doc-text')) return;
+
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
+                    
+                    try {
+                        range.surroundContents(span);
+                    } catch (ex) {
+                        console.warn("Could not wrap selection, likely spans across elements.", ex);
+                    }
+                    
+                    selection.removeAllRanges(); // Clear selection
+                }
+            });
+
+
+            // --- Accessibility: Full Screen ---
+            const fullscreenToggle = document.getElementById('fullscreen-toggle');
+            fullscreenToggle.addEventListener('click', (e) => {
+                e.currentTarget.classList.toggle('active-toggle');
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen.call(document);
+                    }
+                }
+            });
+            
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    fullscreenToggle.classList.remove('active-toggle');
+                }
+            });
+
+            // --- Initial Setup ---
+            updateLanguage('en'); // Set default language on load
+            // Default is Dark Mode, so Light Mode button is NOT active by default
+            // lightModeToggle.classList.add('active-toggle'); // This was incorrect
+            
+        });
+    </script>
+</body>
+</html>
+
