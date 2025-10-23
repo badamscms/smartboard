@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBQ: Madison and the Republic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Import Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base font is now Inter for the whole site */
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* UI elements will use Inter */
+        .font-ui {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Base styles for 4K display - large text and touch targets */
+        :root {
+            --base-font-size: 1.75rem; /* 28px */
+            --line-height: 1.7; 
+        }
+
+        .content-text {
+            font-size: var(--base-font-size);
+            line-height: var(--line-height);
+            transition: font-size 0.3s;
+        }
+
+        /* High Contrast Mode */
+        .high-contrast {
+            background-color: #000;
+            color: #FFFF00; /* Yellow text */
+        }
+        .high-contrast .font-ui {
+            color: #FFFF00;
+        }
+        .high-contrast body, 
+        .high-contrast #app-container,
+        .high-contrast header,
+        .high-contrast footer {
+            background-color: #000 !important;
+            color: #FFFF00 !important;
+        }
+        .high-contrast main {
+            background-color: #111 !important;
+            color: #FFFF00 !important;
+        }
+        .high-contrast h1, .high-contrast h2, .high-contrast h3, .high-contrast p, .high-contrast span, .high-contrast li {
+             color: #FFFF00 !important;
+        }
+        .high-contrast .tab-btn {
+            background-color: #333;
+            color: #FFFF00;
+            border-color: #FFFF00;
+        }
+        .high-contrast .tab-btn.active {
+            background-color: #FFFF00;
+            color: #000;
+            border-color: #FFFF00;
+        }
+        .high-contrast .control-btn, .high-contrast .lang-btn {
+            background-color: #333 !important;
+            color: #FFFF00 !important;
+            border-color: #FFFF00 !important;
+        }
+        .high-contrast .control-btn svg, .high-contrast .lang-btn.active {
+            fill: #FFFF00;
+        }
+        .high-contrast .lang-btn.active {
+            background-color: #FFFF00 !important;
+            color: #000 !important;
+        }
+        .high-contrast .simplifier-term {
+            background-color: #FFFF00;
+            color: #000;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+        .high-contrast .modal-header {
+             background-color: #FFFF00 !important;
+             color: #000 !important;
+        }
+         .high-contrast .modal-header h3 {
+             color: #000 !important;
+         }
+        .high-contrast .modal-body {
+            background-color: #111;
+            color: #FFFF00;
+            border: 2px solid #FFFF00;
+        }
+        .high-contrast .modal-close {
+            color: #000 !important;
+        }
+        .high-contrast .modal-close:hover {
+            color: #333 !important;
+        }
+        .high-contrast #reading-ruler {
+            background-color: rgba(255, 255, 0, 0.4);
+            border-top: 2px solid #FFFF00;
+            border-bottom: 2px solid #FFFF00;
+        }
+        .high-contrast .main-idea-btn {
+            background-color: #333 !important;
+            color: #FFFF00 !important;
+            border-color: #FFFF00 !important;
+        }
+         .high-contrast .main-idea-btn svg {
+             fill: #FFFF00;
+         }
+        .high-contrast .main-idea-content {
+            background-color: #222 !important;
+            border-color: #FFFF00 !important;
+            color: #FFFF00 !important;
+        }
+
+        /* Simplifier Term - New Theme */
+        .simplifier-term {
+            background-color: #dbeafe; /* blue-100 */
+            color: #1e40af; /* blue-800 */
+            padding: 0 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500; /* Lighter weight for sans-serif */
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .simplifier-term:hover {
+            background-color: #bfdbfe; /* blue-200 */
+        }
+        
+        /* Tab Styles - New Theme */
+        .tab-btn {
+            transition: all 0.2s;
+            border-bottom-width: 4px;
+            border-color: transparent;
+            color: #4b5563; /* gray-600 */
+        }
+        .tab-btn.active {
+            border-color: #2563eb; /* blue-600 */
+            color: #1e293b; /* gray-800 */
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Modal Styles - New Theme */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-container {
+            margin: auto;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden; /* To keep rounded corners */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 3rem;
+        }
+        .modal-body {
+            padding: 3rem;
+        }
+        .modal-close {
+            transition: color 0.2s, transform 0.2s;
+            transform: scale(1);
+        }
+        .modal-close:hover {
+            color: #9ca3af; /* gray-400 */
+            transform: scale(1.1);
+        }
+
+        /* Reading Ruler */
+        #reading-ruler {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 5rem; /* Taller for smartboard touch */
+            background-color: rgba(0, 80, 180, 0.25);
+            border-top: 2px solid rgba(0, 80, 180, 0.5);
+            border-bottom: 2px solid rgba(0, 80, 180, 0.5);
+            z-index: 50;
+            pointer-events: none; /* Allows clicking through it */
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        #reading-ruler.active {
+            display: block;
+        }
+        
+        /* Main Idea Button/Content - New Theme */
+        .main-idea-btn {
+            border: 2px solid #2563eb; /* blue-600 */
+            color: #2563eb; /* blue-600 */
+            transition: all 0.2s;
+        }
+        .main-idea-btn:hover {
+            background-color: #eff6ff; /* blue-50 */
+        }
+         .main-idea-btn svg {
+             fill: #2563eb; /* blue-600 */
+         }
+        .main-idea-content {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #2563eb; /* blue-600 */
+            color: #1e3a8a; /* blue-800 */
+        }
+        
+        /* Control Button Base Style */
+        .control-btn {
+            background-color: #ffffff;
+            color: #374151; /* gray-700 */
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .control-btn:hover {
+            background-color: #f9fafb; /* gray-50 */
+            border-color: #9ca3af; /* gray-400 */
+        }
+        .control-btn.active-toggle {
+            background-color: #2563eb; /* blue-600 */
+            color: #ffffff;
+            border-color: #2563eb; /* blue-600 */
+        }
+        .control-btn.active-toggle svg {
+            fill: #ffffff;
+        }
+        .control-btn svg {
+            fill: #374151; /* gray-700 */
+            transition: fill 0.2s;
+        }
+
+        /* Language Switcher */
+        .lang-btn {
+            background-color: #ffffff;
+            color: #374151; /* gray-700 */
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.5rem; /* 24px */
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover {
+            background-color: #f9fafb; /* gray-50 */
+            border-color: #9ca3af; /* gray-400 */
+        }
+        .lang-btn.active {
+            background-color: #2563eb; /* blue-600 */
+            color: #ffffff;
+            border-color: #2563eb; /* blue-600 */
+        }
+
+        /* RTL Specific Styles */
+        [dir="rtl"] {
+            direction: rtl;
+        }
+        [dir="rtl"] .tab-nav {
+            flex-direction: row-reverse;
+        }
+        [dir="rtl"] .main-idea-content {
+            border-left: none;
+            border-right: 4px solid #2563eb; /* blue-600 */
+        }
+        [dir="rtl"] .question-section p {
+            border-left: none;
+            border-right: 4px solid #e5e7eb; /* gray-200 */
+            padding-left: 0;
+            padding-right: 1rem;
+        }
+        [dir="rtl"] .question-section ul {
+            padding-left: 0;
+            padding-right: 2rem;
+            /* Note: list-disc alignment might be browser-dependent in RTL */
+        }
+        [dir="rtl"] .modal-header, [dir="rtl"] .modal-body {
+            text-align: right;
+        }
+        [dir="rtl"] .modal-header {
+            flex-direction: row-reverse;
+        }
+        [dir="rtl"] .modal-close {
+            /* Adjust close button position if needed */
+        }
+    </style>
+</head>
+<!-- New Theme: Light gray background, dark gray text -->
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Reading Ruler element -->
+    <div id="reading-ruler"></div>
+
+    <div id="app-container" class="min-h-screen p-6 md:p-12">
+        <!-- Header -->
+        <header class="text-center mb-8 font-ui">
+            <!-- Language Switcher -->
+            <div class="flex justify-center gap-4 mb-6">
+                <button class="lang-btn active" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="es">Español</button>
+                <button class="lang-btn" data-lang="ar">العربية</button>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900" data-key="title">DBQ: Madison on Democracy and the Republic</h1>
+            <p class="text-2xl md:text-3xl text-gray-700 mt-2" data-key="subtitle">Analyzing Federalist Nos. 10, 39, & 51</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav flex justify-center border-b border-gray-300 mb-8 font-ui">
+            <button class="tab-btn active text-2xl md:text-4xl font-semibold py-4 px-6 md:px-10" data-tab="questions" data-key="tab_questions">Key Questions</button>
+            <button class="tab-btn text-2xl md:text-4xl font-semibold py-4 px-6 md:px-10" data-tab="doc1" data-key="tab_doc1">Federalist No. 10</button>
+            <button class="tab-btn text-2xl md:text-4xl font-semibold py-4 px-6 md:px-10" data-tab="doc2" data-key="tab_doc2">Federalist No. 39</button>
+            <button class="tab-btn text-2xl md:text-4xl font-semibold py-4 px-6 md:px-10" data-tab="doc3" data-key="tab_doc3">Federalist No. 51</button>
+        </nav>
+
+        <!-- Content Area -->
+        <main id="content-area" class="bg-white rounded-lg shadow-xl p-8 md:p-16">
+            
+            <!-- Key Questions Tab -->
+            <section id="questions" class="tab-content active content-text question-section">
+                <h2 class="text-3xl md:text-5xl font-bold mb-8 font-ui" data-key="questions_header">Guiding Questions</h2>
+                
+                <h3 class="text-2xl md:text-4xl font-semibold mb-4 text-gray-700 font-ui" data-key="q_main_essay_header">Main Essay Question:</h3>
+                <p class="mb-8 pl-4 border-l-4 border-gray-200" data-key="q_main_essay">According to James Madison, why is a republic superior to a pure democracy, and what mechanisms are necessary to ensure a republic functions properly?</p>
+
+                <h3 class="text-2xl md:text-4xl font-semibold mb-4 text-gray-700 font-ui" data-key="q_doc1_header">Document 1 (Fed. 10):</h3>
+                <ul class="list-disc pl-8 mb-8 space-y-2">
+                    <li data-key="q_doc1_1">What is the main problem ("mischief") of a pure democracy?</li>
+                    <li data-key="q_doc1_2">What are the two big differences between a democracy and a republic?</li>
+                </ul>
+
+                <h3 class="text-2xl md:text-4xl font-semibold mb-4 text-gray-700 font-ui" data-key="q_doc2_header">Document 2 (Fed. 39):</h3>
+                <ul class="list-disc pl-8 mb-8 space-y-2">
+                    <li data-key="q_doc2_1">Where must a republican government get its power from?</li>
+                    <li data-key="q_doc2_2">What does Madison say is "ESSENTIAL" for a government to be republican?</li>
+                </ul>
+
+                <h3 class="text-2xl md:text-4xl font-semibold mb-4 text-gray-700 font-ui" data-key="q_doc3_header">Document 3 (Fed. 51):</h3>
+                <ul class="list-disc pl-8 mb-8 space-y-2">
+                    <li data-key="q_doc3_1">What is the "great difficulty" in creating a government "administered by men over men"?</li>
+                    <li data-key="q_doc3_2">What is the "primary control" on government?</li>
+                    <li data-key="q_doc3_3">What are the "auxiliary precautions" (backup plans) needed for?</li>
+                </ul>
+            </section>
+
+            <!-- Document 1: Federalist No. 10 -->
+            <section id="doc1" class="tab-content content-text">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 font-ui" data-key="doc1_title">Document 1: James Madison, *Federalist No. 10* (1787)</h2>
+                
+                <div class="mb-8 font-ui">
+                    <button class="main-idea-btn text-2xl font-semibold py-3 px-6 rounded-lg mb-4 inline-flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993v1.994a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V15a1 1 0 11-2 0v-1.016a.993.993 0 00-.993-.993h-.017a1 1 0 110-2h.017a.993.993 0 00.993-.993V6.016a.993.993 0 00-.993-.993h-.017a1 1 0 110-2h.017A.993.993 0 009 3.016V2a1 1 0 011-1zM3 8a1 1 0 011-1h.017a.993.993 0 00.993-.993V4a1 1 0 112 0v2.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V11a1 1 0 11-2 0V8.984a.993.993 0 00-.993-.993H4a1 1 0 01-1-1zM15 8a1 1 0 011-1h.017a.993.993 0 00.993-.993V4a1 1 0 112 0v2.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V11a1 1 0 11-2 0V8.984a.993.993 0 00-.993-.993H16a1 1 0 01-1-1z" /></svg>
+                        <span data-key="show_main_idea">Show Main Idea</span>
+                    </button>
+                    <div class="main-idea-content hidden p-6 rounded-lg">
+                        <p class="text-2xl font-medium"><strong data-key="main_idea_label">Main Idea:</strong> <span data-key="doc1_main_idea">Pure democracies fail because they can't control majority factions, but a republic (with elected representatives and a larger population) can.</span></p>
+                    </div>
+                </div>
+
+                <!-- Source text remains in English -->
+                <p class="mb-8">"A <span class="simplifier-term" data-term="pure-democracy">pure democracy</span>, by which I mean a society consisting of a small number of citizens, who assemble and administer the government in person, can admit of no cure for the <span class="simplifier-term" data-term="mischiefs-of-faction">mischiefs of faction</span>. A common passion or interest will, in almost every case, be felt by a majority of the whole...and there is nothing to check the inducements to sacrifice the weaker party or an obnoxious individual."</p>
+                <p>"A <span class="simplifier-term" data-term="republic">republic</span>, by which I mean a government in which the scheme of representation takes place, opens a different prospect, and promises the cure for which we are seeking. The two great points of difference between a democracy and a republic are: first, the <span class="simplifier-term" data-term="delegation">delegation of the government</span>, in the latter, to a small number of citizens elected by the rest; secondly, the greater number of citizens, and greater sphere of country, over which the latter may be extended."</p>
+            </section>
+
+            <!-- Document 2: Federalist No. 39 -->
+            <section id="doc2" class="tab-content content-text">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 font-ui" data-key="doc2_title">Document 2: James Madison, *Federalist No. 39* (1788)</h2>
+                <div class="mb-8 font-ui">
+                    <button class="main-idea-btn text-2xl font-semibold py-3 px-6 rounded-lg mb-4 inline-flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993v1.994a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V15a1 1 0 11-2 0v-1.016a.993.993 0 00-.993-.993h-.017a1 1 0 110-2h.017a.993.993 0 00.993-.993V6.016a.993.993 0 00-.993-.993h-.017a1 1 0 110-2h.017A.993.993 0 009 3.016V2a1 1 0 011-1zM3 8a1 1 0 011-1h.017a.993.993 0 00.993-.993V4a1 1 0 112 0v2.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V11a1 1 0 11-2 0V8.984a.993.993 0 00-.993-.993H4a1 1 0 01-1-1zM15 8a1 1 0 011-1h.017a.993.993 0 00.993-.993V4a1 1 0 112 0v2.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V11a1 1 0 11-2 0V8.984a.993.993 0 00-.993-.993H16a1 1 0 01-1-1z" /></svg>
+                        <span data-key="show_main_idea">Show Main Idea</span>
+                    </button>
+                    <div class="main-idea-content hidden p-6 rounded-lg">
+                        <p class="text-2xl font-medium"><strong data-key="main_idea_label">Main Idea:</strong> <span data-key="doc2_main_idea">A true republic is a government that gets its power from the *entire* population (not a small or favored group) and is run by officials chosen by the people.</span></p>
+                    </div>
+                </div>
+                <!-- Source text remains in English -->
+                <p>"We may define a <span class="simplifier-term" data-term="republic">republic</span> to be...a government which <span class="simplifier-term" data-term="derives-powers">derives all its powers directly or indirectly from the great body of the people</span>, and is administered by persons holding their offices during pleasure, for a limited period, or during good behavior. It is ESSENTIAL to such a government that it be derived from the <span class="simplifier-term" data-term="great-body">great body of the society</span>, not from an inconsiderable proportion, or a favored class of it... It is SUFFICIENT for such a government that the persons administering it be appointed, either directly or indirectly, by the people."</p>
+            </section>
+
+            <!-- Document 3: Federalist No. 51 -->
+            <section id="doc3" class="tab-content content-text">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 font-ui" data-key="doc3_title">Document 3: James Madison, *Federalist No. 51* (1788)</h2>
+                <div class="mb-8 font-ui">
+                    <button class="main-idea-btn text-2xl font-semibold py-3 px-6 rounded-lg mb-4 inline-flex items-center gap-3">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993v1.994a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V15a1 1 0 11-2 0v-1.016a.993.993 0 00-.993-.993h-.017a1 1 0 110-2h.017a.993.993 0 00.993-.993V6.016a.993.993 0 00-.993-.993h-.017a1 1 0 110-2h.017A.993.993 0 009 3.016V2a1 1 0 011-1zM3 8a1 1 0 011-1h.017a.993.993 0 00.993-.993V4a1 1 0 112 0v2.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V11a1 1 0 11-2 0V8.984a.993.993 0 00-.993-.993H4a1 1 0 01-1-1zM15 8a1 1 0 011-1h.017a.993.993 0 00.993-.993V4a1 1 0 112 0v2.016a.993.993 0 00.993.993h.017a1 1 0 110 2h-.017a.993.993 0 00-.993.993V11a1 1 0 11-2 0V8.984a.993.993 0 00-.993-.993H16a1 1 0 01-1-1z" /></svg>
+                        <span data-key="show_main_idea">Show Main Idea</span>
+                    </button>
+                    <div class="main-idea-content hidden p-6 rounded-lg">
+                        <p class="text-2xl font-medium"><strong data-key="main_idea_label">Main Idea:</strong> <span data-key="doc3_main_idea">Since people aren't angels, government must be controlled. Voting is the main control, but "auxiliary precautions" (like checks and balances) are also necessary to make ambition fight ambition.</span></p>
+                    </div>
+                </div>
+                <!-- Source text remains in English -->
+                <p class="mb-8">"If men were angels, no government would be necessary. If angels were to govern men, neither external nor internal controls on government would be necessary. In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself."</p>
+                <p class="mb-8">"A dependence on the people is, no doubt, the primary control on the government; but experience has taught mankind the necessity of <span class="simplifier-term" data-term="auxiliary-precautions">auxiliary precautions</span>... <span class="simplifier-term" data-term="ambition">Ambition must be made to counteract ambition</span>. The interest of the man must be connected with the constitutional rights of the place."</p>
+            </section>
+        </main>
+
+        <!-- Accessibility Footer -->
+        <footer class="mt-12 p-8 bg-white rounded-lg shadow-md font-ui">
+            <h3 class="text-3xl font-semibold text-center mb-8 text-gray-800" data-key="tools_header">Accessibility Tools</h3>
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                <!-- Font Size -->
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl font-medium text-gray-700" data-key="font_size">Font Size:</span>
+                    <button id="font-decrease" class="control-btn w-16 h-16" aria-label="Decrease font size">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <button id="font-increase" class="control-btn w-16 h-16" aria-label="Increase font size">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+                
+                <!-- Text to Speech -->
+                <div class="flex items-center gap-3">
+                    <button id="speak-btn" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Read text aloud">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        <span data-key="speak">Speak</span>
+                    </button>
+                    <button id="stop-btn" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Stop reading">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" /></svg>
+                        <span data-key="stop">Stop</span>
+                    </button>
+                </div>
+
+                <!-- High Contrast -->
+                <div class="flex items-center gap-3">
+                    <button id="contrast-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle high contrast mode">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM10 3.5a6.5 6.5 0 110 13V3.5z" /></svg>
+                        <span data-key="contrast">Contrast</span>
+                    </button>
+                </div>
+
+                <!-- Focus Mode -->
+                <div class="flex items-center gap-3">
+                    <button id="reading-ruler-toggle" class="control-btn py-4 px-6 text-2xl inline-flex items-center gap-3" aria-label="Toggle reading focus mode">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                        <span data-key="focus">Focus</span>
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Simplifier Modal - Restyled -->
+    <div id="simplifier-modal" class="modal font-ui">
+        <div class="modal-container bg-white shadow-2xl">
+            <!-- Modal Header -->
+            <div class="modal-header bg-blue-700 text-white">
+                <h3 id="modal-term" class="text-5xl font-bold">Term</h3>
+                <button id="modal-close" class="modal-close text-6xl font-light text-white">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body bg-white">
+                <p id="modal-definition" class="text-4xl text-gray-700"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            const contentArea = document.getElementById('content-area');
+            const appContainer = document.getElementById('app-container');
+            let activeTab = 'questions'; // Default tab
+            let currentLang = 'en'; // Default language
+
+            // --- Translation Data ---
+            const translations = {
+                en: {
+                    title: "DBQ: Madison on Democracy and the Republic",
+                    subtitle: "Analyzing Federalist Nos. 10, 39, & 51",
+                    tab_questions: "Key Questions",
+                    tab_doc1: "Federalist No. 10",
+                    tab_doc2: "Federalist No. 39",
+                    tab_doc3: "Federalist No. 51",
+                    questions_header: "Guiding Questions",
+                    q_main_essay_header: "Main Essay Question:",
+                    q_main_essay: "According to James Madison, why is a republic superior to a pure democracy, and what mechanisms are necessary to ensure a republic functions properly?",
+                    q_doc1_header: "Document 1 (Fed. 10):",
+                    q_doc1_1: "What is the main problem ('mischief') of a pure democracy?",
+                    q_doc1_2: "What are the two big differences between a democracy and a republic?",
+                    q_doc2_header: "Document 2 (Fed. 39):",
+                    q_doc2_1: "Where must a republican government get its power from?",
+                    q_doc2_2: "What does Madison say is 'ESSENTIAL' for a government to be republican?",
+                    q_doc3_header: "Document 3 (Fed. 51):",
+                    q_doc3_1: "What is the 'great difficulty' in creating a government 'administered by men over men'?",
+                    q_doc3_2: "What is the 'primary control' on government?",
+                    q_doc3_3: "What are the 'auxiliary precautions' (backup plans) needed for?",
+                    doc1_title: "Document 1: James Madison, *Federalist No. 10* (1787)",
+                    doc2_title: "Document 2: James Madison, *Federalist No. 39* (1788)",
+                    doc3_title: "Document 3: James Madison, *Federalist No. 51* (1788)",
+                    show_main_idea: "Show Main Idea",
+                    hide_main_idea: "Hide Main Idea",
+                    main_idea_label: "Main Idea:",
+                    doc1_main_idea: "Pure democracies fail because they can't control majority factions, but a republic (with elected representatives and a larger population) can.",
+                    doc2_main_idea: "A true republic is a government that gets its power from the *entire* population (not a small or favored group) and is run by officials chosen by the people.",
+                    doc3_main_idea: "Since people aren't angels, government must be controlled. Voting is the main control, but 'auxiliary precautions' (like checks and balances) are also necessary to make ambition fight ambition.",
+                    tools_header: "Accessibility Tools",
+                    font_size: "Font Size:",
+                    speak: "Speak",
+                    stop: "Stop",
+                    contrast: "Contrast",
+                    focus: "Focus"
+                },
+                es: {
+                    title: "DBQ: Madison sobre la democracia y la república",
+                    subtitle: "Análisis de El Federalista Nos. 10, 39 y 51",
+                    tab_questions: "Preguntas clave",
+                    tab_doc1: "El Federalista No. 10",
+                    tab_doc2: "El Federalista No. 39",
+                    tab_doc3: "El Federalista No. 51",
+                    questions_header: "Preguntas orientadoras",
+                    q_main_essay_header: "Pregunta principal del ensayo:",
+                    q_main_essay: "Según James Madison, ¿por qué una república es superior a una democracia pura y qué mecanismos son necesarios para asegurar que una república funcione correctamente?",
+                    q_doc1_header: "Documento 1 (Fed. 10):",
+                    q_doc1_1: "¿Cuál es el principal problema ('maldad') de una democracia pura?",
+                    q_doc1_2: "¿Cuáles son las dos grandes diferencias entre una democracia y una república?",
+                    q_doc2_header: "Documento 2 (Fed. 39):",
+                    q_doc2_1: "¿De dónde debe obtener su poder un gobierno republicano?",
+                    q_doc2_2: "¿Qué dice Madison que es 'ESENCIAL' para que un gobierno sea republicano?",
+                    q_doc3_header: "Documento 3 (Fed. 51):",
+                    q_doc3_1: "¿Cuál es la 'gran dificultad' al crear un gobierno 'administrado por hombres sobre hombres'?",
+                    q_doc3_2: "¿Cuál es el 'control primario' sobre el gobierno?",
+                    q_doc3_3: "¿Para qué se necesitan las 'precauciones auxiliares' (planes de respaldo)?",
+                    doc1_title: "Documento 1: James Madison, *El Federalista No. 10* (1787)",
+                    doc2_title: "Documento 2: James Madison, *El Federalista No. 39* (1788)",
+                    doc3_title: "Documento 3: James Madison, *El Federalista No. 51* (1788)",
+                    show_main_idea: "Mostrar idea principal",
+                    hide_main_idea: "Ocultar idea principal",
+                    main_idea_label: "Idea principal:",
+                    doc1_main_idea: "Las democracias puras fracasan porque no pueden controlar las facciones mayoritarias, pero una república (con representantes elegidos y una población más grande) sí puede.",
+                    doc2_main_idea: "Una verdadera república es un gobierno que obtiene su poder de *toda* la población (no de un grupo pequeño o favorecido) y es dirigida por funcionarios elegidos por el pueblo.",
+                    doc3_main_idea: "Dado que las personas no son ángeles, el gobierno debe ser controlado. Votar es el control principal, pero también se necesitan 'precauciones auxiliares' (como frenos y contrapesos) para hacer que la ambición contrarreste a la ambición.",
+                    tools_header: "Herramientas de accesibilidad",
+                    font_size: "Tamaño de fuente:",
+                    speak: "Hablar",
+                    stop: "Parar",
+                    contrast: "Contraste",
+                    focus: "Enfoque"
+                },
+                ar: {
+                    title: "DBQ: ماديسون حول الديمقراطية والجمهورية",
+                    subtitle: "تحليل الفيدرالي رقم 10 و 39 و 51",
+                    tab_questions: "الأسئلة الرئيسية",
+                    tab_doc1: "الفيدرالي رقم 10",
+                    tab_doc2: "الفيدرالي رقم 39",
+                    tab_doc3: "الفيدرالي رقم 51",
+                    questions_header: "أسئلة إرشادية",
+                    q_main_essay_header: "سؤال المقال الرئيسي:",
+                    q_main_essay: "وفقًا لجيمس ماديسون، لماذا تتفوق الجمهورية على الديمقراطية البحتة، وما هي الآليات الضرورية لضمان عمل الجمهورية بشكل صحيح؟",
+                    q_doc1_header: "الوثيقة 1 (الفيدرالي 10):",
+                    q_doc1_1: "ما هي المشكلة الرئيسية ('الأذى') للديمقراطية البحتة؟",
+                    q_doc1_2: "ما هما الفروقان الكبيران بين الديمقراطية والجمهورية؟",
+                    q_doc2_header: "الوثيقة 2 (الفيدرالي 39):",
+                    q_doc2_1: "من أين يجب أن تستمد الحكومة الجمهورية سلطتها؟",
+                    q_doc2_2: "ما الذي يقول ماديسون إنه 'أساسي' لكي تكون الحكومة جمهورية؟",
+                    q_doc3_header: "الوثيقة 3 (الفيدرالي 51):",
+                    q_doc3_1: "ما هي 'الصعوبة الكبرى' في إنشاء حكومة 'يديرها رجال على رجال'؟",
+                    q_doc3_2: "ما هي 'السيطرة الأساسية' على الحكومة؟",
+                    q_doc3_3: "ما هي الحاجة إلى 'الاحتياطات المساعدة' (خطط احتياطية)؟",
+                    doc1_title: "الوثيقة 1: جيمس ماديسون، *الفيدرالي رقم 10* (1787)",
+                    doc2_title: "الوثيقة 2: جيمس ماديسون، *الفيدرالي رقم 39* (1788)",
+                    doc3_title: "الوثيقة 3: جيمس ماديسون، *الفيدرالي رقم 51* (1788)",
+                    show_main_idea: "إظهار الفكرة الرئيسية",
+                    hide_main_idea: "إخفاء الفكرة الرئيسية",
+                    main_idea_label: "الفكرة الرئيسية:",
+                    doc1_main_idea: "تفشل الديمقراطيات البحتة لأنها لا تستطيع السيطرة على فصائل الأغلبية، لكن الجمهورية (مع ممثلين منتخبين وعدد أكبر من السكان) تستطيع ذلك.",
+                    doc2_main_idea: "الجمهورية الحقيقية هي حكومة تستمد سلطتها من *جميع* أفراد الشعب (وليس من مجموعة صغيرة أو مفضلة) ويديرها مسؤولون يختارهم الشعب.",
+                    doc3_main_idea: "بما أن الناس ليسوا ملائكة، يجب السيطرة على الحكومة. التصويت هو السيطرة الأساسية، ولكن 'الاحتياطات المساعدة' (مثل الضوابط والتوازنات) ضرورية أيضًا لجعل الطموح يواجه الطموح.",
+                    tools_header: "أدوات إمكانية الوصول",
+                    font_size: "حجم الخط:",
+                    speak: "تحدث",
+                    stop: "توقف",
+                    contrast: "تباين",
+                    focus: "تركيز"
+                }
+            };
+
+            // --- Simplifier Modal ---
+            const simplifierTerms = {
+                'pure-democracy': {
+                    term_en: 'Pure Democracy / Direct Democracy',
+                    definition_en: "A system (also known as 'direct democracy') where all citizens gather in one place to vote on every single law themselves. Madison says this only works for a very small town and is dangerous because a majority can easily team up against a minority.",
+                    term_es: 'Democracia Pura / Democracia Directa',
+                    definition_es: "Un sistema (también conocido como 'democracia directa') donde todos los ciudadanos se reúnen en un solo lugar para votar sobre cada ley ellos mismos. Madison dice que esto solo funciona en un pueblo muy pequeño y es peligroso porque una mayoría puede fácilmente unirse contra una minoría.",
+                    term_ar: 'الديمقراطية البحتة / الديمقراطية المباشرة',
+                    definition_ar: "نظام (يُعرف أيضًا باسم 'الديمقراطية المباشرة') حيث يجتمع جميع المواطنين في مكان واحد للتصويت على كل قانون بأنفسهم. يقول ماديسون إن هذا لا ينجح إلا في بلدة صغيرة جدًا وهو خطير لأن الأغلبية يمكنها بسهولة التكتل ضد الأقلية."
+                },
+                'mischiefs-of-faction': {
+                    term_en: 'Mischiefs of Faction',
+                    definition_en: "The problems, damage, and injustice caused by groups of citizens (either a majority or minority) who are united by a common interest that might hurt the rights of other people or the good of the whole country.",
+                    term_es: 'Maldades de la facción',
+                    definition_es: "Los problemas, daños e injusticias causados por grupos de ciudadanos (ya sea una mayoría o una minoría) que están unidos por un interés común que podría perjudicar los derechos de otras personas o el bien de todo el país.",
+                    term_ar: 'مساوئ الفصائل',
+                    definition_ar: "المشاكل والأضرار والظلم الذي تسببه مجموعات من المواطنين (سواء كانت أغلبية أو أقلية) متحدون بمصلحة مشتركة قد تضر بحقوق الآخرين أو بصالح البلد بأكمله."
+                },
+                'republic': {
+                    term_en: 'Republic',
+                    definition_en: "A system where citizens elect a smaller number of people (representatives) to make laws and run the government for them. Madison argues this is better because it can handle a larger country and filter out bad ideas.",
+                    term_es: 'República',
+                    definition_es: "Un sistema donde los ciudadanos eligen a un número menor de personas (representantes) para que hagan las leyes y dirijan el gobierno por ellos. Madison argumenta que esto es mejor porque puede manejar un país más grande y filtrar las malas ideas.",
+                    term_ar: 'الجمهورية',
+                    definition_ar: "نظام ينتخب فيه المواطنون عددًا أصغر من الأشخاص (ممثلين) لوضع القوانين وإدارة الحكومة نيابة عنهم. يجادل ماديسON بأن هذا أفضل لأنه يمكنه التعامل مع بلد أكبر وتصفية الأفكار السيئة."
+                },
+                'delegation': {
+                    term_en: 'Delegation of the Government',
+                    definition_en: "The act of giving the power to govern to the representatives you elected. You are 'delegating' your power to them to act on your behalf.",
+                    term_es: 'Delegación del Gobierno',
+                    definition_es: "El acto de ceder el poder de gobernar a los representantes que elegiste. Estás 'delegando' tu poder en ellos para que actúen en tu nombre.",
+                    term_ar: 'تفويض الحكومة',
+                    definition_ar: "فعل منح سلطة الحكم للممثلين الذين انتخبتهم. أنت 'تفوض' سلطتك لهم للتصرف نيابة عنك."
+                },
+                'derives-powers': {
+                    term_en: 'Derives all its powers... from the people',
+                    definition_en: "This means the government gets all of its authority and power from the citizens. It's not a monarchy or aristocracy; the people are the ultimate source of power.",
+                    term_es: 'Deriva todos sus poderes... del pueblo',
+                    definition_es: "Esto significa que el gobierno obtiene toda su autoridad y poder de los ciudadanos. No es una monarquía o aristocracia; el pueblo es la fuente última de poder.",
+                    term_ar: 'تستمد جميع سلطاتها... من الشعب',
+                    definition_ar: "هذا يعني أن الحكومة تحصل على كل سلطتها وقوتها من المواطنين. إنها ليست ملكية أو أرستقراطية؛ الشعب هو المصدر النهائي للسلطة."
+                },
+                'great-body': {
+                    term_en: 'Great body of the society',
+                    definition_en: "All the citizens, not just a small or wealthy group. A republic must represent everyone, not just a 'favored class'.",
+                    term_es: 'Gran cuerpo de la sociedad',
+                    definition_es: "Todos los ciudadanos, no solo un grupo pequeño o rico. Una república debe representar a todos, no solo a una 'clase favorecida'.",
+                    term_ar: 'الجسم العظيم للمجتمع',
+                    definition_ar: "جميع المواطنين، وليس فقط مجموعة صغيرة أو ثرية. يجب أن تمثل الجمهورية الجميع، وليس فقط 'طبقة مفضلة'."
+                },
+                'auxiliary-precautions': {
+                    term_en: 'Auxiliary Precautions',
+                    definition_en: "Extra safeguards or 'backup plans' to prevent the government from abusing its power. The main 'precaution' is voting (dependence on the people), but these are extra ones like separation of powers and checks and balances.",
+                    term_es: 'Precauciones auxiliares',
+                    definition_es: "Salvaguardias adicionales o 'planes de respaldo' para evitar que el gobierno abuse de su poder. La 'precaución' principal es la votación (dependencia del pueblo), pero estas son adicionales como la separación de poderes y los frenos y contrapesos.",
+                    term_ar: 'الاحتياطات المساعدة',
+                    definition_ar: "ضمانات إضافية أو 'خطط احتياطية' لمنع الحكومة من إساءة استخدام سلطتها. 'الاحتياط' الرئيسي هو التصويت (الاعتماد على الشعب)، ولكن هذه ضمانات إضافية مثل فصل السلطات والضوابط والتوازنات."
+                },
+                'ambition': {
+                    term_en: 'Ambition must be made to counteract ambition',
+                    definition_en: "This is the big idea behind checks and balances. You have to use the natural selfishness and desire for power of one branch of government (like Congress) to fight the selfishness of another branch (like the President). This keeps any one part from getting too powerful.",
+                    term_es: 'La ambición debe contrarrestar a la ambición',
+                    definition_es: "Esta es la gran idea detrás de los frenos y contrapesos. Tienes que usar el egoísmo natural y el deseo de poder de una rama del gobierno (como el Congreso) para luchar contra el egoísmo de otra rama (como el Presidente). Esto evita que una parte se vuelva demasiado poderosa.",
+                    term_ar: 'يجب جعل الطموح يواجه الطموح',
+                    definition_ar: "هذه هي الفكرة الكبيرة وراء الضوابط والتوازنات. عليك استخدام الأنانية الطبيعية والرغبة في السلطة لفرع واحد من الحكومة (مثل الكونغرس) لمحاربة أنانية فرع آخر (مثل الرئيس). هذا يمنع أي جزء من أن يصبح قويًا جدًا."
+                }
+            };
+            const modal = document.getElementById('simplifier-modal');
+            const modalTerm = document.getElementById('modal-term');
+            const modalDefinition = document.getElementById('modal-definition');
+            const modalClose = document.getElementById('modal-close');
+            
+            document.querySelectorAll('.simplifier-term').forEach(termEl => {
+                termEl.addEventListener('click', () => {
+                    const termKey = termEl.dataset.term;
+                    if (simplifierTerms[termKey]) {
+                        modalTerm.textContent = simplifierTerms[termKey]['term_' + currentLang];
+                        modalDefinition.textContent = simplifierTerms[termKey]['definition_' + currentLang];
+                        modal.classList.add('active');
+                    }
+                });
+            });
+            
+            modalClose.addEventListener('click', () => modal.classList.remove('active'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // --- Language Switching ---
+            function setLanguage(lang) {
+                currentLang = lang;
+                
+                // Set page direction
+                document.documentElement.lang = lang;
+                document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+                // Update all data-key elements
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.dataset.key;
+                    if (translations[lang][key]) {
+                        el.textContent = translations[lang][key];
+                    }
+                });
+
+                // Update "Main Idea" button text (in case it's open)
+                document.querySelectorAll('.main-idea-btn').forEach(button => {
+                    const content = button.nextElementSibling;
+                    const textSpan = button.querySelector('span');
+                    if (content.classList.contains('hidden')) {
+                        textSpan.textContent = translations[lang].show_main_idea;
+                    } else {
+                        textSpan.textContent = translations[lang].hide_main_idea;
+                    }
+                });
+                
+                // Update active language button
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    if (btn.dataset.lang === lang) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setLanguage(btn.dataset.lang);
+                });
+            });
+
+
+            // --- Tab Switching ---
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelector('.tab-btn.active').classList.remove('active');
+                    document.querySelector('.tab-content.active').classList.remove('active');
+                    
+                    tab.classList.add('active');
+                    activeTab = tab.dataset.tab;
+                    document.getElementById(activeTab).classList.add('active');
+                });
+            });
+
+            // --- Main Idea Toggle ---
+            document.querySelectorAll('.main-idea-btn').forEach(button => {
+                const textSpan = button.querySelector('span');
+                
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const isHidden = content.classList.contains('hidden');
+                    
+                    if (isHidden) {
+                        content.classList.remove('hidden');
+                        textSpan.textContent = translations[currentLang].hide_main_idea;
+                    } else {
+                        content.classList.add('hidden');
+                        textSpan.textContent = translations[currentLang].show_main_idea;
+                    }
+                });
+            });
+
+            // --- Accessibility: Font Size ---
+            let currentFontSize = 1.75; // in rem
+            document.getElementById('font-increase').addEventListener('click', () => {
+                currentFontSize = Math.min(currentFontSize + 0.25, 3.5); // Max 3.5rem
+                document.documentElement.style.setProperty('--base-font-size', `${currentFontSize}rem`);
+            });
+            
+            document.getElementById('font-decrease').addEventListener('click', () => {
+                currentFontSize = Math.max(currentFontSize - 0.25, 1.25); // Min 1.25rem
+                document.documentElement.style.setProperty('--base-font-size', `${currentFontSize}rem`);
+            });
+
+            // --- Accessibility: High Contrast ---
+            document.getElementById('contrast-toggle').addEventListener('click', (e) => {
+                appContainer.classList.toggle('high-contrast');
+                e.currentTarget.classList.toggle('active-toggle');
+            });
+
+            // --- Accessibility: Reading Ruler ---
+            const ruler = document.getElementById('reading-ruler');
+            const rulerToggle = document.getElementById('reading-ruler-toggle');
+
+            rulerToggle.addEventListener('click', () => {
+                ruler.classList.toggle('active');
+                rulerToggle.classList.toggle('active-toggle');
+            });
+
+            function moveRuler(e) {
+                if (ruler.classList.contains('active')) {
+                    const y = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : null);
+                    if (y) {
+                        ruler.style.top = `${y}px`;
+                    }
+                }
+            }
+            
+            document.addEventListener('mousemove', moveRuler);
+            document.addEventListener('touchmove', moveRuler);
+
+            // --- Accessibility: Text to Speech ---
+            const synth = window.speechSynthesis;
+            const speakBtn = document.getElementById('speak-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            
+            function speakText() {
+                if (synth.speaking) {
+                    synth.cancel(); 
+                }
+                const activeContent = document.getElementById(activeTab);
+                if (activeContent) {
+                    let textToSpeak = "";
+
+                    // Get translated headers
+                    const h2 = activeContent.querySelector('h2');
+                    if (h2) textToSpeak += h2.textContent + ". ";
+
+                    // Get translated "Main Idea" if visible
+                    const mainIdeaContent = activeContent.querySelector('.main-idea-content');
+                    if (mainIdeaContent && !mainIdeaContent.classList.contains('hidden')) {
+                        textToSpeak += mainIdeaContent.textContent + ". ";
+                    }
+
+                    // Get the *original English source text*
+                    // This is a deliberate choice to have it read the source.
+                    activeContent.querySelectorAll('p[class*="mb-8"]').forEach(p => {
+                        textToSpeak += p.textContent + " ";
+                    });
+
+                    // For questions tab, get all text
+                    if (activeTab === 'questions') {
+                         activeContent.querySelectorAll('h3, p, li').forEach(el => {
+                             textToSpeak += el.textContent + ". ";
+                         });
+                    }
+
+                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = currentLang; // Set the language for the synth
+                    utterance.onerror = (event) => {
+                        console.error('SpeechSynthesisUtterance.onerror', event);
+                    };
+                    synth.speak(utterance);
+                }
+            }
+            
+            function stopText() {
+                synth.cancel();
+            }
+
+            speakBtn.addEventListener('click', speakText);
+            stopBtn.addEventListener('click', stopText);
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', stopText);
+            });
+            
+            // Stop speech when changing language
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', stopText);
+            });
+
+        });
+    </script>
+</body>
+</html>
+
