@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" class="dark"> <!-- Force dark mode -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the Republic: Federalist Papers</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        // Configure Tailwind to use the 'class' strategy for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        /* Custom styles for the app */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Style for the clickable glossary terms */
+        .glossary-term {
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-color: #22d3ee; /* cyan-400 */
+            color: #67e8f9; /* cyan-300 */
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .glossary-term:hover {
+            color: #cffafe; /* cyan-100 */
+        }
+
+        /* Styles for the modal (pop-up) */
+        .glossary-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Darker backdrop */
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .glossary-modal-content {
+            background-color: #1f2937; /* gray-800 */
+            border: 1px solid #374151; /* gray-700 */
+            padding: 2rem;
+            border-radius: 0.75rem; /* 12px */
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Styles for Tabs */
+        .tab-button {
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600;
+            color: #9ca3af; /* gray-400 */
+            background-color: #1f2937; /* gray-800 */
+            border-top-left-radius: 0.5rem; /* rounded-tl-lg */
+            border-top-right-radius: 0.5rem; /* rounded-tr-lg */
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .tab-button:hover {
+            color: #e5e7eb; /* gray-200 */
+            background-color: #374151; /* gray-700 */
+        }
+        .tab-button.active {
+            color: #ffffff; /* white */
+            background-color: #374151; /* gray-700 */
+            border-bottom-color: #22d3ee; /* cyan-400 */
+        }
+        .tab-pane {
+            display: none; /* Hidden by default */
+        }
+        .tab-pane.active {
+            display: block; /* Shown when active */
+        }
+
+        /* Styles for Main Document Tabs */
+        #main-tabs-nav {
+            display: flex;
+            margin-bottom: -1px; /* Overlap the border of the active pane */
+            overflow-x: auto;
+        }
+        .main-tab-button {
+            padding: 1rem 2rem; /* py-4 px-8 */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600;
+            color: #9ca3af; /* gray-400 */
+            background-color: transparent;
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .main-tab-button:hover {
+            color: #e5e7eb; /* gray-200 */
+            background-color: #1f2937; /* gray-800 */
+        }
+        .main-tab-button.active {
+            color: #ffffff; /* white */
+            background-color: #1f2937; /* gray-800 */ /* Changed to gray-800 to match pane */
+            border-bottom-color: #22d3ee; /* cyan-400 */
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .main-tab-pane {
+            display: none; /* Hidden by default */
+            background-color: #1f2937; /* gray-800 */
+            border: 1px solid #374151; /* gray-700 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border-top-left-radius: 0; /* Align with tab */
+        }
+        .main-tab-pane.active {
+            display: block; /* Shown when active */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen p-8 md:p-16">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Main Header -->
+        <header class="mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+                Understanding the Republic
+            </h1>
+            <p class="text-2xl md:text-3xl text-gray-400">
+                Key Ideas from the Federalist Papers
+            </p>
+        </header>
+
+        <!-- Main Tab Navigation -->
+        <nav id="main-tabs-nav" class="mb-0" aria-label="Main Documents">
+            <button class="main-tab-button active" data-target="#doc1-section">Federalist No. 10</button>
+            <button class="main-tab-button" data-target="#doc2-section">Federalist No. 39</button>
+            <button class="main-tab-button" data-target="#doc3-section">Federalist No. 51</button>
+        </nav>
+
+        <!-- Document Cards Container -->
+        <main class="space-y-0"> <!-- Removed space-y-12 -->
+
+            <!-- Document 1: Federalist No. 10 -->
+            <section id="doc1-section" class="main-tab-pane active p-8 md:p-12"> <!-- Added ID, classes, and padding -->
+                <h2 class="text-3xl md:text-4xl font-bold text-cyan-400 mb-4">
+                    Document 1: Federalist No. 10
+                </h2>
+                <p class="text-xl text-gray-400 mb-8">James Madison, 1787</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Original Text Column -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold text-white mb-6">Original Text</h3>
+                        <div class="text-lg md:text-xl text-gray-300 leading-relaxed space-y-4">
+                            <!-- CORRECTED TEXT: Was mistakenly F.39, now F.10 -->
+                            <p>
+                                "A <span class="glossary-term" data-term="pure-democracy">pure democracy</span>, by which I mean a society consisting of a small number of citizens, who assemble and administer the government in person, can admit of no cure for the mischiefs of <span class="glossary-term" data-term="faction">faction</span>. A common passion or interest will, in almost every case, be felt by a majority of the whole...and there is nothing to check the inducements to sacrifice the weaker party or an obnoxious individual."
+                            </p>
+                            <p>
+                                "A <span class="glossary-term" data-term="republic">republic</span>, by which I mean a government in which the scheme of representation takes place, opens a different prospect, and promises the cure for which we are seeking. The two great points of difference between a democracy and a republic are: first, the <span class="glossary-term" data-term="delegation">delegation</span> of the government, in the latter, to a small number of citizens elected by the rest; secondly, the greater number of citizens, and greater sphere of country, over which the latter may be extended."
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Modern Translation Column -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold text-white mb-6">Modern Translation</h3>
+                        
+                        <!-- Tab Navigation -->
+                        <nav class="flex overflow-x-auto" aria-label="Translations">
+                            <button class="tab-button active" data-section="doc1" data-target="#doc1-english">English</button>
+                            <button class="tab-button" data-section="doc1" data-target="#doc1-spanish">Español</button>
+                            <button class="tab-button" data-section="doc1" data-target="#doc1-arabic">العربية</button>
+                        </nav>
+
+                        <!-- Tab Content -->
+                        <div class="text-lg md:text-xl text-gray-100 leading-relaxed space-y-4 bg-gray-700 p-6 rounded-b-md rounded-tr-md">
+                            <!-- English Pane -->
+                            <div id="doc1-english" class="tab-pane active" lang="en">
+                                <p>
+                                    "A 'pure democracy'—where everyone votes on everything directly—can't handle a big problem: 'factions,' which are basically angry mobs or special interest groups. A majority with a 'common passion' will almost always form and use its power to crush the weaker group or any single person they don't like."
+                                </p>
+                                <p>
+                                    "A 'republic'—where we elect people to represent us and make decisions—is the solution. The two big differences are: <strong>1)</strong> We hand over the job of governing to a small group of elected officials, and <strong>2)</strong> A republic can govern a much bigger country with way more people than a direct democracy ever could."
+                                </p>
+                            </div>
+                            <!-- Spanish Pane -->
+                            <div id="doc1-spanish" class="tab-pane" lang="es">
+                                <p>
+                                    "Una 'democracia pura' —donde todos votan por todo directamente— no puede manejar un gran problema: las 'facciones', que son básicamente turbas enojadas o grupos de interés especial. Una mayoría con una 'pasión común' casi siempre se formará y usará su poder para aplastar al grupo más débil o a cualquier individuo que no les guste."
+                                </p>
+                                <p>
+                                    "Una 'república' —donde elegimos personas para que nos representen y tomen decisiones— es la solución. Las dos grandes diferencias son: <strong>1)</strong> Entregamos el trabajo de gobernar a un pequeño grupo de funcionarios electos, y <strong>2)</strong> Una república puede gobernar un país mucho más grande con mucha más gente de lo que una democracia directa jamás podría."
+                                </p>
+                            </div>
+                            <!-- Arabic Pane -->
+                            <div id="doc1-arabic" class="tab-pane text-right" lang="ar" dir="rtl">
+                                <p>
+                                    "الديمقراطية البحتة" - حيث يصوت الجميع على كل شيء بشكل مباشر - لا يمكنها التعامل مع مشكلة كبيرة: "الفصائل"، وهي في الأساس جماعات غاضبة أو مجموعات مصالح خاصة. الأغلبية ذات "الشغف المشترك" ستتشكل دائمًا تقريبًا وتستخدم سلطتها لسحق المجموعة الأضعف أو أي فرد لا يعجبهم.
+                                </p>
+                                <p>
+                                    "الجمهورية" - حيث ننتخب أشخاصًا لتمثيلنا واتخاذ القرارات - هي الحل. الفارقان الكبيران هما: <strong>1)</strong> نسلم مهمة الحكم إلى مجموعة صغيرة من المسؤولين المنتخبين، و <strong>2)</strong> يمكن للجمهورية أن تحكم بلدًا أكبر بكثير يضم عددًا أكبر من الناس مما يمكن أن تحكمه الديمقراطية المباشرة على الإطلاق.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document 2: Federalist No. 39 -->
+            <section id="doc2-section" class="main-tab-pane p-8 md:p-12"> <!-- Added ID, classes, and padding -->
+                <h2 class="text-3xl md:text-4xl font-bold text-cyan-400 mb-4">
+                    Document 2: Federalist No. 39
+                </h2>
+                <p class="text-xl text-gray-400 mb-8">James Madison, 1788</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Original Text Column -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold text-white mb-6">Original Text</h3>
+                        <div class="text-lg md:text-xl text-gray-300 leading-relaxed space-y-4">
+                            <!-- CORRECTED TEXT: Was mistakenly F.10, now F.39 -->
+                            <p>
+                                "We may define a republic to be...a government which derives all its powers directly or indirectly from the <span class="glossary-term" data-term="great-body">great body of the people</span>, and is <span class="glossary-term" data-term="administered">administered</span> by persons holding their offices <span class="glossary-term" data-term="during-pleasure">during pleasure</span>, <span class="glossary-term" data-term="limited-period">for a limited period</span>, or during <span class="glossary-term" data-term="good-behavior">good behavior</span>. It is ESSENTIAL to such a government that it be derived from the great body of the society, not from an inconsiderable proportion, or a favored class of it... It is SUFFICIENT for such a government that the persons administering it be appointed, either directly or indirectly, by the people."
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Modern Translation Column -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold text-white mb-6">Modern Translation</h3>
+                        
+                        <!-- Tab Navigation -->
+                        <nav class="flex overflow-x-auto" aria-label="Translations">
+                            <button class="tab-button active" data-section="doc2" data-target="#doc2-english">English</button>
+                            <button class="tab-button" data-section="doc2" data-target="#doc2-spanish">Español</button>
+                            <button class="tab-button" data-section="doc2" data-target="#doc2-arabic">العربية</button>
+                        </nav>
+                        
+                        <!-- Tab Content -->
+                        <div class="text-lg md:text-xl text-gray-100 leading-relaxed space-y-4 bg-gray-700 p-6 rounded-b-md rounded-tr-md">
+                            <!-- English Pane -->
+                            <div id="doc2-english" class="tab-pane active" lang="en">
+                                <p>
+                                    "Here's a definition of a republic: It's a government that gets all its power from the people. It's run by officials who hold their jobs for different amounts of time: some for a set term (like a President), some for life (like judges, as long as they have 'good behavior'), and some for as long as the person who appointed them wants."
+                                </p>
+                                <p>
+                                    "The <strong>ESSENTIAL</strong> part is that the government's power comes from the *entire* society, not just a few special or rich people. The <strong>SUFFICIENT</strong> (or 'good enough') part is that the people running the government are chosen by the people, either directly (we vote for them) or indirectly (they're appointed by someone we voted for)."
+                                </p>
+                            </div>
+                            <!-- Spanish Pane -->
+                            <div id="doc2-spanish" class="tab-pane" lang="es">
+                                <p>
+                                    "Aquí hay una definición de república: es un gobierno que obtiene todo su poder del pueblo. Está dirigido por funcionarios que ocupan sus cargos por diferentes períodos de tiempo: algunos por un período fijo (como un presidente), algunos de por vida (como los jueces, siempre que tengan 'buen comportamiento'), y algunos mientras la persona que los nombró lo desee."
+                                </p>
+                                <p>
+                                    "La parte <strong>ESENCIAL</strong> es que el poder del gobierno proviene de *toda* la sociedad, no solo de unas pocas personas especiales o ricas. La parte <strong>SUFICIENTE</strong> (o 'lo suficientemente buena') es que las personas que dirigen el gobierno son elegidas por el pueblo, ya sea directamente (votamos por ellos) o indirectamente (son nombrados por alguien por quien votamos)."
+                                </p>
+                            </div>
+                            <!-- Arabic Pane -->
+                            <div id="doc2-arabic" class="tab-pane text-right" lang="ar" dir="rtl">
+                                <p>
+                                    "إليكم تعريف للجمهورية: إنها حكومة تستمد كل سلطاتها من الشعب. يديرها مسؤولون يشغلون مناصبهم لفترات زمنية مختلفة: بعضهم لفترة محددة (مثل الرئيس)، وبعضهم مدى الحياة (مثل القضاة، طالما لديهم 'سلوك حسن')، وبعضهم طالما رغب الشخص الذي عينهم في ذلك."
+                                </p>
+                                <p>
+                                    "الجزء <strong>الأساسي</strong> هو أن سلطة الحكومة تأتي من المجتمع *بأكمله*، وليس فقط من قلة من الأشخاص المميزين أو الأغنياء. الجزء <strong>الكافي</strong> (أو 'الجيد بما فيه الكفاية') هو أن الأشخاص الذين يديرون الحكومة يتم اختيارهم من قبل الشعب، إما بشكل مباشر (نصوت لهم) أو بشكل غير مباشر (يتم تعيينهم من قبل شخص صوتنا له)."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Document 3: Federalist No. 51 -->
+            <section id="doc3-section" class="main-tab-pane p-8 md:p-12"> <!-- Added ID, classes, and padding -->
+                <h2 class="text-3xl md:text-4xl font-bold text-cyan-400 mb-4">
+                    Document 3: Federalist No. 51
+                </h2>
+                <p class="text-xl text-gray-400 mb-8">James Madison, 1788</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Original Text Column -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold text-white mb-6">Original Text</h3>
+                        <div class="text-lg md:text-xl text-gray-300 leading-relaxed space-y-4">
+                            <p>
+                                "If men were angels, no government would be necessary. If angels were to govern men, neither external nor internal controls on government would be necessary. In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself."
+                            </p>
+                            <p>
+                                "A dependence on the people is, no doubt, the primary control on the government; but experience has taught mankind the necessity of <span class="glossary-term" data-term="auxiliary-precautions">auxiliary precautions</span>... <span class="glossary-term" data-term="ambition">Ambition must be made to counteract ambition</span>. The interest of the man must be connected with the constitutional rights of the place."
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Modern Translation Column -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold text-white mb-6">Modern Translation</h3>
+                        
+                        <!-- Tab Navigation -->
+                        <nav class="flex overflow-x-auto" aria-label="Translations">
+                            <button class="tab-button active" data-section="doc3" data-target="#doc3-english">English</button>
+                            <button class="tab-button" data-section="doc3" data-target="#doc3-spanish">Español</button>
+                            <button class="tab-button" data-section="doc3" data-target="#doc3-arabic">العربية</button>
+                        </nav>
+                        
+                        <!-- Tab Content -->
+                        <div class="text-lg md:text-xl text-gray-100 leading-relaxed space-y-4 bg-gray-700 p-6 rounded-b-md rounded-tr-md">
+                            <!-- English Pane -->
+                            <div id="doc3-english" class="tab-pane active" lang="en">
+                                <p>
+                                    "If people were perfect (like angels), we wouldn't need government. If angels were in charge, we wouldn't need rules to control *them*. But here's the problem: we have imperfect people governing other imperfect people. So, first, you have to give the government enough power to control the country. But *then*, you have to force the government to control *itself*."
+                                </p>
+                                <p>
+                                    "Relying on the people (voting) is the main way to control the government, but we also need 'auxiliary precautions'—or backup plans. The most famous one is this: <strong>'Ambition must be made to counteract ambition.'</strong> This means we should set up the government so that each branch's desire for power automatically checks the other branches' desires for power."
+                                </p>
+                            </div>
+                            <!-- Spanish Pane -->
+                            <div id="doc3-spanish" class="tab-pane" lang="es">
+                                <p>
+                                    "Si la gente fuera perfecta (como los ángeles), no necesitaríamos gobierno. Si los ángeles estuvieran a cargo, no necesitaríamos reglas para controlarlos *a ellos*. Pero aquí está el problema: tenemos personas imperfectas gobernando a otras personas imperfectas. Entonces, primero, debes darle al gobierno suficiente poder para controlar el país. Pero *luego*, debes obligar al gobierno a controlarse *a sí mismo*."
+                                </p>
+                                <p>
+                                    "Confiar en el pueblo (votar) es la forma principal de controlar al gobierno, pero también necesitamos 'precauciones auxiliares' —o planes de respaldo. El más famoso es este: <strong>'La ambición debe contrarrestar a la ambición'.</strong> Esto significa que debemos configurar el gobierno para que el deseo de poder de cada rama controle automáticamente los deseos de poder de las otras ramas."
+                                </p>
+                            </div>
+                            <!-- Arabic Pane -->
+                            <div id="doc3-arabic" class="tab-pane text-right" lang="ar" dir="rtl">
+                                <p>
+                                    "لو كان الناس ملائكة، لما احتجنا إلى حكومة. ولو كانت الملائكة هي التي تحكم الناس، لما احتجنا إلى ضوابط خارجية أو داخلية على الحكومة. لكن تكمن المشكلة الكبرى في صياغة حكومة يديرها بشر على بشر في هذا: يجب عليك أولاً تمكين الحكومة من السيطرة على المحكومين؛ وفي المقام الثاني إجبارها على السيطرة على *نفسها*."
+                                </p>
+                                <p>
+                                    "الاعتماد على الشعب (التصويت) هو بلا شك الضابط الأساسي للحكومة؛ لكن التجربة علمت البشرية ضرورة 'الاحتياطات المساعدة' —أو الخطط الاحتياطية. وأشهرها هو: <strong>'يجب أن نجعل الطموح يواجه الطموح'.</strong> هذا يعني أنه يجب علينا إعداد الحكومة بحيث رغبة كل فرع في السلطة تتحقق تلقائيًا من رغبات الفروع الأخرى في السلطة."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Glossary Modal HTML -->
+    <div id="glossaryModal" class="glossary-modal">
+        <div class="glossary-modal-content">
+            <!-- Term will be inserted here by JS -->
+            <h3 id="glossaryTerm" class="text-3xl font-bold text-cyan-400 mb-4"></h3>
+            <!-- Definition will be inserted here by JS -->
+            <p id="glossaryDef" class="text-xl text-gray-200 mb-8"></p>
+            <!-- Close Button -->
+            <button id="closeModal" class="w-full bg-cyan-500 text-gray-900 font-bold py-3 px-6 rounded-lg text-lg hover:bg-cyan-400 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Define Glossary Terms ---
+            const glossary = {
+                'pure-democracy': {
+                    term: 'Pure Democracy',
+                    def: 'A system where all citizens vote directly on every law and government decision, rather than electing representatives.'
+                },
+                'faction': {
+                    term: 'Faction',
+                    def: 'A group of citizens (either a minority or majority) united by a common passion or interest that is opposed to the rights of other citizens or the good of the whole community.'
+                },
+                'republic': {
+                    term: 'Republic',
+                    def: 'A form of government in which power is held by the people and their elected representatives, rather than a monarch.'
+                },
+                'delegation': {
+                    term: 'Delegation',
+                    def: 'The act of giving power, authority, or tasks to another person or group, typically one that is elected to represent the whole.'
+                },
+                'great-body': {
+                    term: 'Great Body of the People',
+                    def: 'The majority of the population, emphasizing that power comes from the people as a whole, not just a small, elite, or favored class.'
+                },
+                'administered': {
+                    term: 'Administered',
+                    def: 'To manage or be in charge of; to carry out the laws or functions of the government.'
+                },
+                'during-pleasure': {
+                    term: 'During Pleasure',
+                    def: 'A term for holding office for as long as the person who appointed them wishes (e.g., a cabinet member serving "at the pleasure of the President").'
+                },
+                'limited-period': {
+                    term: 'For a Limited Period',
+                    def: 'A term for holding office for a fixed, set amount of time (e.g., a President for 4 years or a Senator for 6 years). This is the most common term for elected officials.'
+                },
+                'good-behavior': {
+                    term: 'During Good Behavior',
+                    def: 'A term for holding office for life, as long as the person does not commit a serious offense. In the U.S., this applies to federal judges.'
+                },
+                'auxiliary-precautions': {
+                    term: 'Auxiliary Precautions',
+                    def: 'Backup systems or "Plan B." These are the checks and balances (like separation of powers) built into the Constitution to control the government, just in case voting isn\'t enough.'
+                },
+                'ambition': {
+                    term: 'Ambition must be made to counteract ambition',
+                    def: 'The core idea of checks and balances. It means pitting the different branches of government against each other, using their own desire for power to prevent any one branch from becoming too powerful.'
+                }
+            };
+
+            // --- 2. Get DOM Elements ---
+            const modal = document.getElementById('glossaryModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const termEl = document.getElementById('glossaryTerm');
+            const defEl = document.getElementById('glossaryDef');
+            const termSpans = document.querySelectorAll('.glossary-term');
+            const allTabButtons = document.querySelectorAll('.tab-button');
+            const mainTabButtons = document.querySelectorAll('.main-tab-button');
+            const mainTabPanes = document.querySelectorAll('.main-tab-pane');
+
+            // --- 3. Add Event Listeners ---
+ 
+            termSpans.forEach(span => {
+                span.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Stop click from bubbling up to the modal background
+                    const termKey = span.getAttribute('data-term');
+                    const data = glossary[termKey];
+
+                    if (data) {
+                        termEl.textContent = data.term;
+                        defEl.textContent = data.def;
+                        modal.style.display = 'flex'; // Show the modal
+                    }
+                });
+            });
+
+            // Function to close the modal
+            const closeModal = () => {
+                modal.style.display = 'none';
+            };
+
+            // Close modal when clicking the 'Close' button
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking on the dark background (outside the content box)
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // --- 4. Translation Tab Switching Logic ---
+            allTabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetPaneId = button.dataset.target.substring(1); // Remove the '#'
+
+                    // Find all buttons in the same nav
+                    const nav = button.closest('nav');
+                    const sectionButtons = nav.querySelectorAll('.tab-button');
+                    
+                    // Find all panes in the same content block
+                    const contentBlock = nav.nextElementSibling;
+                    const sectionPanes = contentBlock.querySelectorAll('.tab-pane');
+
+                    // Remove 'active' from all buttons in this section
+                    sectionButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Remove 'active' from all panes in this section
+                    sectionPanes.forEach(pane => pane.classList.remove('active'));
+
+                    // Add 'active' to the clicked button and its target pane
+                    button.classList.add('active');
+                    document.getElementById(targetPaneId).classList.add('active');
+                });
+            });
+
+            // --- 5. Main Document Tab Switching Logic ---
+            mainTabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetPaneId = button.dataset.target.substring(1); // Remove the '#'
+
+                    // Remove 'active' from all main buttons
+                    mainTabButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Remove 'active' from all main panes
+                    mainTabPanes.forEach(pane => pane.classList.remove('active'));
+
+                    // Add 'active' to the clicked button and its target pane
+                    button.classList.add('active');
+                    document.getElementById(targetPaneId).classList.add('active');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
