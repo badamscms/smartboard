@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Constitutional Government in Britain</title>
+    
+    <!-- This <style> tag contains all the CSS -->
+    <style>
+        /* --- M3 Style Color & Font Variables --- */
+        :root {
+            /* M3 Primary Palette (Blue) */
+            --primary-color: #0061a8; /* M3 Blue */
+            --on-primary-color: #ffffff;
+            --primary-container: #d2e4ff; /* Lighter "tonal" blue */
+            --on-primary-container: #001d36;
+
+            /* M3 Surface & Background Palette */
+            --surface-color: #f8f9fa; /* Kept for card backgrounds */
+            --surface-container-low: #f7f9ff; /* Main slide background */
+            --surface-container: #f1f3f9; /* Nav bar background */
+            --on-surface-color: #1a1c1e; /* Main text */
+            --on-surface-variant: #42474e; /* Secondary text */
+            
+            /* M3 Outline */
+            --outline-color: #73777f; /* M3 Outline */
+            
+            /* Background */
+            --background-color: var(--surface-container-low); /* Use M3 surface color for bg */
+            --on-background-color: var(--on-surface-color);
+
+            /* Typography (System Font Stack - 100% self-contained) */
+            --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            
+            /* M3 Radii */
+            --radius-small: 4px;
+            --radius-medium: 16px; /* Increased from 12px */
+            --radius-large: 28px; /* M3 "Full" pill shape */
+        }
+
+        /* --- Global Reset & Defaults --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            /* Larger base font size for a 4K screen */
+            font-size: 18px; 
+        }
+
+        body {
+            font-family: var(--font-family-sans);
+            background-color: var(--background-color);
+            color: var(--on-background-color);
+            line-height: 1.6;
+            overflow: hidden; /* No body scrolling */
+        }
+        
+        /* --- Main Content Area (holds the slides) --- */
+        main {
+            padding: 2rem 4rem;
+            /* Height is full viewport minus the bottom nav bar */
+            height: calc(100vh - 80px); 
+            overflow-y: auto; /* A slide's content can scroll if it's too long */
+        }
+
+        /* --- Slide Styling --- */
+        .slide {
+            display: none; /* Hide all slides by default */
+            min-height: 100%; /* Use min-height to allow content to expand */
+        }
+        .slide.active {
+            display: block; /* Show the active slide */
+        }
+
+        /* --- Typography (M3 Type Scale approximations) --- */
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: 1rem;
+            color: var(--on-surface-color);
+            font-weight: 500;
+        }
+        h1 { font-size: 2.75rem; line-height: 1.2; font-weight: 600; } /* Headline Large */
+        h2 { font-size: 2.25rem; margin-top: 2rem; } /* Headline Medium */
+        h3 { font-size: 1.75rem; } /* Title Large */
+        p { font-size: 1.125rem; margin-bottom: 1.25rem; color: var(--on-surface-variant); } /* Body Large */
+        ul, ol { margin-left: 1.5rem; margin-bottom: 1.25rem; font-size: 1.125rem; color: var(--on-surface-variant); }
+        li { margin-bottom: 0.5rem; }
+        strong { font-weight: 700; color: var(--primary-color); }
+
+        /* --- M3 Card Styling (Outlined) --- */
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--outline-color);
+            border-radius: var(--radius-medium); /* M3 Radius */
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .card.card-accent {
+            border-left: 5px solid var(--primary-color);
+        }
+        .card ul {
+            margin-top: 1rem;
+        }
+
+        /* --- Grid Layout (from original) --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* --- Accordion (Critical Thinking) Styling (from original) --- */
+        .accordion {
+            margin-bottom: 1rem;
+            border: 1px solid var(--outline-color);
+            border-radius: var(--radius-medium); /* M3 Radius */
+            overflow: hidden;
+        }
+        .accordion summary {
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            background-color: var(--surface-color);
+            list-style: none;
+            position: relative;
+            padding-right: 4rem;
+        }
+        .accordion summary::after {
+            content: '+';
+            font-family: monospace;
+            font-size: 2rem;
+            font-weight: bold;
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            transition: transform 0.2s ease-in-out;
+        }
+        .accordion[open] summary::after {
+            content: '−';
+            transform: translateY(-50%);
+        }
+        .accordion-content {
+            padding: 0.5rem 2rem 2rem 2rem;
+            background-color: var(--background-color);
+        }
+        .accordion-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- Comparison Table Styling (from original) --- */
+        .comparison-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: collapse;
+            font-size: 1rem; /* Slightly smaller for table */
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid var(--outline-color);
+            padding: 1rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .comparison-table th {
+            background-color: var(--surface-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .comparison-table .col-english { width: 30%; }
+        .comparison-table .col-concept { width: 25%; }
+        .comparison-table .col-us { width: 45%; }
+        
+        .comparison-table .highlight-concept {
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .comparison-table td ul {
+            margin-left: 1rem;
+            margin-bottom: 0;
+        }
+        .comparison-table td li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* --- NEW: Modal Visibility & Overlay Styles --- */
+        .menu-hidden {
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.3s, opacity 0.3s ease;
+        }
+        .menu-visible {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+        /* Base styles for BOTH modal overlays */
+        #menu-overlay,
+        #definition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Dimming background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        
+        /* --- NEW: Menu Modal Styling (M3 Dialog) --- */
+        #menu-modal {
+            background-color: var(--background-color);
+            border-radius: var(--radius-large);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            max-height: 80vh; /* Prevent it from being too tall */
+            overflow-y: auto; /* Allow menu to scroll if needed */
+        }
+        #menu-modal h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        #menu-modal ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #menu-modal li {
+            margin: 0.75rem 0;
+        }
+        /* M3 "Outlined" button style for menu items */
+        .menu-jump-btn {
+            font-size: 1.125rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--outline-color);
+            border-radius: var(--radius-large);
+            color: var(--primary-color);
+            background-color: transparent;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%; /* Make buttons full width */
+            text-align: left;
+        }
+        .menu-jump-btn:hover {
+            background-color: var(--primary-container);
+            color: var(--on-primary-container);
+        }
+        #closeMenuBtn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--on-surface-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+        }
+        
+        /* --- NEW: Definition Modal Styling (M3 Dialog) --- */
+        /* Re-uses menu-overlay styles for the background */
+        #definition-modal {
+            background-color: var(--background-color);
+            border-radius: var(--radius-large);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        #definition-modal h3 {
+            color: var(--primary-color);
+            font-size: 1.75rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        #definition-modal p {
+            font-size: 1.125rem;
+            color: var(--on-surface-variant);
+            margin-bottom: 0;
+        }
+        #closeDefBtn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--on-surface-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+        }
+
+        /* --- NEW: Tappable Term Link Style --- */
+        .term-link {
+            font-weight: 500;
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: inherit;
+            font-family: inherit;
+        }
+        .term-link:hover {
+            color: var(--on-primary-container);
+            background-color: var(--primary-container);
+            border-radius: var(--radius-small);
+        }
+
+        /* --- NEW: Timeline Styles --- */
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            margin-top: 4rem;
+            width: 100%;
+            padding: 2rem 0;
+        }
+        /* The main horizontal line */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background-color: var(--outline-color);
+            top: 50px; /* Position line under the date */
+            left: 0;
+            border-radius: 4px;
+        }
+        .timeline-event {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 22%;
+            position: relative;
+        }
+        .timeline-event .date {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--on-primary-container);
+            background-color: var(--primary-container);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-large);
+            margin-bottom: 1.5rem;
+            z-index: 1; /* Sits on top of the line */
+            border: 2px solid var(--primary-color);
+        }
+        /* The dot on the line */
+        .timeline-event::after {
+            content: '';
+            position: absolute;
+            top: 46px; /* Aligns with center of the line */
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            border: 4px solid var(--background-color);
+            z-index: 2; /* Sits on top of the line */
+        }
+        .timeline-event .card {
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+        .timeline-event .card h4 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- End of New Styles --- */
+
+        /* --- Slide Navigation Bar --- */
+        .slide-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px; /* Fixed height for the nav bar */
+            background: var(--surface-container); /* M3 Surface */
+            border-top: 1px solid var(--outline-color);
+            z-index: 100;
+        }
+        /* M3 Filled Button style */
+        .slide-btn {
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-large); /* M3 Button radius */
+            background-color: var(--primary-color);
+            color: var(--on-primary-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            /* M3 shadow */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.12);
+        }
+        .slide-btn:hover {
+            background-color: #004a80; /* Darker primary */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.15);
+        }
+        .slide-btn:disabled {
+            background-color: var(--outline-color);
+            color: var(--on-surface-variant);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        /* Style for the new Menu button */
+        #menuBtn {
+            min-width: 120px; /* Give it some space */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NEW: Menu Modal Overlay -->
+    <div id="menu-overlay" class="menu-hidden"> <!-- FIXED: Added menu-hidden class -->
+        <div id="menu-modal">
+            <button id="closeMenuBtn" title="Close menu">&times;</button>
+            <h2>Lesson Menu</h2>
+            <ul id="menu-list">
+                <!-- Menu items will be auto-populated by JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- NEW: Definition Modal Overlay -->
+    <div id="definition-overlay" class="menu-hidden"> <!-- Re-use menu-hidden class -->
+        <div id="definition-modal">
+            <button id="closeDefBtn" title="Close definition">&times;</button>
+            <h3 id="def-term-title">Term</h3>
+            <p id="def-term-text">Definition goes here.</p>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- Slide 1: Introduction -->
+        <section id="intro" class="slide">
+            <h1>🎓 How Did Constitutional Government Develop in Great Britain?</h1>
+            
+            <div class="card">
+                <h3>Lesson Purpose</h3>
+                <p>Constitutional government developed in Great Britain over a period of many centuries. In this lesson, you learn how the monarchy came to share power with the nobles. You will study some documents that limited the power of the British government. This study will help you better understand our ideas about limited government.</p>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <h3>Lesson Objectives</h3>
+                    <ul>
+                        <li>Describe the struggles for power between the English monarch and Parliament.</li>
+                        <li>Explain how these struggles led to a system of separated powers and representative government.</li>
+                        <li>Describe some of the important constitutional documents in British history that influenced the writing of our constitution.</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>Terms to Understand</h3>
+                    <ul>
+                        <li><button class="term-link" data-term="common-law">common law</button></li>
+                        <li><button class="term-link" data-term="bill-of-rights">English Bill of Rights</button></li>
+                        <li><button class="term-link" data-term="feudalism">feudalism</button></li>
+                        <li><button class="term-link" data-term="magna-carta">Magna Carta</button></li>
+                        <li><button class="term-link" data-term="parliament">Parliament</button></li>
+                        <li><button class="term-link" data-term="petition-of-right">Petition of Right</button></li>
+                        <li><button class="term-link" data-term="rights-of-englishmen">rights of Englishmen</button></li>
+                        <li><button class="term-link" data-term="rule-of-law">rule of law</button></li>
+                        <li><button class="term-link" data-term="subject">subject</button></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Slide 2: Timeline -->
+        <section id="timeline" class="slide">
+            <h2>🗓️ A Timeline of English Rights</h2>
+            <p>These key documents were not created all at once. They were part of a power struggle between the monarchy and the people (represented by nobles and Parliament) that lasted for centuries.</p>
+            <div class="timeline-container">
+                <div class="timeline-event">
+                    <div class="date">1066</div>
+                    <div class="card">
+                        <h4>Feudalism</h4>
+                        <p>The feudal system is established, creating a system of contracts and obligations between the king and his vassals.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">1215</div>
+                    <div class="card">
+                        <h4>Magna Carta</h4>
+                        <p>Nobles force King John to sign, establishing the "rule of law" and limiting the king's power for the first time.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">1628</div>
+                    <div class="card">
+                        <h4>Petition of Right</h4>
+                        <p>Parliament forces King Charles I to sign, strengthening rights like no taxation without consent.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="date">1689</div>
+                    <div class="card">
+                        <h4>English Bill of Rights</h4>
+                        <p>Parliament asserts its power over the monarchy, guaranteeing rights like free speech in Parliament.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Feudal System -->
+        <section id="feudalism" class="slide">
+            <h2>🏰 What was the feudal system?</h2>
+            <p>After 1066, a system called **feudalism** was established in England. This was a system of social, economic, and political organization based on the control of land. Under feudalism, the people in England belonged to one of three social groups:</p>
+            
+            <div class="grid-container" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="card card-accent">
+                    <h3>Royalty</h3>
+                    <p>The king and his family. The king was the ultimate ruler and owned all the land.</p>
+                </div>
+                <div class="card card-accent">
+                    <h3>Nobility</h3>
+                    <p>Lords and ladies who held titles. The king granted land (fiefs) to nobles (vassals) in exchange for loyalty and military service.</p>
+                </div>
+                <div class="card card-accent">
+                    <h3>Common People</h3>
+                    <p>Included knights, soldiers, merchants, craftsmen, and peasants (or serfs). They worked the land for the nobles.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Feudalism and Contracts</h3>
+                <p>The feudal system was important for the development of constitutional government because it was based on a system of agreements or contracts. The relationship between the nobles and the king depended on both sides fulfilling their obligations. This introduced the idea of a **contract between the ruler and the ruled**.</p>
+            </div>
+        </section>
+
+        <!-- Slide 4: Rights of Englishmen -->
+        <section id="rights" class="slide">
+            <h2>⚖️ Why did the American colonists have the rights of Englishmen?</h2>
+            <p>At the time of the American Revolution, colonists in Great Britain's North American colonies were considered **subjects** of the British monarchy. As subjects, they were believed to have all the rights that all subjects of the English king had.</p>
+            <p>These core beliefs, which had developed over centuries, included:</p>
+            <div class="card">
+                <ul>
+                    <li>The right to a **trial by jury**.</li>
+                    <li>Security from **unlawful entry** into one's home.</li>
+                    <li>**No taxation without consent**.</li>
+                </ul>
+            </div>
+            <p>These "rights of Englishmen" were based on common law and key documents. **Parliament** is the legislative body of British government, and its long history of struggle with the monarchy helped establish these rights.</p>
+        </section>
+
+        <!-- Slide 5: Magna Carta -->
+        <section id="magna-carta" class="slide">
+            <h2>📜 Why is the Magna Carta an important document?</h2>
+            <p>In 1215, English nobles forced King John to sign an agreement, the **Magna Carta** (or "Great Charter"). This was perhaps the most important early example of a written statement of law limiting the power of a ruler.</p>
+            <p>The Magna Carta contains two important ideas that influenced the Founders:</p>
+            
+            <div class="grid-container">
+                <div class="card card-accent">
+                    <h3>1. Government as a Contract</h3>
+                    <p>The document was a contract between the king and the nobility. It established the idea that if either side breaks the contract, that contract is no longer valid. Government is based on an agreement between the ruler and the people.</p>
+                </div>
+                <div class="card card-accent">
+                    <h3>2. The Rule of Law</h3>
+                    <p>Both government and the governed must obey the law. This is called the **rule of law**. The law limits the powers of government. The king could not take away property or imprison people without following due-process procedures and rules.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Parliament -->
+        <section id="parliament" class="slide">
+            <h2>🏛️ Why was the creation of Parliament important?</h2>
+            <p>In 1258, nobles forced the king to create an advisory council. This council eventually evolved into the English **Parliament**, the legislative branch of the government. Parliament grew to have two houses:</p>
+            <ul>
+                <li><strong>The House of Lords:</strong> Represented the nobles.</li>
+                <li><strong>The House of Commons:</strong> Represented people (who owned large amounts of land but were not nobles) from different regions.</li>
+            </ul>
+            <p>For centuries, the monarchy, nobility, and commons struggled for power. This struggle eventually led to a civil war in the 1600s. By 1688, a power shift had occurred, giving Parliament more power than the monarch.</p>
+        </section>
+        
+        <!-- Slide 7: Petition of Right -->
+        <section id="petition" class="slide">
+            <h2>✍️ What was the Petition of Right (1628)?</h2>
+            <p>In 1628, King Charles I was forced to sign the **Petition of Right**. This document was a result of Parliament's pressure to stop the king from abusing his power.</p>
+            <p>The Petition of Right strengthened the idea that English subjects had certain rights that the government could not violate. It specifically stated that the king could not:</p>
+            <div class="card">
+                <ul>
+                    <li>Raise taxes without the consent of Parliament.</li>
+                    <li>House soldiers in the homes of the people (quartering).</li>
+                    <li>Imprison people without a just cause.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 8: English Bill of Rights -->
+        <section id="bill-of-rights" class="slide">
+            <h2>👑 What was the English Bill of Rights (1689)?</h2>
+            <p>In 1689, Parliament passed the **English Bill of Rights**. This law further limited the powers of the monarch and gave more power to Parliament. By this time, the British government was much more limited in what it could do.</p>
+            <p>The English Bill of Rights stated that the monarch was no longer allowed to:</p>
+            <div class="card">
+                <ul>
+                    <li>Collect taxes without the consent of Parliament.</li>
+                    <li>Interfere with the right to free speech and debate in Parliament.</li>
+                    <li>Maintain an army in peacetime.</li>
+                    <li>Prevent Protestants from having arms for their defense.</li>
+                    <li>Require excessive bail or administer cruel punishment.</li>
+                    <li>Declare that laws made by Parliament should not be obeyed.</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Slide 9: Critical Thinking -->
+        <section id="thinking" class="slide">
+            <h2>🤔 Critical Thinking: Examining the Magna Carta</h2>
+            <p>Here are some rights from the Magna Carta. Click on each one to see what it means and why it's important.</p>
+
+            <details class="accordion">
+                <summary>
+                    "For a trivial [minor] offence, a free man shall be fined only in proportion to the degree of his offence, and for a serious offence correspondingly."
+                </summary>
+                <div class="accordion-content">
+                    <p><strong>What it means:</strong> The punishment should fit the crime. A small crime gets a small punishment, and a big crime gets a big punishment.</p>
+                    <p><strong>Why it's important:</strong> This prevents the king or a judge from assigning an unfairly harsh punishment, like taking all of someone's property for a minor mistake. It's the basis for the 8th Amendment in the U.S. Constitution, which protects against "cruel and unusual punishments."</p>
+                </div>
+            </details>
+
+            <details class="accordion">
+                <summary>
+                    "No free man shall be taken, or imprisoned... or in any way harmed... save by the lawful judgment of his peers or by the law of the land."
+                </summary>
+                <div class="accordion-content">
+                    <p><strong>What it means:</strong> People cannot be arrested, jailed, or have their property taken away without a fair legal process. This includes a "judgment of his peers" (a trial by jury) or following established rules ("the law of the land").</p>
+                    <p><strong>Why it's important:</strong> This is the foundation of **due process of law**. It means the government must follow its own rules and cannot punish people arbitrarily. This directly influenced the 5th, 6th, and 7th Amendments of the U.S. Constitution.</p>
+                </div>
+            </details>
+
+            <details class="accordion">
+                <summary>
+                    "No [official]... shall take the corn [grain] or other chattels [personal property] of anyone... unless he gives money for them."
+                </summary>
+                <div class="accordion-content">
+                    <p><strong>What it means:</strong> The government cannot take a person's private property without paying for it.</p>
+                    <p><strong>Why it's important:</strong> This establishes the right to property. It limits the government's power, preventing officials from simply seizing whatever they want from citizens. This is the basis for the "takings clause" in the 5th Amendment of the U.S. Constitution (eminent domain).</p>
+                </div>
+            </details>
+            
+            <details class="accordion">
+                <summary>
+                    "To no one will we sell, to no one deny or delay, right of justice."
+                </summary>
+                <div class="accordion-content">
+                    <p><strong>What it means:</strong> Everyone has a right to a fair and timely trial. The legal system should not be biased by bribes ("sell justice") or withheld from people ("deny or delay justice").</p>
+                    <p><strong>Why it's important:</strong> This guarantees **equal justice under the law** and the right to a speedy trial. It ensures that justice isn't just for the rich or powerful.</p>
+                </div>
+            </details>
+
+        </section>
+
+        <!-- Slide 10: Comparison -->
+        <section id="comparison" class="slide">
+            <h2>🗺️ Legacy of Rights: Comparing Documents</h2>
+            <p>The ideas from these English documents directly influenced the founders of the United States. You can see the "DNA" of these rights in the U.S. Constitution and Bill of Rights.</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="col-english">English Source Document</th>
+                        <th class="col-concept">Core Concept</th>
+                        <th class="col-us">U.S. Founding Document</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Magna Carta (1215)</strong><br>"No free man shall be taken, or imprisoned... save by the lawful judgment of his peers..."</td>
+                        <td class="highlight-concept">Trial by Jury &<br>Due Process of Law</td>
+                        <td><strong>U.S. Bill of Rights (Amendments V & VI)</strong><br>"...nor be deprived of life, liberty, or property, without due process of law... the accused shall enjoy the right to a speedy and public trial, by an impartial jury..."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Magna Carta (1215)</strong><br>"For a trivial offence, a free man shall be fined only in proportion to the degree of his offence..."</td>
+                        <td class="highlight-concept">No Excessive Fines</td>
+                        <td><strong>U.S. Bill of Rights (Amendment VIII)</strong><br>"Excessive bail shall not be required, nor excessive fines imposed..."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Petition of Right (1628)</strong><br>Prohibited the housing of soldiers in homes without consent.</td>
+                        <td class="highlight-concept">No Quartering of Soldiers</td>
+                        <td><strong>U.S. Bill of Rights (Amendment III)</strong><br>"No Soldier shall, in time of peace be quartered in any house, without the consent of the Owner..."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>English Bill of Rights (1689)</strong><br>"That levying money for... the Crown... without grant of Parliament... is illegal."</td>
+                        <td class="highlight-concept">No Taxation Without Representation</td>
+                        <td><strong>U.S. Constitution (Article I, Sec. 7)</strong><br>"All Bills for raising Revenue shall originate in the House of Representatives..."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>English Bill of Rights (1689)</strong><br>"...nor cruel and unusual punishments inflicted."</td>
+                        <td class="highlight-concept">No Cruel & Unusual Punishment</td>
+                        <td><strong>U.S. Bill of Rights (Amendment VIII)</strong><br>"...nor cruel and unusual punishments inflicted." <i>(Copied almost verbatim)</i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+    </main>
+
+    <!-- Slide Navigation Bar -->
+    <div class="slide-navigation">
+        <button id="prevBtn" class="slide-btn"><span>&larr;</span> Previous</button>
+        <!-- The slide counter is now replaced with a menu button -->
+        <button id="menuBtn" class="slide-btn">Menu</button>
+        <button id="nextBtn" class="slide-btn">Next <span>&rarr;</span></button>
+    </div>
+
+    <!-- This <script> tag contains all the JavaScript -->
+    <script>
+        // Wait for the document to be fully loaded before running scripts
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // --- Slide Navigation Logic ---
+            const slides = document.querySelectorAll('main .slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlide = 0;
+
+            // --- NEW Menu Elements ---
+            const menuBtn = document.getElementById('menuBtn');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const menuModal = document.getElementById('menu-modal'); // <-- *** FIX: This line was missing ***
+            const menuList = document.getElementById('menu-list');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+ 
+            // --- NEW Definition Modal Elements ---
+            const definitionOverlay = document.getElementById('definition-overlay');
+            const definitionModal = document.getElementById('definition-modal');
+            const closeDefBtn = document.getElementById('closeDefBtn');
+            const termLinks = document.querySelectorAll('.term-link');
+            const defTermTitle = document.getElementById('def-term-title');
+            const defTermText = document.getElementById('def-term-text');
+
+            // --- NEW Definitions Object ---
+            const definitions = {
+                "common-law": {
+                    title: "Common Law",
+                    text: "A system of law based on custom, tradition, and court decisions (precedent), rather than on a written code. It's the basis of the English and American legal systems."
+                },
+                "bill-of-rights": {
+                    title: "English Bill of Rights",
+                    text: "A document passed by Parliament in 1689 that further limited the power of the monarch and established the supremacy of Parliament. It guaranteed specific rights, such as no cruel or unusual punishment."
+                },
+                "feudalism": {
+                    title: "Feudalism",
+                    text: "A system of social, economic, and political organization used in the Middle Ages. It was based on the control of land and a system of contracts between rulers (lords) and the people (vassals)."
+                },
+                "magna-carta": {
+                    title: "Magna Carta",
+                    text: "A document signed by King John of England in 1215. It was the first document to limit the king's power and established the principle of the 'rule of law'."
+                },
+                "parliament": {
+                    title: "Parliament",
+                    text: "The legislative (law-making) body of the British government. It evolved from a council of nobles into a two-house legislature (House of Lords and House of Commons)."
+                },
+                "petition-of-right": {
+                    title: "Petition of Right",
+                    text: "A document from 1628 that Parliament forced King Charles I to sign. It confirmed that the king could not raise taxes without Parliament's consent or imprison people without just cause."
+                },
+                "rights-of-englishmen": {
+                    title: "Rights of Englishmen",
+                    text: "The established basic rights all English subjects were understood to have, such as the right to a trial by jury, security from unlawful entry, and no taxation without consent."
+                },
+                "rule-of-law": {
+                    title: "Rule of Law",
+                    text: "The principle that everyone, including the government and its rulers, must obey the law. The law is the highest authority, not any single person."
+                },
+                "subject": {
+                    title: "Subject",
+                    text: "A person who is under the rule of a monarch. In England, subjects were understood to have certain basic rights, unlike people in many other countries at the time."
+                }
+            };
+
+            function showSlide(slideIndex) {
+                // Hide all slides
+                slides.forEach((slide) => {
+                    slide.classList.remove('active');
+                    slide.style.display = 'none'; // Force hide
+                });
+
+                // Show the correct slide
+                const slideToShow = slides[slideIndex];
+                if (slideToShow) {
+                    slideToShow.style.display = 'block'; // Force show
+                    slideToShow.classList.add('active');
+                    
+                    // Reset scroll for the slide's content
+                    document.querySelector('main').scrollTop = 0; 
+                }
+
+                // Update button states
+                if (prevBtn && nextBtn) {
+                    prevBtn.disabled = (slideIndex === 0);
+                    nextBtn.disabled = (slideIndex === slides.length - 1);
+                }
+            }
+
+            // --- NEW: Function to build the menu ---
+            function initializeMenu() {
+                menuList.innerHTML = ''; // Clear old menu items
+                
+                slides.forEach((slide, index) => {
+                    // Find the first heading (h1, h2, h3...) to use as the title
+                    const titleEl = slide.querySelector('h1, h2, h3');
+                    const title = titleEl ? titleEl.textContent : `Slide ${index + 1}`;
+                    
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'menu-jump-btn';
+                    button.textContent = `${index + 1}. ${title}`;
+                    button.dataset.index = index;
+
+                    // Add click event to the menu button
+                    button.addEventListener('click', () => {
+                        currentSlide = index;
+                        showSlide(currentSlide);
+                        closeMenu(); // Close the modal after selection
+                    });
+
+                    li.appendChild(button);
+                    menuList.appendChild(li);
+                });
+            }
+
+            // --- NEW: Functions to open/close menu ---
+            function openMenu() {
+                menuOverlay.classList.remove('menu-hidden'); // Use simpler class toggling
+                menuOverlay.classList.add('menu-visible');
+                menuModal.style.transform = 'scale(1)'; // FIXED: Add animation
+            }
+
+            function closeMenu() {
+                menuOverlay.classList.remove('menu-visible');
+                menuOverlay.classList.add('menu-hidden');
+                menuModal.style.transform = 'scale(0.9)'; // FIXED: Add animation
+            }
+
+            // --- NEW: Functions to open/close definition modal ---
+            function openDefinition(termKey) {
+                const definition = definitions[termKey];
+                if (definition) {
+                    defTermTitle.textContent = definition.title;
+                    defTermText.textContent = definition.text;
+                    definitionOverlay.classList.remove('menu-hidden');
+                    definitionOverlay.classList.add('menu-visible');
+                    // Animate the modal
+                    definitionModal.style.transform = 'scale(1)';
+                }
+            }
+
+            function closeDefinition() {
+                definitionOverlay.classList.remove('menu-visible');
+                definitionOverlay.classList.add('menu-hidden');
+                definitionModal.style.transform = 'scale(0.9)';
+            }
+
+            // --- Event Listeners ---
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        showSlide(currentSlide);
+                    }
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentSlide < slides.length - 1) {
+                        currentSlide++;
+                        showSlide(currentSlide);
+                    }
+                });
+            }
+
+            // --- NEW: Menu Event Listeners ---
+            if (menuBtn) {
+                menuBtn.addEventListener('click', openMenu);
+            }
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', closeMenu);
+            }
+            // Add event listener to overlay to close when clicking background
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', (event) => {
+                    if (event.target === menuOverlay) { // Only if clicking the dark background
+                        closeMenu();
+                    }
+                });
+            }
+
+            // --- NEW: Definition Modal Event Listeners ---
+            termLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    const termKey = event.target.dataset.term;
+                    if (termKey) {
+                        openDefinition(termKey);
+                    }
+                });
+            });
+
+            if (closeDefBtn) {
+                closeDefBtn.addEventListener('click', closeDefinition);
+            }
+
+            if (definitionOverlay) {
+                definitionOverlay.addEventListener('click', (event) => {
+                    if (event.target === definitionOverlay) { // Only if clicking the dark background
+                        closeDefinition();
+                    }
+                });
+            }
+
+            // --- Initial setup ---
+            showSlide(currentSlide);
+            initializeMenu(); // Build the menu on page load
+
+            // --- "One-at-a-time" Accordion Logic (from original file) ---
+            const accordions = document.querySelectorAll('.accordion');
+
+            accordions.forEach(currentAccordion => {
+                currentAccordion.addEventListener('toggle', (event) => {
+                    if (event.target.open) {
+                        accordions.forEach(otherAccordion => {
+                            if (otherAccordion !== event.target && otherAccordion.open) {
+                                otherAccordion.open = false;
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
