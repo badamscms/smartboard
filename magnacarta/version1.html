@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundations of Democracy</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Set a default font family */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Ensure high contrast and legibility for a large screen */
+        .smartboard-text {
+            @apply text-2xl lg:text-3xl text-gray-800 leading-relaxed;
+        }
+        .smartboard-title {
+            @apply text-4xl lg:text-6xl font-bold text-indigo-800 tracking-tight;
+        }
+        .smartboard-subtitle {
+            @apply text-3xl lg:text-4xl font-semibold text-gray-700 mt-2;
+        }
+        .smartboard-button {
+            @apply w-full text-center bg-indigo-700 text-white text-2xl lg:text-3xl font-bold py-6 px-8 rounded-xl shadow-lg hover:bg-indigo-800 transition-transform transform hover:scale-105;
+        }
+        .card {
+            @apply bg-white rounded-2xl shadow-xl overflow-hidden;
+        }
+        .card-header {
+            @apply p-6 bg-gray-50 border-b border-gray-200;
+        }
+        .card-body {
+            @apply p-6 lg:p-8;
+        }
+    </style>
+    <!-- Preload fonts for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-100">
+
+    <div id="app" class="container mx-auto p-4 lg:p-12">
+        <!-- App content will be rendered here by JavaScript -->
+    </div>
+
+    <script>
+        // --- DATA OBJECT ---
+        // This object holds all the content from our lesson plan.
+        const lessonData = {
+            title: "Foundations of Democracy",
+            subtitle: "Lesson 6: How Did Constitutional Government Develop in Great Britain?",
+            essentialQuestions: [
+                { emoji: "📜➡️🏛️", text: "How did medieval English documents, like the Magna Carta and the English Bill of Rights, create the foundation for modern democracy?" },
+                { emoji: "⚖️🚫👑", text: "What is the 'rule of law,' and why is it the most important limit on a government's power?" },
+                { emoji: "👑⚔️🏛️", text: "How did the struggle for power between English kings and Parliament lead to the rights we, as Americans, have today?" }
+            ],
+            days: [
+                // --- DAY 1 ---
+                {
+                    day: "Day 1",
+                    title: "Feudalism and the Magna Carta",
+                    icon: "👑",
+                    doNow: {
+                        title: "Day 1: Do Now",
+                        prompt: "Analyze the image from <strong>page 49</strong> of the <strong><em>We the People</em> textbook</strong> (Royalty, Nobility, Common People). Answer this prompt in your notebook:",
+                        question: "What is the relationship between these three groups? Who has the most power and who has the least?"
+                    },
+                    mainActivity: {
+                        title: "Day 1: Main Activity",
+                        prompt: "Small Group Discussion",
+                        steps: [
+                            "In your small groups, turn to the <strong>\"Critical Thinking Exercise\" on page 51</strong> of the <strong><em>We the People</em> textbook</strong>.",
+                            "As a group, examine the list of rights and <strong>discuss</strong> the following two questions:",
+                        ],
+                        subItems: [
+                            "Which of these rights are <em>similar</em> to rights we have today in the United States?",
+                            "Which of these rights seem <em>outdated</em> or only apply to people in the feudal system?"
+                        ],
+                        footer: "Be ready to share your group's findings with the class."
+                    },
+                    closure: {
+                        title: "Day 1: Closure (Exit Ticket)",
+                        prompt: "Answer the following prompt on an index card or in your notebook.",
+                        question: "What is the \"rule of law,\" and how did the Magna Carta help create it?"
+                    }
+                },
+                // --- DAY 2 ---
+                {
+                    day: "Day 2",
+                    title: "The Rise of Parliament",
+                    icon: "🏛️",
+                    doNow: {
+                        title: "Day 2: Do Now",
+                        prompt: "Complete the following Quick-Write in your notebook.",
+                        question: "In our country, who has the power to make laws and raise taxes? Why is it important that <em>one person</em> (like the President) can't do that all by themselves?"
+                    },
+                    mainActivity: {
+                        title: "Day 2: Main Activity",
+                        prompt: "Partner Reading",
+                        steps: [
+                            "With your partner, read <strong>page 52</strong> of the <strong><em>We the People</em> textbook</strong>.",
+                            "Divide the work:"
+                        ],
+                        subItems: [
+                            "<strong>Partner A:</strong> You are responsible for paragraphs 1-2. Be ready to explain: <strong>What is Parliament?</strong>",
+                            "<strong>Partner B:</strong> You are responsible for paragraphs 3-4. Be ready to explain: <strong>What is the Petition of Right (1628)?</strong>"
+                        ],
+                        footer: "Be ready to share your explanations with the class."
+                    },
+                    closure: {
+                        title: "Day 2: Closure (Exit Ticket)",
+                        prompt: "Answer the following prompt on an index card or in your notebook.",
+                        question: "What new power did the <strong>Petition of Right</strong> take away from the king?"
+                    }
+                },
+                // --- DAY 3 ---
+                {
+                    day: "Day 3",
+                    title: "The English Bill of Rights",
+                    icon: "📜",
+                    doNow: {
+                        title: "Day 3: Do Now",
+                        prompt: "Read the list of rights in the section \"What was the English Bill of Rights?\" on <strong>page 53</strong> of the <strong><em>We the People</em> textbook</strong>.",
+                        question: "Pick <strong>ONE</strong> right from the list that you think is the <em>most important</em> for people to have. Be ready to explain why."
+                    },
+                    mainActivity: {
+                        title: "Day 3: Main Activity",
+                        prompt: "Four Corners",
+                        steps: [
+                            "Listen as I read out the four rights for the corners of the room.",
+                            "When I say \"Go,\" stand up and walk to the corner that represents the right you chose for the \"Do Now.\""
+                        ],
+                        // Special interactive element for Day 3
+                        subItems: [
+                            "<strong>Corner 1:</strong> No Taxes without Parliament's Consent",
+                            "<strong>Corner 2:</strong> Right to Free Speech in Parliament",
+                            "<strong>Corner 3:</strong> No Cruel or Unusual Punishment",
+                            "<strong>Corner 4:</strong> Right to Petition the King"
+                        ],
+                        footer: "In your corner, discuss <em>why</em> you all chose that right."
+                    },
+                    closure: {
+                        title: "Day 3: Closure (Exit Ticket)",
+                        prompt: "Answer the following prompt in your notebook.",
+                        question: "<strong>\"Tweet\" the Main Idea:</strong> Write a \"tweet\" (280 characters or less) answering: \"What was the main purpose of the English Bill of Rights?\""
+                    }
+                }
+            ]
+        };
+
+        // --- APP CONTAINER ---
+        const app = document.getElementById('app');
+
+        // --- RENDER FUNCTION: HOME SCREEN ---
+        function renderHome() {
+            // Clear the app
+            app.innerHTML = '';
+
+            // Create Header
+            const header = document.createElement('header');
+            header.className = 'text-center mb-12';
+            header.innerHTML = `
+                <h1 class="smartboard-title">${lessonData.title}</h1>
+                <p class="smartboard-subtitle">${lessonData.subtitle}</p>
+            `;
+            app.appendChild(header);
+
+            // Create Essential Questions Card
+            const eqCard = document.createElement('div');
+            eqCard.className = 'card mb-12';
+            eqCard.innerHTML = `
+                <div class="card-header">
+                    <h2 class="text-3xl font-bold text-gray-900">Essential Questions</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="space-y-4">
+                        ${lessonData.essentialQuestions.map(q => `
+                            <li class="flex items-start">
+                                <span class="text-3xl mr-4">${q.emoji}</span>
+                                <span class="smartboard-text flex-1">${q.text}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+            app.appendChild(eqCard);
+
+            // Create Navigation
+            const nav = document.createElement('nav');
+            nav.className = 'grid grid-cols-1 md:grid-cols-3 gap-8';
+            lessonData.days.forEach((day, index) => {
+                const button = document.createElement('button');
+                button.className = 'smartboard-button';
+                button.innerHTML = `
+                    <span class="text-6xl">${day.icon}</span>
+                    <span class="block mt-2">${day.day}: ${day.title}</span>
+                `;
+                button.onclick = () => renderDay(index);
+                nav.appendChild(button);
+            });
+            app.appendChild(nav);
+        }
+
+        // --- RENDER FUNCTION: DAY SCREEN ---
+        function renderDay(dayIndex) {
+            // Clear the app
+            app.innerHTML = '';
+            
+            const day = lessonData.days[dayIndex];
+
+            // Create Header with Back Button
+            const header = document.createElement('header');
+            header.className = 'flex items-center justify-between mb-8';
+            header.innerHTML = `
+                <div>
+                    <h1 class="smartboard-title"><span class="text-6xl">${day.icon}</span> ${day.day}: ${day.title}</h1>
+                </div>
+                <button class="bg-gray-300 text-gray-800 text-xl font-bold py-4 px-6 rounded-lg hover:bg-gray-400">
+                    &larr; Back to Home
+                </button>
+            `;
+            header.querySelector('button').onclick = renderHome;
+            app.appendChild(header);
+
+            // Create 3-Column Grid for activities
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 lg:grid-cols-3 gap-8';
+
+            // --- Do Now Card ---
+            grid.innerHTML += `
+                <div class="card">
+                    <div class="card-header bg-blue-100">
+                        <h2 class="text-3xl font-bold text-blue-800">🔔 Do Now</h2>
+                    </div>
+                    <div class="card-body space-y-4">
+                        <p class="smartboard-text">${day.doNow.prompt}</p>
+                        <p class="smartboard-text font-semibold text-blue-900">${day.doNow.question}</p>
+                    </div>
+                </div>
+            `;
+
+            // --- Main Activity Card ---
+            // Day 3 has a special layout
+            let mainActivityHTML = `
+                <div class="card lg:col-span-2 bg-yellow-50">
+                    <div class="card-header bg-yellow-100">
+                        <h2 class="text-3xl font-bold text-yellow-800">⚒️ Main Activity</h2>
+                    </div>
+                    <div class="card-body space-y-4">
+                        <h3 class="smartboard-subtitle !text-yellow-900">${day.mainActivity.prompt}</h3>
+                        <ul class="space-y-3 list-decimal list-outside ml-8">
+                            ${day.mainActivity.steps.map(step => `<li class="smartboard-text">${step}</li>`).join('')}
+                        </ul>
+                        ${day.mainActivity.subItems ? `
+                            <div class="grid ${dayIndex === 2 ? 'grid-cols-1 sm:grid-cols-2' : ''} gap-4 p-4 bg-yellow-100 rounded-lg">
+                                ${day.mainActivity.subItems.map(item => `
+                                    <div class="p-4 ${dayIndex === 2 ? 'bg-white rounded-lg shadow' : ''}">
+                                        <p class="text-2xl ${dayIndex === 2 ? 'font-semibold text-center' : 'smartboard-text'}">${item}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <p class="smartboard-text">${day.mainActivity.footer}</p>
+                    </div>
+                </div>
+            `;
+            
+            grid.innerHTML += mainActivityHTML;
+
+            // --- Closure Card ---
+            grid.innerHTML += `
+                <div class="card lg:col-start-3">
+                    <div class="card-header bg-green-100">
+                        <h2 class="text-3xl font-bold text-green-800">🏁 Closure (Exit Ticket)</h2>
+                    </div>
+                    <div class="card-body space-y-4">
+                        <p class="smartboard-text">${day.closure.prompt}</p>
+                        <p class="smartboard-text font-semibold text-green-900">${day.closure.question}</p>
+                    </div>
+                </div>
+            `;
+            
+            app.appendChild(grid);
+        }
+
+        // --- INITIALIZE APP ---
+        // Wait for the DOM to be fully loaded before rendering
+        document.addEventListener('DOMContentLoaded', renderHome);
+    </script>
+
+</body>
+</html>
