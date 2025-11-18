@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Declaration Explorer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #2c3e50; /* Darker background for slide deck feel */
+            color: #1a202c;
+            overflow: hidden; /* Prevent scrolling on body for slide mode */
+            height: 100vh;
+        }
+        .font-serif {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        /* Texture overlay */
+        .texture-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            mix-blend-mode: multiply;
+            pointer-events: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+        }
+
+        /* --- SLIDE DECK STYLES --- */
+        .slide-container {
+            height: calc(100vh - 80px); /* Full height minus header */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .slide {
+            background-color: #f4f1ea; /* Parchment color for the slide itself */
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 64rem;
+            max-height: 100%;
+            overflow-y: auto; /* Allow scrolling within the slide if content is too tall */
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-out;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            z-index: 10;
+            position: relative; /* Static position when active to take up space */
+        }
+
+        /* Custom Scrollbar for Slides */
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 0 1rem 1rem 0;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background: #c0b4a0; 
+            border-radius: 4px;
+        }
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #a09480; 
+        }
+
+        /* Layout inside slide */
+        .slide-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            background: #fffdf9;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .slide-badge {
+            width: 3.5rem;
+            height: 3.5rem;
+            background-color: #8e2020;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 3px solid #eaddcf;
+            flex-shrink: 0;
+        }
+
+        .slide-content {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .slide-content {
+                flex-direction: row;
+                gap: 2rem;
+            }
+        }
+
+        .slide-pane {
+            flex: 1;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .slide-pane.modern {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+            display: none;
+        }
+
+        /* Toggle Logic */
+        .show-modern .slide-pane.modern {
+            display: block;
+        }
+        
+        /* On larger screens, if modern is ON, we show both side-by-side */
+        @media (min-width: 768px) {
+            .show-modern .slide-pane.original {
+                display: block; 
+            }
+        }
+
+        /* --- NAV CONTROLS --- */
+        .deck-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 50;
+            background: rgba(44, 62, 80, 0.9);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .control-btn:hover:not(:disabled) {
+            background: white;
+            color: #2c3e50;
+            transform: scale(1.1);
+        }
+        .control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: #ecf0f1;
+            font-weight: bold;
+            font-family: 'Inter', sans-serif;
+            min-width: 80px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* --- INTERACTIVE ELEMENTS --- */
+        .vocab-word {
+            background-color: #fef9c3;
+            color: #713f12;
+            border-bottom: 2px dotted #ca8a04;
+            cursor: pointer; /* Changed from help to pointer to indicate clickability */
+            transition: all 0.2s;
+            padding: 0 2px;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+        .vocab-word:hover {
+            background-color: #facc15;
+            color: black;
+        }
+
+        /* Typography */
+        .text-original {
+            line-height: 1.8;
+            color: #111827;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.15rem;
+        }
+        .text-modern {
+            line-height: 1.8;
+            color: #1e3a8a;
+            font-size: 1.15rem;
+        }
+
+        /* Mini Nav in Header */
+        .mini-nav-btn {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #cbd5e1;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .mini-nav-btn.active {
+            background-color: #facc15;
+            color: #1e293b;
+        }
+        .mini-nav-btn:hover:not(.active) {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="bg-[#1e293b] text-[#ecf0f1] shadow-md h-16 flex items-center justify-between px-6 sticky top-0 z-40 border-b border-gray-700">
+        <div class="flex items-center space-x-3">
+            <i data-lucide="feather" class="w-5 h-5 text-yellow-500"></i>
+            <h1 class="text-lg font-bold tracking-wider font-serif hidden md:block">Declaration Parser</h1>
+        </div>
+        
+        <!-- Mini Navigation Strip -->
+        <div class="flex space-x-1 overflow-x-auto max-w-[50%] hide-scrollbar" id="mini-nav-container">
+            <!-- Injected via JS -->
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="flex text-xs items-center space-x-2 bg-gray-700/50 px-3 py-1.5 rounded-full cursor-pointer select-none border border-gray-600 hover:border-gray-500 transition-colors" onclick="toggleModernMode()">
+                <span id="label-1776" class="font-bold text-yellow-400 transition-colors">1776</span>
+                <div id="toggle-bg" class="w-8 h-4 rounded-full transition-colors duration-300 ease-in-out bg-gray-500 relative mx-2">
+                    <div id="toggle-circle" class="bg-white w-3 h-3 rounded-full shadow-md transform duration-300 absolute top-0.5 left-0.5"></div>
+                </div>
+                <span id="label-modern" class="text-gray-400 transition-colors">Modern</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Slide Container -->
+    <div class="slide-container" id="slide-deck">
+        <!-- Slides Injected Here -->
+    </div>
+
+    <!-- Deck Controls -->
+    <div class="deck-controls">
+        <button class="control-btn" id="btn-prev" onclick="prevSlide()" title="Previous Slide (Left Arrow)">
+            <i data-lucide="chevron-left"></i>
+        </button>
+        <div class="slide-counter" id="slide-counter">
+            Slide 1 / 11
+        </div>
+        <button class="control-btn" id="btn-next" onclick="nextSlide()" title="Next Slide (Right Arrow)">
+            <i data-lucide="chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- Vocabulary Modal -->
+    <div id="vocab-modal" class="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm hidden transition-opacity opacity-0" onclick="closeModal()">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full transform transition-all scale-95 border-t-4 border-yellow-500" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4">
+                <h3 id="modal-word" class="text-2xl font-serif font-bold text-[#2c3e50] capitalize">Word</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 bg-transparent border-none cursor-pointer">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <p id="modal-def" class="text-lg text-gray-700 leading-relaxed">Definition goes here.</p>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeModal()" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm border-none cursor-pointer shadow-lg shadow-blue-600/20">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const declarationSections = [
+            {
+                id: 'A',
+                title: 'The Introduction',
+                original: "When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another, and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which impel them to the separation.",
+                modern: "Sometimes in history, a group of people needs to separate themselves from the country they were part of. They need to become an independent country, equal to all others, as natural law allows. Out of respect for the rest of the world, they should explain exactly why they are leaving.",
+                analysis: "This sets the stage. Jefferson is saying, \"We are breaking up, and we owe the world an explanation why.\"",
+                vocab: {
+                "dissolve": "To end or close down.",
+                "impel": "To force or drive someone to do something.",
+                "station": "Status or position.",
+                "entitle": "To give a right to."
+                }
+            },
+            {
+                id: 'B',
+                title: 'The Preamble',
+                original: "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.--That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed, --That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government...",
+                modern: "Ideally, it is obvious that everyone is equal and has rights given by God that cannot be taken away: Life, Freedom, and the chance to be happy. Governments exist only to protect these rights, and they only have power because the people say so. If a government starts destroying these rights, the people have the right to change it or get rid of it.",
+                analysis: "The core philosophy. 1. Rights come from God/Nature, not the King. 2. Government works for the people (Consent of the Governed).",
+                vocab: {
+                "self-evident": "Obvious; needing no explanation.",
+                "unalienable": "Cannot be taken away or denied.",
+                "endowed": "Given or provided with.",
+                "consent": "Permission or agreement.",
+                "abolish": "To formally put an end to something."
+                }
+            },
+            {
+                id: 'C',
+                title: 'Right to Revolution',
+                original: "Prudence, indeed, will dictate that Governments long established should not be changed for light and transient causes... But when a long train of abuses and usurpations, pursuing invariably the same Object evinces a design to reduce them under absolute Despotism, it is their right, it is their duty, to throw off such Government, and to provide new Guards for their future security.",
+                modern: "Wisdom tells us not to change governments for small reasons. But when a government abuses its power over and over again to create a tyranny, it is not just the people's right but their duty to overthrow it.",
+                analysis: "Jefferson admits revolution is serious business. It shouldn't be done for small reasons, but the King's abuse has gone on too long.",
+                vocab: {
+                "prudence": "Cautiousness; good judgment.",
+                "transient": "Lasting only for a short time.",
+                "usurpations": "Taking power by force.",
+                "despotism": "Absolute power or tyranny.",
+                "evinces": "Clearly shows or reveals."
+                }
+            },
+            {
+                id: 'D',
+                title: 'Grievances: Laws',
+                original: "He has refused his Assent to Laws, the most wholesome and necessary for the public good... He has dissolved Representative Houses repeatedly... He has refused for a long time, after such dissolutions, to cause others to be elected...",
+                modern: "The King has refused to sign laws that we need. He has fired our determined representatives and refused to let us elect new ones, leaving us vulnerable to invasion and chaos.",
+                analysis: "The 'He' is King George III. This section lists how the King stopped the colonies from governing themselves.",
+                vocab: {
+                "assent": "Official approval or agreement.",
+                "relinquish": "To give up.",
+                "annihilation": "Complete destruction.",
+                "convulsions": "Violent political turmoil."
+                }
+            },
+            {
+                id: 'E',
+                title: 'Grievances: Courts',
+                original: "He has obstructed the Administration of Justice, by refusing his Assent to Laws for establishing Judiciary powers. He has made Judges dependent on his Will alone, for the tenure of their offices, and the amount and payment of their salaries. He has erected a multitude of New Offices, and sent hither swarms of Officers to harrass our people, and eat out their substance.",
+                modern: "He has blocked our justice system by refusing to let us set up courts. He controls our judges by being the only one who pays them. He has sent swarms of new government officials to harass us and eat our food.",
+                analysis: "The King controlled the courts (making judges biased) and sent soldiers/officials to live off the colonists' resources.",
+                vocab: {
+                "naturalization": "Becoming a citizen.",
+                "tenure": "The period a job lasts.",
+                "multitude": "A large number.",
+                "substance": "Wealth, resources, or food."
+                }
+            },
+            {
+                id: 'F',
+                title: 'Grievances: Army',
+                original: "He has kept among us, in times of peace, Standing Armies without the Consent of our legislatures. He has affected to render the Military independent of and superior to the Civil power... For Quartering large bodies of armed troops among us...",
+                modern: "He keeps armies here even when there is no war, without our permission. He thinks the military is more important than our local government. He forces us to house soldiers in our homes.",
+                analysis: "A direct attack on the Quartering Act and the presence of British troops who were essentially occupying American cities.",
+                vocab: {
+                "standing armies": "Permanent armies stationed in a country.",
+                "quartering": "Housing soldiers.",
+                "mock trial": "A fake or unfair trial.",
+                "civil power": "The regular government (not military)."
+                }
+            },
+            {
+                id: 'G',
+                title: 'Grievances: Taxes',
+                original: "For cutting off our Trade with all parts of the world: For imposing Taxes on us without our Consent: For depriving us in many cases, of the benefits of Trial by Jury: For transporting us beyond Seas to be tried for pretended offences...",
+                modern: "He stopped us from trading with the rest of the world. He taxes us without our permission. He takes away our right to a trial by a jury of our peers. He sends us across the ocean to England to stand trial for fake crimes.",
+                analysis: "Referencing the Intolerable Acts. 'Taxation without representation' is the famous theme here.",
+                vocab: {
+                "imposing": "Forcing something to be accepted.",
+                "depriving": "Taking something away from someone.",
+                "arbitrary": "Based on random choice or whim."
+                }
+            },
+            {
+                id: 'H',
+                title: 'Grievances: Violence',
+                original: "He has abdicated Government here, by declaring us out of his Protection and waging War against us. He has plundered our seas, ravaged our Coasts, burnt our towns, and destroyed the lives of our people. He is at this time transporting large Armies of foreign Mercenaries to compleat the works of death...",
+                modern: "He has given up his right to rule us by declaring war on us. He burns our towns, ruins our trade, and kills our people. He is hiring foreign soldiers (Mercenaries) to come here and kill us with cruelty.",
+                analysis: "The King is no longer a ruler; he is an enemy waging war. Mentions 'Hessians' (German mercenaries) and controversial frontier warfare.",
+                vocab: {
+                "abdicated": "Renounced or gave up power.",
+                "plundered": "Stolen goods using force.",
+                "mercenaries": "Soldiers hired to fight for a foreign army.",
+                "perfidy": "Deceitfulness; untrustworthiness.",
+                "insurrections": "Violent uprisings."
+                }
+            },
+            {
+                id: 'I',
+                title: 'Failed Petitions',
+                original: "In every stage of these Oppressions We have Petitioned for Redress in the most humble terms: Our repeated Petitions have been answered only by repeated injury. A Prince whose character is thus marked by every act which may define a Tyrant, is unfit to be the ruler of a free people.",
+                modern: "Every time he did something bad, we asked nicely for him to stop. He just hit us harder. A ruler who acts like a tyrant is not fit to rule free people.",
+                analysis: "The 'Olive Branch Petition.' They tried to solve this peacefully, but the King ignored them.",
+                vocab: {
+                "oppressions": "Cruel and unfair treatment.",
+                "redress": "Remedy for a wrong.",
+                "tyrant": "A cruel and oppressive ruler."
+                }
+            },
+            {
+                id: 'J',
+                title: 'British Brethren',
+                original: "Nor have We been wanting in attentions to our Brittish brethren. We have warned them from time to time... We have appealed to their native justice and magnanimity... They too have been deaf to the voice of justice and of consanguinity. We must, therefore, acquiesce in the necessity, which denounces our Separation, and hold them, as we hold the rest of mankind, Enemies in War, in Peace Friends.",
+                modern: "We didn't just blame the King; we told the British people too. We warned them that their Parliament was treating us unfairly. But they ignored us too. So, we have to separate. They are now just like any other country: enemies when we are at war, friends when we are at peace.",
+                analysis: "They appealed to the British people as 'brothers' (consanguinity), but were ignored. The emotional break is complete.",
+                vocab: {
+                "jurisdiction": "Official power to make decisions.",
+                "magnanimity": "Generosity.",
+                "consanguinity": "Blood relation.",
+                "acquiesce": "Accept reluctantly."
+                }
+            },
+            {
+                id: 'K',
+                title: 'The Declaration',
+                original: "We, therefore, the Representatives of the United States of America... solemnly publish and declare, That these United Colonies are, and of Right ought to be Free and Independent States... And for the support of this Declaration, with a firm reliance on the protection of divine Providence, we mutually pledge to each other our Lives, our Fortunes and our sacred Honor.",
+                modern: "Therefore, we representatives of the USA declare that we are Free and Independent States. We are no longer part of Britain. Relying on God's protection, we promise each other our lives, our wealth, and our honor to defend this independence.",
+                analysis: "The actual legal declaration. They are now 'States', not 'Colonies'. The famous final pledge underlines the risk they are taking (treason).",
+                vocab: {
+                "absolved": "Set free from blame.",
+                "allegiance": "Loyalty to a superior.",
+                "providence": "Protective care of God.",
+                "pledge": "A solemn promise.",
+                "rectitude": "Morally correct behavior."
+                }
+            }
+        ];
+
+        // --- STATE & HELPERS ---
+        let isModern = false;
+        let currentSlide = 0;
+        let vocabMap = {};
+
+        function processTextWithVocab(text, vocabList) {
+            if (!vocabList) return text;
+            let processedText = text;
+            const words = Object.keys(vocabList).sort((a, b) => b.length - a.length);
+
+            words.forEach(word => {
+                vocabMap[word.toLowerCase()] = vocabList[word];
+                const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                // We use onmousedown instead of onclick to catch it earlier, or pass event object robustly
+                processedText = processedText.replace(regex, (match) => {
+                    return `<span class="vocab-word" data-word="${word.toLowerCase()}" onclick="handleVocabClick(this, event)">${match}</span>`;
+                });
+            });
+            return processedText;
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderMiniNav() {
+            const container = document.getElementById('mini-nav-container');
+            container.innerHTML = declarationSections.map((section, index) => `
+                <div class="mini-nav-btn ${index === currentSlide ? 'active' : ''}" onclick="goToSlide(${index})">
+                    ${section.id}
+                </div>
+            `).join('');
+        }
+
+        function renderSlides() {
+            const container = document.getElementById('slide-deck');
+            container.innerHTML = declarationSections.map((section, index) => {
+                const processedOriginal = processTextWithVocab(section.original, section.vocab);
+                return `
+                <div class="slide ${index === 0 ? 'active' : ''}" id="slide-${index}">
+                    <div class="slide-header">
+                        <div class="slide-badge">${section.id}</div>
+                        <div>
+                            <h2 class="text-2xl font-bold font-serif text-[#2c3e50]">${section.title}</h2>
+                            <p class="text-blue-800 text-sm italic mt-1"><i data-lucide="graduation-cap" class="inline w-4 h-4 mr-1"></i> ${section.analysis}</p>
+                        </div>
+                    </div>
+                    <div class="slide-content">
+                        <div class="slide-pane original">
+                            <h4 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-3 border-b pb-2">Original Text (1776)</h4>
+                            <p class="text-original">${processedOriginal}</p>
+                        </div>
+                        <div class="slide-pane modern">
+                            <h4 class="text-xs uppercase tracking-widest text-blue-400 font-bold mb-3 border-b pb-2">Modern Translation</h4>
+                            <p class="text-modern">${section.modern}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function updateUI() {
+            // Update Slide Visibility
+            document.querySelectorAll('.slide').forEach((el, idx) => {
+                if(idx === currentSlide) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Update Mini Nav
+            document.querySelectorAll('.mini-nav-btn').forEach((el, idx) => {
+                if(idx === currentSlide) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            // Update Counter & Buttons
+            document.getElementById('slide-counter').innerText = `Slide ${currentSlide + 1} / ${declarationSections.length}`;
+            document.getElementById('btn-prev').disabled = currentSlide === 0;
+            document.getElementById('btn-next').disabled = currentSlide === declarationSections.length - 1;
+
+            lucide.createIcons(); // Refresh icons for new DOM elements if any
+        }
+
+        // --- NAVIGATION HANDLERS ---
+        function nextSlide() {
+            if (currentSlide < declarationSections.length - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateUI();
+        }
+
+        // --- TOGGLE & VOCAB HANDLERS ---
+        function toggleModernMode() {
+            isModern = !isModern;
+            const body = document.body;
+            const toggleBg = document.getElementById('toggle-bg');
+            const toggleCircle = document.getElementById('toggle-circle');
+            const label1776 = document.getElementById('label-1776');
+            const labelModern = document.getElementById('label-modern');
+
+            if (isModern) {
+                body.classList.add('show-modern');
+                toggleBg.classList.replace('bg-gray-500', 'bg-blue-500');
+                toggleCircle.classList.replace('left-0.5', 'left-4.5'); // Approximate move
+                toggleCircle.style.transform = 'translateX(100%)'; // Use transform for smoother move
+                label1776.classList.replace('text-yellow-400', 'text-gray-400');
+                labelModern.classList.replace('text-gray-400', 'text-white');
+            } else {
+                body.classList.remove('show-modern');
+                toggleBg.classList.replace('bg-blue-500', 'bg-gray-500');
+                toggleCircle.style.transform = 'translateX(0)';
+                label1776.classList.replace('text-gray-400', 'text-yellow-400');
+                labelModern.classList.replace('text-white', 'text-gray-400');
+            }
+        }
+
+        function handleVocabClick(element, event) {
+            if(event) event.stopPropagation();
+            const wordKey = element.getAttribute('data-word');
+            const displayWord = element.innerText;
+            openVocab(wordKey, displayWord);
+        }
+
+        function openVocab(key, displayTitle) {
+            const def = vocabMap[key];
+            if (def) {
+                const title = displayTitle || key.charAt(0).toUpperCase() + key.slice(1);
+                document.getElementById('modal-word').innerText = title;
+                document.getElementById('modal-def').innerText = def;
+                
+                const modal = document.getElementById('vocab-modal');
+                modal.classList.remove('hidden');
+                // Small delay to allow transition to play
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('div').classList.replace('scale-95', 'scale-100');
+                });
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('vocab-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.replace('scale-100', 'scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // --- INIT ---
+        window.onload = () => {
+            renderSlides();
+            renderMiniNav();
+            updateUI();
+            lucide.createIcons();
+        };
+
+    </script>
+</body>
+</html>
