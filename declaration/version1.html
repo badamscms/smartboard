@@ -1,0 +1,453 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { BookOpen, Edit3, Save, Printer, Trash2, ChevronRight, ChevronDown, Scroll, History, FileText } from 'lucide-react';
+
+// The Declaration Text broken down by the sections defined in the prompt images
+const declarationSections = [
+  {
+    id: 'A',
+    text: "When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another, and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which impel them to the separation."
+  },
+  {
+    id: 'B',
+    text: "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.--That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed, --That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government, laying its foundation on such principles and organizing its powers in such form, as to them shall seem most likely to effect their Safety and Happiness."
+  },
+  {
+    id: 'C',
+    text: "Prudence, indeed, will dictate that Governments long established should not be changed for light and transient causes; and accordingly all experience hath shewn, that mankind are more disposed to suffer, while evils are sufferable, than to right themselves by abolishing the forms to which they are accustomed. But when a long train of abuses and usurpations, pursuing invariably the same Object evinces a design to reduce them under absolute Despotism, it is their right, it is their duty, to throw off such Government, and to provide new Guards for their future security.--Such has been the patient sufferance of these Colonies; and such is now the necessity which constrains them to alter their former Systems of Government. The history of the present King of Great Britain is a history of repeated injuries and usurpations, all having in direct object the establishment of an absolute Tyranny over these States. To prove this, let Facts be submitted to a candid world."
+  },
+  {
+    id: 'D',
+    text: "He has refused his Assent to Laws, the most wholesome and necessary for the public good. He has forbidden his Governors to pass Laws of immediate and pressing importance, unless suspended in their operation till his Assent should be obtained; and when so suspended, he has utterly neglected to attend to them. He has refused to pass other Laws for the accommodation of large districts of people, unless those people would relinquish the right of Representation in the Legislature, a right inestimable to them and formidable to tyrants only. He has called together legislative bodies at places unusual, uncomfortable, and distant from the depository of their public Records, for the sole purpose of fatiguing them into compliance with his measures. He has dissolved Representative Houses repeatedly, for opposing with manly firmness his invasions on the rights of the people. He has refused for a long time, after such dissolutions, to cause others to be elected; whereby the Legislative powers, incapable of Annihilation, have returned to the People at large for their exercise; the State remaining in the mean time exposed to all the dangers of invasion from without, and convulsions within."
+  },
+  {
+    id: 'E',
+    text: "He has endeavoured to prevent the population of these States; for that purpose obstructing the Laws for Naturalization of Foreigners; refusing to pass others to encourage their migrations hither, and raising the conditions of new Appropriations of Lands. He has obstructed the Administration of Justice, by refusing his Assent to Laws for establishing Judiciary powers. He has made Judges dependent on his Will alone, for the tenure of their offices, and the amount and payment of their salaries. He has erected a multitude of New Offices, and sent hither swarms of Officers to harrass our people, and eat out their substance."
+  },
+  {
+    id: 'F',
+    text: "He has kept among us, in times of peace, Standing Armies without the Consent of our legislatures. He has affected to render the Military independent of and superior to the Civil power. He has combined with others to subject us to a jurisdiction foreign to our constitution, and unacknowledged by our laws; giving his Assent to their Acts of pretended Legislation:"
+  },
+  {
+    id: 'G',
+    text: "For Quartering large bodies of armed troops among us: For protecting them, by a mock Trial, from punishment for any Murders which they should commit on the Inhabitants of these States: For cutting off our Trade with all parts of the world: For imposing Taxes on us without our Consent: For depriving us in many cases, of the benefits of Trial by Jury: For transporting us beyond Seas to be tried for pretended offences: For abolishing the free System of English Laws in a neighbouring Province, establishing therein an Arbitrary government, and enlarging its Boundaries so as to render it at once an example and fit instrument for introducing the same absolute rule into these Colonies: For taking away our Charters, abolishing our most valuable Laws, and altering fundamentally the Forms of our Governments: For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever."
+  },
+  {
+    id: 'H',
+    text: "He has abdicated Government here, by declaring us out of his Protection and waging War against us. He has plundered our seas, ravaged our Coasts, burnt our towns, and destroyed the lives of our people. He is at this time transporting large Armies of foreign Mercenaries to compleat the works of death, desolation and tyranny, already begun with circumstances of Cruelty & perfidy scarcely paralleled in the most barbarous ages, and totally unworthy the Head of a civilized nation. He has constrained our fellow Citizens taken Captive on the high Seas to bear Arms against their Country, to become the executioners of their friends and Brethren, or to fall themselves by their Hands. He has excited domestic insurrections amongst us, and has endeavoured to bring on the inhabitants of our frontiers, the merciless Indian Savages, whose known rule of warfare, is an undistinguished destruction of all ages, sexes and conditions."
+  },
+  {
+    id: 'I',
+    text: "In every stage of these Oppressions We have Petitioned for Redress in the most humble terms: Our repeated Petitions have been answered only by repeated injury. A Prince whose character is thus marked by every act which may define a Tyrant, is unfit to be the ruler of a free people."
+  },
+  {
+    id: 'J',
+    text: "Nor have We been wanting in attentions to our Brittish brethren. We have warned them from time to time of attempts by their legislature to extend an unwarrantable jurisdiction over us. We have reminded them of the circumstances of our emigration and settlement here. We have appealed to their native justice and magnanimity, and we have conjured them by the ties of our common kindred to disavow these usurpations, which, would inevitably interrupt our connections and correspondence. They too have been deaf to the voice of justice and of consanguinity. We must, therefore, acquiesce in the necessity, which denounces our Separation, and hold them, as we hold the rest of mankind, Enemies in War, in Peace Friends."
+  },
+  {
+    id: 'K',
+    text: "We, therefore, the Representatives of the united States of America, in General Congress, Assembled, appealing to the Supreme Judge of the world for the rectitude of our intentions, do, in the Name, and by Authority of the good People of these Colonies, solemnly publish and declare, That these United Colonies are, and of Right ought to be Free and Independent States; that they have full Power to levy War, conclude Peace, contract Alliances, establish Commerce, and to do all other Acts and Things which Independent States may of right do. And for the support of this Declaration, with a firm reliance on the protection of divine Providence, we mutually pledge to each other our Lives, our Fortunes and our sacred Honor."
+  }
+];
+
+// Initial empty state for the worksheet
+const initialWorksheetState = {
+  studentName: '',
+  findIt: {
+    q1: '',
+    q2: '',
+    q3: '',
+    q4: ''
+  },
+  answerIt: {
+    q5: '',
+    q6: '',
+    q7: '',
+    q8: '',
+    q9_1: '',
+    q9_2: '',
+    q9_3: '',
+    q10: '',
+    q11: '',
+    q12: ''
+  },
+  summarizeIt: {
+    q13: '',
+    q14: '',
+    q15: ''
+  }
+};
+
+export default function App() {
+  const [worksheet, setWorksheet] = useState(initialWorksheetState);
+  const [activeTab, setActiveTab] = useState('worksheet'); // 'worksheet' or 'source'
+  const [showSourceSideBySide, setShowSourceSideBySide] = useState(true);
+
+  // Load from local storage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('declaration-worksheet');
+    if (saved) {
+      try {
+        setWorksheet(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to load saved data");
+      }
+    }
+  }, []);
+
+  // Save to local storage on change
+  useEffect(() => {
+    localStorage.setItem('declaration-worksheet', JSON.stringify(worksheet));
+  }, [worksheet]);
+
+  const handleInputChange = (section, field, value) => {
+    setWorksheet(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleNameChange = (e) => {
+    setWorksheet(prev => ({ ...prev, studentName: e.target.value }));
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleReset = () => {
+    if (window.confirm("Are you sure you want to clear all your answers? This cannot be undone.")) {
+      setWorksheet(initialWorksheetState);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-stone-100 font-serif text-stone-900 print:bg-white">
+      {/* Navigation / Header - Hidden on Print */}
+      <nav className="bg-blue-900 text-white p-4 shadow-md print:hidden sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-4">
+          <div className="flex items-center gap-2">
+            <Scroll className="h-6 w-6 text-yellow-400" />
+            <h1 className="text-xl font-bold tracking-wider">Declaration Analysis</h1>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setShowSourceSideBySide(!showSourceSideBySide)}
+              className="hidden md:flex items-center gap-2 text-sm bg-blue-800 px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+            >
+              <BookOpen className="h-4 w-4" />
+              {showSourceSideBySide ? "Hide Text" : "Show Text"}
+            </button>
+            
+            <button 
+              onClick={handlePrint}
+              className="flex items-center gap-2 text-sm bg-yellow-600 text-white px-4 py-1.5 rounded font-semibold hover:bg-yellow-500 transition-colors shadow-sm"
+            >
+              <Printer className="h-4 w-4" />
+              Submit / Print
+            </button>
+
+            <button 
+              onClick={handleReset}
+              className="text-blue-300 hover:text-red-400 transition-colors"
+              title="Clear Form"
+            >
+              <Trash2 className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto p-4 md:p-6">
+        
+        <div className={`flex flex-col ${showSourceSideBySide ? 'md:flex-row' : ''} gap-6`}>
+          
+          {/* Source Text Panel */}
+          <div className={`
+            ${showSourceSideBySide ? 'md:w-1/3 md:block' : 'hidden'} 
+            ${activeTab === 'source' ? 'block' : 'hidden md:block'}
+            bg-white rounded-lg shadow-lg border border-stone-300 overflow-hidden flex flex-col h-[calc(100vh-140px)] sticky top-24 print:hidden
+          `}>
+            <div className="bg-stone-200 p-3 border-b border-stone-300 flex justify-between items-center">
+              <h2 className="font-bold text-stone-700 flex items-center gap-2">
+                <FileText className="h-4 w-4" /> Source Text
+              </h2>
+              <span className="text-xs text-stone-500 uppercase tracking-widest">July 4, 1776</span>
+            </div>
+            <div className="overflow-y-auto p-4 space-y-6 bg-[#fdfbf7]">
+              {declarationSections.map((section) => (
+                <div key={section.id} className="relative pl-8 group">
+                  <div className="absolute left-0 top-0 w-6 h-6 bg-red-800 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+                    {section.id}
+                  </div>
+                  <p className="text-sm leading-relaxed text-stone-800 text-justify">
+                    {section.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile Tab Switcher (only visible on small screens) */}
+          <div className="md:hidden flex bg-white rounded-lg shadow p-1 mb-4 print:hidden">
+            <button 
+              className={`flex-1 py-2 text-sm font-medium rounded ${activeTab === 'worksheet' ? 'bg-blue-100 text-blue-900' : 'text-stone-500'}`}
+              onClick={() => setActiveTab('worksheet')}
+            >
+              Worksheet
+            </button>
+            <button 
+              className={`flex-1 py-2 text-sm font-medium rounded ${activeTab === 'source' ? 'bg-blue-100 text-blue-900' : 'text-stone-500'}`}
+              onClick={() => setActiveTab('source')}
+            >
+              Read Declaration
+            </button>
+          </div>
+
+          {/* Worksheet Panel */}
+          <div className={`
+            flex-1 bg-white rounded-lg shadow-lg border border-stone-300 p-6 md:p-8 min-h-screen print:shadow-none print:border-none print:p-0
+            ${activeTab === 'worksheet' ? 'block' : 'hidden md:block'}
+          `}>
+            
+            {/* Worksheet Header */}
+            <div className="border-b-4 border-red-800 pb-6 mb-8">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-stone-900 uppercase tracking-tight">Primary Source Analysis</h2>
+                  <h3 className="text-xl md:text-2xl text-red-800 font-bold mt-1">Declaration of Independence</h3>
+                </div>
+                <div className="w-1/3">
+                  <label className="block text-xs font-bold text-stone-500 uppercase mb-1">Student Name</label>
+                  <input 
+                    type="text" 
+                    value={worksheet.studentName}
+                    onChange={handleNameChange}
+                    placeholder="Enter your name..."
+                    className="w-full border-b-2 border-stone-400 bg-transparent focus:border-blue-600 focus:outline-none py-1 px-2 font-handwriting text-lg"
+                  />
+                </div>
+              </div>
+              <p className="text-stone-600 italic text-sm">
+                Instructions: Read the provided sections of the Declaration of Independence. Complete the Find It, Answer It, and Summarize It sections below.
+              </p>
+            </div>
+
+            {/* FIND IT Section */}
+            <section className="mb-10">
+              <div className="flex items-center gap-2 mb-4 bg-stone-200 p-2 rounded-lg print:bg-transparent print:p-0">
+                <span className="bg-stone-800 text-white text-xs font-bold px-2 py-1 rounded uppercase">Part 1</span>
+                <h3 className="font-bold text-lg text-stone-800">Find It!</h3>
+              </div>
+              <p className="text-sm text-stone-600 mb-4 print:hidden">Find the lettered section from the text that best matches each summary below.</p>
+
+              <div className="space-y-4">
+                {[
+                  { id: 'q1', text: "The King has not supported laws that are necessary for the common good, he doesn't allow the governors to pass laws that are needed, and he has invaded on the rights of our people." },
+                  { id: 'q2', text: "The King has taken away our rights to a trial by jury, sent us overseas to be tried, taken away our charters, altered our governments, and keeps messing with our Legislatures." },
+                  { id: 'q3', text: "Governments should not be changed for simple causes, but when there has been a long series of abuses, it is the right of the people to abolish such governments. Now let us prove these abuses to the viewing world." },
+                  { id: 'q4', text: "The King has burnt our towns, ravaged our coasts, and is an unworthy head of this colonial nation. He has even taken fellow citizens and turned them against each other." }
+                ].map((q, idx) => (
+                  <div key={q.id} className="flex gap-4 items-start p-3 rounded hover:bg-stone-50 print:hover:bg-white border border-transparent hover:border-stone-200 transition-colors">
+                    <div className="bg-stone-400 text-white w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center font-bold">
+                      {idx + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-stone-800 mb-2">{q.text}</p>
+                    </div>
+                    <div className="w-24 flex-shrink-0">
+                      <label className="block text-xs font-bold text-stone-500 mb-1 text-center">Section Letter</label>
+                      <select 
+                        value={worksheet.findIt[q.id]}
+                        onChange={(e) => handleInputChange('findIt', q.id, e.target.value)}
+                        className="w-full p-2 border-2 border-stone-300 rounded text-center font-bold text-blue-900 focus:border-blue-600 focus:outline-none cursor-pointer bg-white print:border-stone-400 print:appearance-none"
+                      >
+                        <option value="">-</option>
+                        {declarationSections.map(s => (
+                          <option key={s.id} value={s.id}>{s.id}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ANSWER IT Section */}
+            <section className="mb-10 page-break-inside-avoid">
+              <div className="flex items-center gap-2 mb-4 bg-stone-200 p-2 rounded-lg print:bg-transparent print:p-0">
+                <span className="bg-stone-800 text-white text-xs font-bold px-2 py-1 rounded uppercase">Part 2</span>
+                <h3 className="font-bold text-lg text-stone-800">Answer It!</h3>
+              </div>
+              
+              <div className="space-y-8">
+                <QuestionBlock 
+                  number="5"
+                  prompt="As explained in Section A, explain what the colonists are wanting to do? Explain the words dissolve and separate in your answer."
+                  value={worksheet.answerIt.q5}
+                  onChange={(val) => handleInputChange('answerIt', 'q5', val)}
+                />
+                
+                <QuestionBlock 
+                  number="6"
+                  prompt="Jefferson states, 'We hold these truths to be self-evident'. What are these evident or obvious 'truths' as explained in Section B?"
+                  value={worksheet.answerIt.q6}
+                  onChange={(val) => handleInputChange('answerIt', 'q6', val)}
+                />
+
+                <QuestionBlock 
+                  number="7"
+                  prompt="According to Section B, what is the source of government power, and when should a government be overthrown?"
+                  value={worksheet.answerIt.q7}
+                  onChange={(val) => handleInputChange('answerIt', 'q7', val)}
+                />
+
+                <QuestionBlock 
+                  number="8"
+                  prompt="In Section K, what powers does Jefferson think the colonies should have as free and independent states?"
+                  value={worksheet.answerIt.q8}
+                  onChange={(val) => handleInputChange('answerIt', 'q8', val)}
+                />
+
+                <div className="bg-stone-50 p-4 rounded-lg border border-stone-200 print:border-none print:p-0">
+                  <div className="flex gap-3 mb-2">
+                    <div className="bg-stone-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">9</div>
+                    <p className="font-medium text-stone-800">Read Section J, and then number the following summaries in order as they appear (1, 2, or 3):</p>
+                  </div>
+                  <div className="pl-10 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="text" maxLength="1" 
+                        className="w-10 h-10 text-center border-2 border-stone-300 rounded focus:border-blue-600 focus:outline-none font-bold"
+                        value={worksheet.answerIt.q9_1}
+                        onChange={(e) => handleInputChange('answerIt', 'q9_1', e.target.value)}
+                      />
+                      <span className="text-sm">We will also treat our fellow British brothers as friends in peace but enemies in war.</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="text" maxLength="1" 
+                        className="w-10 h-10 text-center border-2 border-stone-300 rounded focus:border-blue-600 focus:outline-none font-bold"
+                        value={worksheet.answerIt.q9_2}
+                        onChange={(e) => handleInputChange('answerIt', 'q9_2', e.target.value)}
+                      />
+                      <span className="text-sm">We have warned our fellow British brothers how they have contributed in ruling over us.</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="text" maxLength="1" 
+                        className="w-10 h-10 text-center border-2 border-stone-300 rounded focus:border-blue-600 focus:outline-none font-bold"
+                        value={worksheet.answerIt.q9_3}
+                        onChange={(e) => handleInputChange('answerIt', 'q9_3', e.target.value)}
+                      />
+                      <span className="text-sm">Our fellow British brothers have not listened. They have been deaf to our concerns.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <QuestionBlock 
+                  number="10"
+                  prompt="Section F is a list of some very specific abuses. Give 3 specific examples from history that the colonists are referring to?"
+                  value={worksheet.answerIt.q10}
+                  onChange={(val) => handleInputChange('answerIt', 'q10', val)}
+                />
+
+                <QuestionBlock 
+                  number="11"
+                  prompt="Do you agree with this declaration and believe that the colonies have good enough reasons to break up with the King? Is the King truly a tyrant and unfit to rule as explained in Section J? Why or why not?"
+                  value={worksheet.answerIt.q11}
+                  onChange={(val) => handleInputChange('answerIt', 'q11', val)}
+                />
+
+                <QuestionBlock 
+                  number="12"
+                  prompt="Do you think the United States has fully achieved 'life, liberty and pursuit of happiness' or even the 'All men are created equal' as desired in this document? In what ways has this changed over the years? Are we still continuing to strive for these ideals today?"
+                  value={worksheet.answerIt.q12}
+                  onChange={(val) => handleInputChange('answerIt', 'q12', val)}
+                />
+              </div>
+            </section>
+
+            {/* SUMMARIZE IT Section */}
+            <section className="page-break-inside-avoid">
+              <div className="flex items-center gap-2 mb-4 bg-stone-200 p-2 rounded-lg print:bg-transparent print:p-0">
+                <span className="bg-stone-800 text-white text-xs font-bold px-2 py-1 rounded uppercase">Part 3</span>
+                <h3 className="font-bold text-lg text-stone-800">Summarize It!</h3>
+              </div>
+              <p className="text-sm text-stone-600 mb-4 print:hidden">Rewrite the following paragraphs in your own words to make them short and more easily understandable.</p>
+
+              <div className="space-y-6">
+                 <SummaryBlock 
+                   number="13" 
+                   section="Section A" 
+                   value={worksheet.summarizeIt.q13}
+                   onChange={(val) => handleInputChange('summarizeIt', 'q13', val)}
+                 />
+                 <SummaryBlock 
+                   number="14" 
+                   section="Section I" 
+                   value={worksheet.summarizeIt.q14}
+                   onChange={(val) => handleInputChange('summarizeIt', 'q14', val)}
+                 />
+                 <SummaryBlock 
+                   number="15" 
+                   section="Section K" 
+                   value={worksheet.summarizeIt.q15}
+                   onChange={(val) => handleInputChange('summarizeIt', 'q15', val)}
+                 />
+              </div>
+            </section>
+
+            <div className="mt-12 text-center text-stone-400 text-xs print:hidden">
+              <p>Work is automatically saved to this browser.</p>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+// Helper Components
+function QuestionBlock({ number, prompt, value, onChange }) {
+  return (
+    <div className="relative pl-10 group">
+      <div className="absolute left-0 top-0 bg-stone-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+        {number}
+      </div>
+      <label className="block text-stone-800 font-medium mb-2 text-sm md:text-base">{prompt}</label>
+      <textarea 
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={4}
+        placeholder="Type your answer here..."
+        className="w-full p-3 rounded-lg border border-stone-300 bg-stone-50 focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none transition-all text-sm leading-relaxed font-sans print:bg-transparent print:border-b print:border-t-0 print:border-x-0 print:rounded-none print:resize-none"
+      />
+    </div>
+  );
+}
+
+function SummaryBlock({ number, section, value, onChange }) {
+  return (
+    <div className="border border-stone-200 rounded-lg p-4 bg-stone-50 print:bg-white print:border-none print:p-0">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="bg-stone-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">
+          {number}
+        </div>
+        <h4 className="font-bold text-stone-700">{section}</h4>
+      </div>
+      <textarea 
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={3}
+        placeholder={`Rewrite ${section} in your own words...`}
+        className="w-full p-3 rounded border border-stone-300 focus:border-blue-600 focus:outline-none text-sm font-sans print:bg-transparent print:border-b print:border-t-0 print:border-x-0 print:rounded-none print:resize-none"
+      />
+    </div>
+  );
+}
