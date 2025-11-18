@@ -1,0 +1,375 @@
+import React, { useState, useEffect } from 'react';
+import { BookOpen, Scroll, Info, ChevronDown, ChevronUp, MessageCircle, Feather, X, GraduationCap } from 'lucide-react';
+
+// --- DATA: The Declaration Sections (A-K) ---
+const declarationSections = [
+  {
+    id: 'A',
+    title: 'The Introduction',
+    original: "When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another, and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which impel them to the separation.",
+    modern: "Sometimes in history, a group of people needs to separate themselves from the country they were part of. They need to become an independent country, equal to all others, as natural law allows. Out of respect for the rest of the world, they should explain exactly why they are leaving.",
+    analysis: "This sets the stage. Jefferson is saying, \"We are breaking up, and we owe the world an explanation why.\"",
+    vocab: {
+      "dissolve": "To end or close down.",
+      "impel": "To force or drive someone to do something.",
+      "station": "Status or position.",
+      "entitle": "To give a right to."
+    }
+  },
+  {
+    id: 'B',
+    title: 'The Preamble (Natural Rights)',
+    original: "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.--That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed, --That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government, laying its foundation on such principles and organizing its powers in such form, as to them shall seem most likely to effect their Safety and Happiness.",
+    modern: "Ideally, it is obvious that everyone is equal and has rights given by God that cannot be taken away: Life, Freedom, and the chance to be happy. Governments exist only to protect these rights, and they only have power because the people say so. If a government starts destroying these rights, the people have the right to change it or get rid of it and create a new one that will keep them safe and happy.",
+    analysis: "The core philosophy. 1. Rights come from God/Nature, not the King. 2. Government works for the people (Consent of the Governed).",
+    vocab: {
+      "self-evident": "Obvious; needing no explanation.",
+      "unalienable": "Cannot be taken away or denied.",
+      "endowed": "Given or provided with.",
+      "consent": "Permission or agreement.",
+      "abolish": "To formally put an end to something."
+    }
+  },
+  {
+    id: 'C',
+    title: 'The Right to Revolution',
+    original: "Prudence, indeed, will dictate that Governments long established should not be changed for light and transient causes; and accordingly all experience hath shewn, that mankind are more disposed to suffer, while evils are sufferable, than to right themselves by abolishing the forms to which they are accustomed. But when a long train of abuses and usurpations, pursuing invariably the same Object evinces a design to reduce them under absolute Despotism, it is their right, it is their duty, to throw off such Government, and to provide new Guards for their future security.",
+    modern: "Wisdom tells us not to change governments for small reasons. People usually prefer to suffer through bad times rather than cause chaos by changing their government. But when a government abuses its power over and over again to create a tyranny, it is not just the people's right but their duty to overthrow it.",
+    analysis: "Jefferson admits revolution is serious business. It shouldn't be done for small reasons, but the King's abuse has gone on too long.",
+    vocab: {
+      "prudence": "Cautiousness; good judgment.",
+      "transient": "Lasting only for a short time.",
+      "usurpations": "Taking someone's power or property by force.",
+      "despotism": "Absolute power or tyranny.",
+      "evinces": "Clearly shows or reveals."
+    }
+  },
+  {
+    id: 'D',
+    title: 'Grievances: Legislative Powers',
+    original: "He has refused his Assent to Laws, the most wholesome and necessary for the public good. He has forbidden his Governors to pass Laws of immediate and pressing importance... He has refused to pass other Laws for the accommodation of large districts of people... He has called together legislative bodies at places unusual, uncomfortable, and distant... He has dissolved Representative Houses repeatedly... He has refused for a long time, after such dissolutions, to cause others to be elected...",
+    modern: "The King has refused to sign laws that we need. He won't let our local leaders pass important laws. He makes it hard for us to pass laws for new regions unless we give up our right to representation. He makes our representatives meet in strange, far-away places just to tire them out. He has fired our determined representatives and refused to let us elect new ones, leaving us vulnerable.",
+    analysis: "The 'He' is King George III. This section lists how the King stopped the colonies from governing themselves.",
+    vocab: {
+      "assent": "Official approval or agreement.",
+      "relinquish": "To give up.",
+      "annihilation": "Complete destruction.",
+      "convulsions": "Violent political turmoil."
+    }
+  },
+  {
+    id: 'E',
+    title: 'Grievances: Judiciary & Immigration',
+    original: "He has endeavoured to prevent the population of these States; for that purpose obstructing the Laws for Naturalization of Foreigners... He has obstructed the Administration of Justice, by refusing his Assent to Laws for establishing Judiciary powers. He has made Judges dependent on his Will alone, for the tenure of their offices, and the amount and payment of their salaries. He has erected a multitude of New Offices, and sent hither swarms of Officers to harrass our people, and eat out their substance.",
+    modern: "He has tried to stop people from moving here. He has blocked our justice system by refusing to let us set up courts. He controls our judges by being the only one who pays them and decides how long they keep their jobs. He has sent swarms of new government officials to harass us and eat our food.",
+    analysis: "The King controlled the courts (making judges biased) and sent soldiers/officials to live off the colonists' resources.",
+    vocab: {
+      "naturalization": "The process of becoming a citizen.",
+      "tenure": "The period of time a job lasts.",
+      "multitude": "A large number.",
+      "substance": "Wealth, resources, or food."
+    }
+  },
+  {
+    id: 'F',
+    title: 'Grievances: Military & Quartering',
+    original: "He has kept among us, in times of peace, Standing Armies without the Consent of our legislatures. He has affected to render the Military independent of and superior to the Civil power. He has combined with others to subject us to a jurisdiction foreign to our constitution... For Quartering large bodies of armed troops among us: For protecting them, by a mock Trial, from punishment for any Murders which they should commit on the Inhabitants of these States...",
+    modern: "He keeps armies here even when there is no war, without our permission. He thinks the military is more important than our local government. He works with Parliament to force laws on us that we didn't agree to. He forces us to house soldiers in our homes. If those soldiers kill us, he protects them with fake trials.",
+    analysis: "A direct attack on the Quartering Act and the presence of British troops who were essentially occupying American cities.",
+    vocab: {
+      "standing armies": "Permanent armies stationed in a country.",
+      "quartering": "Housing soldiers.",
+      "mock trial": "A fake or unfair trial.",
+      "civil power": "The regular government (not military)."
+    }
+  },
+  {
+    id: 'G',
+    title: 'Grievances: Taxes & Rights',
+    original: "For cutting off our Trade with all parts of the world: For imposing Taxes on us without our Consent: For depriving us in many cases, of the benefits of Trial by Jury: For transporting us beyond Seas to be tried for pretended offences: For abolishing the free System of English Laws in a neighbouring Province...",
+    modern: "He stopped us from trading with the rest of the world. He taxes us without our permission. He takes away our right to a trial by a jury of our peers. He sends us across the ocean to England to stand trial for fake crimes.",
+    analysis: "Referencing the Intolerable Acts. 'Taxation without representation' is the famous theme here.",
+    vocab: {
+      "imposing": "Forcing something to be accepted.",
+      "depriving": "Taking something away from someone.",
+      "arbitrary": "Based on random choice or whim, rather than reason."
+    }
+  },
+  {
+    id: 'H',
+    title: 'Grievances: War & Violence',
+    original: "He has abdicated Government here, by declaring us out of his Protection and waging War against us. He has plundered our seas, ravaged our Coasts, burnt our towns, and destroyed the lives of our people. He is at this time transporting large Armies of foreign Mercenaries to compleat the works of death, desolation and tyranny... He has constrained our fellow Citizens taken Captive on the high Seas to bear Arms against their Country...",
+    modern: "He has given up his right to rule us by declaring war on us. He burns our towns, ruins our trade, and kills our people. He is hiring foreign soldiers (Mercenaries) to come here and kill us. He kidnaps our sailors and forces them to fight against their own friends and family.",
+    analysis: "The King is no longer a ruler; he is an enemy waging war. Mentions 'Hessians' (German mercenaries).",
+    vocab: {
+      "abdicated": "Renounced or gave up power.",
+      "plundered": "Stolen goods using force.",
+      "mercenaries": "Soldiers hired to fight for a foreign army.",
+      "perfidy": "Deceitfulness; untrustworthiness."
+    }
+  },
+  {
+    id: 'I',
+    title: 'Failed Petitions',
+    original: "In every stage of these Oppressions We have Petitioned for Redress in the most humble terms: Our repeated Petitions have been answered only by repeated injury. A Prince whose character is thus marked by every act which may define a Tyrant, is unfit to be the ruler of a free people.",
+    modern: "Every time he did something bad, we asked nicely for him to stop. He just hit us harder. A ruler who acts like a tyrant is not fit to rule free people.",
+    analysis: "The 'Olive Branch Petition.' They tried to solve this peacefully, but the King ignored them.",
+    vocab: {
+      "oppressions": "Cruel and unfair treatment.",
+      "redress": "Remedy or compensation for a wrong.",
+      "tyrant": "A cruel and oppressive ruler."
+    }
+  },
+  {
+    id: 'J',
+    title: 'Denunciation of British Brethren',
+    original: "Nor have We been wanting in attentions to our Brittish brethren. We have warned them from time to time of attempts by their legislature to extend an unwarrantable jurisdiction over us. We have reminded them of the circumstances of our emigration and settlement here... They too have been deaf to the voice of justice and of consanguinity. We must, therefore, acquiesce in the necessity, which denounces our Separation, and hold them, as we hold the rest of mankind, Enemies in War, in Peace Friends.",
+    modern: "We didn't just blame the King; we told the British people too. We warned them that their Parliament was treating us unfairly. We reminded them we are family. But they ignored us too. So, we have to separate. They are now just like any other country: enemies when we are at war, friends when we are at peace.",
+    analysis: "They appealed to the British people as 'brothers' (consanguinity), but were ignored. The emotional break is complete.",
+    vocab: {
+      "jurisdiction": "Official power to make legal decisions.",
+      "magnanimity": "Generosity.",
+      "consanguinity": "Relationship by birth; blood relation.",
+      "acquiesce": "Accept something reluctantly but without protest."
+    }
+  },
+  {
+    id: 'K',
+    title: 'The Conclusion (The Declaration)',
+    original: "We, therefore, the Representatives of the United States of America, in General Congress, Assembled... solemnly publish and declare, That these United Colonies are, and of Right ought to be Free and Independent States; that they are Absolved from all Allegiance to the British Crown... And for the support of this Declaration, with a firm reliance on the protection of divine Providence, we mutually pledge to each other our Lives, our Fortunes and our sacred Honor.",
+    modern: "Therefore, we representatives of the USA declare that we are Free and Independent States. We are no longer part of Britain. We have the power to do everything independent countries do. Relying on God's protection, we promise each other our lives, our wealth, and our honor to defend this independence.",
+    analysis: "The actual legal declaration. They are now 'States', not 'Colonies'. The famous final pledge underlines the risk they are taking (treason).",
+    vocab: {
+      "absolved": "Set free from blame or guilt.",
+      "allegiance": "Loyalty to a superior or group.",
+      "providence": "Protective care of God.",
+      "pledge": "A solemn promise."
+    }
+  }
+];
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState(null);
+  const [showModern, setShowModern] = useState(false);
+  const [vocabModal, setVocabModal] = useState(null);
+
+  // Scroll to section handler
+  const handleScrollTo = (id) => {
+    const element = document.getElementById(`section-${id}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection(id);
+    }
+  };
+
+  // Helper to render text with clickable vocab words
+  const renderTextWithVocab = (text, vocabList, isOriginal) => {
+    if (!isOriginal || !vocabList) return <p className="leading-relaxed text-gray-800">{text}</p>;
+
+    let parts = [];
+    let lastIndex = 0;
+    
+    // Create a regex pattern for all vocab words
+    const vocabWords = Object.keys(vocabList);
+    if (vocabWords.length === 0) return <p className="leading-relaxed text-gray-800 serif">{text}</p>;
+
+    // Simple parser to find words and wrap them
+    // Note: This is a basic implementation. For production, use a robust tokenizer.
+    const regex = new RegExp(`\\b(${vocabWords.join('|')})\\b`, 'gi');
+    
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      // Add text before match
+      parts.push(text.substring(lastIndex, match.index));
+      
+      // Add the clickable word
+      const word = match[0];
+      const lowerWord = word.toLowerCase();
+      // Find the key in vocab list that matches loosely
+      const vocabKey = vocabWords.find(k => k.toLowerCase() === lowerWord);
+      
+      parts.push(
+        <span 
+          key={match.index}
+          onClick={(e) => {
+            e.stopPropagation();
+            setVocabModal({ word: word, def: vocabList[vocabKey] });
+          }}
+          className="bg-yellow-100 text-yellow-900 border-b-2 border-yellow-400 cursor-help hover:bg-yellow-200 transition-colors px-1 rounded font-medium"
+          title="Click for definition"
+        >
+          {word}
+        </span>
+      );
+      lastIndex = regex.lastIndex;
+    }
+    // Add remaining text
+    parts.push(text.substring(lastIndex));
+
+    return <p className="leading-relaxed text-gray-900 font-serif text-lg">{parts}</p>;
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f4f1ea] font-sans text-gray-900 relative">
+      {/* Background texture overlay */}
+      <div className="fixed inset-0 pointer-events-none opacity-40 mix-blend-multiply" 
+           style={{
+             backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E")`,
+           }}>
+      </div>
+
+      {/* Header */}
+      <header className="bg-[#2c3e50] text-[#ecf0f1] shadow-lg sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <Feather className="w-6 h-6 text-yellow-500" />
+            <h1 className="text-xl md:text-2xl font-bold tracking-wider font-serif">Declaration Parser</h1>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <div className="hidden md:flex text-sm items-center space-x-2 bg-white/10 px-3 py-1 rounded-full">
+              <span className={!showModern ? "font-bold text-yellow-400" : "text-gray-400"}>1776</span>
+              <button 
+                onClick={() => setShowModern(!showModern)}
+                className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ease-in-out ${showModern ? 'bg-blue-500' : 'bg-gray-600'}`}
+              >
+                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ${showModern ? 'translate-x-6' : ''}`}></div>
+              </button>
+              <span className={showModern ? "font-bold text-white" : "text-gray-400"}>Modern</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation Strip */}
+        <div className="bg-[#34495e] overflow-x-auto">
+          <div className="max-w-5xl mx-auto px-2 py-2 flex space-x-2 md:justify-center min-w-max">
+            {declarationSections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => handleScrollTo(section.id)}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all ${
+                  activeSection === section.id 
+                  ? 'bg-yellow-500 text-blue-900' 
+                  : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {section.id}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Toggle (Floating) */}
+      <div className="md:hidden fixed bottom-6 right-6 z-50">
+        <button 
+          onClick={() => setShowModern(!showModern)}
+          className="bg-blue-600 text-white p-4 rounded-full shadow-xl flex items-center shadow-blue-900/30 hover:bg-blue-700 transition-transform active:scale-95"
+        >
+          {showModern ? <MessageCircle size={24} /> : <Scroll size={24} />}
+          <span className="ml-2 font-bold">{showModern ? "Show 1776" : "Translate"}</span>
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8 space-y-12 pb-24">
+        
+        <div className="text-center space-y-4 mb-12">
+          <h2 className="text-4xl md:text-5xl font-serif text-[#2c3e50] font-bold">The Declaration of Independence</h2>
+          <p className="text-gray-600 italic font-serif">In Congress, July 4, 1776</p>
+          <div className="w-24 h-1 bg-red-800 mx-auto rounded"></div>
+          <p className="text-sm text-gray-500 max-w-xl mx-auto">
+            Tap highlighted words to see their definitions. Use the toggle to switch between the original text and a modern explanation.
+          </p>
+        </div>
+
+        {declarationSections.map((section) => (
+          <section 
+            key={section.id} 
+            id={`section-${section.id}`}
+            className="scroll-mt-32 group"
+            onMouseEnter={() => setActiveSection(section.id)}
+          >
+            {/* Section Label (A-K) */}
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#8e2020] text-white flex items-center justify-center font-bold text-xl shadow-md mr-4 border-4 border-[#f4f1ea] ring-2 ring-[#8e2020]">
+                {section.id}
+              </div>
+              <h3 className="text-2xl font-serif text-[#2c3e50] font-bold border-b-2 border-gray-200 pb-1 flex-grow">
+                {section.title}
+              </h3>
+            </div>
+
+            {/* Card Container */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-shadow hover:shadow-xl">
+              
+              {/* Top Bar: Analysis Summary */}
+              <div className="bg-gray-50 px-6 py-3 border-b border-gray-100 flex items-start space-x-3">
+                <GraduationCap className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
+                <p className="text-sm text-blue-900 font-medium italic">
+                  <span className="font-bold not-italic mr-1">Analysis:</span>
+                  {section.analysis}
+                </p>
+              </div>
+
+              {/* Main Text Area */}
+              <div className="flex flex-col md:flex-row">
+                {/* Original Text */}
+                <div className={`p-6 md:w-1/2 ${showModern ? 'hidden md:block border-r border-gray-100' : 'block'}`}>
+                  <h4 className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-3 flex items-center">
+                    <Scroll className="w-3 h-3 mr-1" /> Original Text (1776)
+                  </h4>
+                  {renderTextWithVocab(section.original, section.vocab, true)}
+                </div>
+
+                {/* Modern Text */}
+                <div className={`p-6 md:w-1/2 bg-blue-50/30 ${!showModern ? 'hidden md:block' : 'block'}`}>
+                   <h4 className="text-xs uppercase tracking-widest text-blue-400 font-bold mb-3 flex items-center">
+                    <MessageCircle className="w-3 h-3 mr-1" /> Modern Translation
+                  </h4>
+                  <p className="text-lg text-blue-900 leading-relaxed">
+                    {section.modern}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        ))}
+      </main>
+
+      {/* Vocabulary Modal */}
+      {vocabModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm" onClick={() => setVocabModal(null)}>
+          <div 
+            className="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full transform transition-all scale-100 border-t-4 border-yellow-500"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-2xl font-serif font-bold text-[#2c3e50] capitalize">{vocabModal.word}</h3>
+              <button onClick={() => setVocabModal(null)} className="text-gray-400 hover:text-gray-600">
+                <X size={24} />
+              </button>
+            </div>
+            <p className="text-lg text-gray-700">{vocabModal.def}</p>
+            <div className="mt-6 flex justify-end">
+              <button 
+                onClick={() => setVocabModal(null)}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors font-medium text-sm"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="bg-[#2c3e50] text-gray-400 py-8 text-center">
+        <p className="text-sm">Interactive History Parser</p>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
