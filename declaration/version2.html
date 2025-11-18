@@ -1,0 +1,430 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { BookOpen, Edit3, Save, Printer, Trash2, ChevronRight, X, HelpCircle, Search, FileText, PenTool } from 'lucide-react';
+
+// --- DATA CONSTANTS ---
+
+const declarationSections = [
+  {
+    id: 'A',
+    title: "The Preamble & Introduction",
+    text: "When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another, and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which impel them to the separation."
+  },
+  {
+    id: 'B',
+    title: "The Philosophy of Government",
+    text: "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.--That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed, --That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government, laying its foundation on such principles and organizing its powers in such form, as to them shall seem most likely to effect their Safety and Happiness."
+  },
+  {
+    id: 'C',
+    title: "The Right to Revolution",
+    text: "Prudence, indeed, will dictate that Governments long established should not be changed for light and transient causes; and accordingly all experience hath shewn, that mankind are more disposed to suffer, while evils are sufferable, than to right themselves by abolishing the forms to which they are accustomed. But when a long train of abuses and usurpations, pursuing invariably the same Object evinces a design to reduce them under absolute Despotism, it is their right, it is their duty, to throw off such Government, and to provide new Guards for their future security.--Such has been the patient sufferance of these Colonies; and such is now the necessity which constrains them to alter their former Systems of Government. The history of the present King of Great Britain is a history of repeated injuries and usurpations, all having in direct object the establishment of an absolute Tyranny over these States. To prove this, let Facts be submitted to a candid world."
+  },
+  {
+    id: 'D',
+    title: "Grievances: Legislative Rights",
+    text: "He has refused his Assent to Laws, the most wholesome and necessary for the public good. He has forbidden his Governors to pass Laws of immediate and pressing importance, unless suspended in their operation till his Assent should be obtained; and when so suspended, he has utterly neglected to attend to them. He has refused to pass other Laws for the accommodation of large districts of people, unless those people would relinquish the right of Representation in the Legislature, a right inestimable to them and formidable to tyrants only. He has called together legislative bodies at places unusual, uncomfortable, and distant from the depository of their public Records, for the sole purpose of fatiguing them into compliance with his measures. He has dissolved Representative Houses repeatedly, for opposing with manly firmness his invasions on the rights of the people. He has refused for a long time, after such dissolutions, to cause others to be elected; whereby the Legislative powers, incapable of Annihilation, have returned to the People at large for their exercise; the State remaining in the mean time exposed to all the dangers of invasion from without, and convulsions within."
+  },
+  {
+    id: 'E',
+    title: "Grievances: Judiciary & Administration",
+    text: "He has endeavoured to prevent the population of these States; for that purpose obstructing the Laws for Naturalization of Foreigners; refusing to pass others to encourage their migrations hither, and raising the conditions of new Appropriations of Lands. He has obstructed the Administration of Justice, by refusing his Assent to Laws for establishing Judiciary powers. He has made Judges dependent on his Will alone, for the tenure of their offices, and the amount and payment of their salaries. He has erected a multitude of New Offices, and sent hither swarms of Officers to harrass our people, and eat out their substance."
+  },
+  {
+    id: 'F',
+    title: "Grievances: Military Presence",
+    text: "He has kept among us, in times of peace, Standing Armies without the Consent of our legislatures. He has affected to render the Military independent of and superior to the Civil power. He has combined with others to subject us to a jurisdiction foreign to our constitution, and unacknowledged by our laws; giving his Assent to their Acts of pretended Legislation:"
+  },
+  {
+    id: 'G',
+    title: "Grievances: Acts of Pretended Legislation",
+    text: "For Quartering large bodies of armed troops among us: For protecting them, by a mock Trial, from punishment for any Murders which they should commit on the Inhabitants of these States: For cutting off our Trade with all parts of the world: For imposing Taxes on us without our Consent: For depriving us in many cases, of the benefits of Trial by Jury: For transporting us beyond Seas to be tried for pretended offences: For abolishing the free System of English Laws in a neighbouring Province, establishing therein an Arbitrary government, and enlarging its Boundaries so as to render it at once an example and fit instrument for introducing the same absolute rule into these Colonies: For taking away our Charters, abolishing our most valuable Laws, and altering fundamentally the Forms of our Governments: For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever."
+  },
+  {
+    id: 'H',
+    title: "Grievances: War & Violence",
+    text: "He has abdicated Government here, by declaring us out of his Protection and waging War against us. He has plundered our seas, ravaged our Coasts, burnt our towns, and destroyed the lives of our people. He is at this time transporting large Armies of foreign Mercenaries to compleat the works of death, desolation and tyranny, already begun with circumstances of Cruelty & perfidy scarcely paralleled in the most barbarous ages, and totally unworthy the Head of a civilized nation. He has constrained our fellow Citizens taken Captive on the high Seas to bear Arms against their Country, to become the executioners of their friends and Brethren, or to fall themselves by their Hands. He has excited domestic insurrections amongst us, and has endeavoured to bring on the inhabitants of our frontiers, the merciless Indian Savages, whose known rule of warfare, is an undistinguished destruction of all ages, sexes and conditions."
+  },
+  {
+    id: 'I',
+    title: "Failed Petitions",
+    text: "In every stage of these Oppressions We have Petitioned for Redress in the most humble terms: Our repeated Petitions have been answered only by repeated injury. A Prince whose character is thus marked by every act which may define a Tyrant, is unfit to be the ruler of a free people."
+  },
+  {
+    id: 'J',
+    title: "Denunciation of British Brethren",
+    text: "Nor have We been wanting in attentions to our Brittish brethren. We have warned them from time to time of attempts by their legislature to extend an unwarrantable jurisdiction over us. We have reminded them of the circumstances of our emigration and settlement here. We have appealed to their native justice and magnanimity, and we have conjured them by the ties of our common kindred to disavow these usurpations, which, would inevitably interrupt our connections and correspondence. They too have been deaf to the voice of justice and of consanguinity. We must, therefore, acquiesce in the necessity, which denounces our Separation, and hold them, as we hold the rest of mankind, Enemies in War, in Peace Friends."
+  },
+  {
+    id: 'K',
+    title: "Conclusion & Pledge",
+    text: "We, therefore, the Representatives of the united States of America, in General Congress, Assembled, appealing to the Supreme Judge of the world for the rectitude of our intentions, do, in the Name, and by Authority of the good People of these Colonies, solemnly publish and declare, That these United Colonies are, and of Right ought to be Free and Independent States; that they have full Power to levy War, conclude Peace, contract Alliances, establish Commerce, and to do all other Acts and Things which Independent States may of right do. And for the support of this Declaration, with a firm reliance on the protection of divine Providence, we mutually pledge to each other our Lives, our Fortunes and our sacred Honor."
+  }
+];
+
+// Mapping specific questions to sections for "Focus Mode"
+const sectionQuestions = {
+  'A': [
+    { id: 'q5', type: 'analysis', prompt: "Explain what the colonists are wanting to do? Explain the words 'dissolve' and 'separate'." },
+    { id: 'q13', type: 'summary', prompt: "Rewrite Section A in your own words." }
+  ],
+  'B': [
+    { id: 'q6', type: 'analysis', prompt: "What are the 'self-evident truths' mentioned here?" },
+    { id: 'q7', type: 'analysis', prompt: "What is the source of government power, and when should a government be overthrown?" }
+  ],
+  'C': [
+     { id: 'q3', type: 'findIt', prompt: "This section argues that Governments should not be changed for simple causes, but only after a long train of abuses." }
+  ],
+  'D': [
+    { id: 'q1', type: 'findIt', prompt: "This section mentions the King refusing assent to Laws and forbidding Governors to pass laws." }
+  ],
+  'F': [
+    { id: 'q10', type: 'analysis', prompt: "This section lists specific abuses. Give 3 specific examples from history the colonists are referring to." }
+  ],
+  'G': [
+     { id: 'q2', type: 'findIt', prompt: "This section mentions taking away trial by jury, transporting us overseas, and altering governments." }
+  ],
+  'H': [
+     { id: 'q4', type: 'findIt', prompt: "This section mentions burning towns, ravaging coasts, and unworthy heads of civilized nations." }
+  ],
+  'I': [
+    { id: 'q14', type: 'summary', prompt: "Rewrite Section I in your own words." }
+  ],
+  'J': [
+    { id: 'q9_1', type: 'analysis', prompt: "Find text matching: 'We will also treat our fellow British brothers as friends in peace but enemies in war.'" },
+    { id: 'q9_2', type: 'analysis', prompt: "Find text matching: 'We have warned our fellow British brothers how they have contributed in ruling over us.'" },
+    { id: 'q9_3', type: 'analysis', prompt: "Find text matching: 'Our fellow British brothers have not listened.'" },
+    { id: 'q11', type: 'reflection', prompt: "Is the King truly a tyrant and unfit to rule as explained here? Why or why not?" }
+  ],
+  'K': [
+    { id: 'q8', type: 'analysis', prompt: "What powers does Jefferson think the colonies should have as free and independent states?" },
+    { id: 'q15', type: 'summary', prompt: "Rewrite Section K in your own words." }
+  ]
+};
+
+// Global Reflection Questions (Not tied to one section)
+const globalQuestions = [
+  { id: 'q12', prompt: "Do you think the US has fully achieved 'life, liberty and pursuit of happiness'? How has this changed over the years?" }
+];
+
+const initialAnswers = {
+  studentName: '',
+  q1: '', q2: '', q3: '', q4: '',
+  q5: '', q6: '', q7: '', q8: '',
+  q9_1: '', q9_2: '', q9_3: '',
+  q10: '', q11: '', q12: '',
+  q13: '', q14: '', q15: ''
+};
+
+// --- COMPONENTS ---
+
+export default function App() {
+  const [answers, setAnswers] = useState(initialAnswers);
+  const [activeSection, setActiveSection] = useState(null);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [sidebarMode, setSidebarMode] = useState('context'); // 'context', 'all', 'findIt'
+
+  // Load/Save Logic
+  useEffect(() => {
+    const saved = localStorage.getItem('declaration-reader-save');
+    if (saved) setAnswers(JSON.parse(saved));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('declaration-reader-save', JSON.stringify(answers));
+  }, [answers]);
+
+  const handleAnswerChange = (id, value) => {
+    setAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSectionClick = (id) => {
+    if (activeSection === id && showSidebar) {
+      // If clicking the same section, just toggle sidebar off? 
+      // Or maybe keep it open. Let's keep it simple: it focuses.
+      setActiveSection(id);
+      setSidebarMode('context');
+    } else {
+      setActiveSection(id);
+      setShowSidebar(true);
+      setSidebarMode('context');
+    }
+  };
+
+  const getSectionStatus = (id) => {
+    // Check if this section has questions
+    const qs = sectionQuestions[id] || [];
+    if (qs.length === 0) return 'none';
+    
+    // Check if all relevant questions are answered
+    const allAnswered = qs.every(q => answers[q.id] && answers[q.id].length > 2);
+    return allAnswered ? 'complete' : 'pending';
+  };
+
+  return (
+    <div className="min-h-screen bg-[#fdfbf7] text-stone-900 font-serif flex flex-col">
+      
+      {/* Header */}
+      <header className="bg-stone-900 text-stone-200 p-4 shadow-lg z-50 sticky top-0 flex justify-between items-center print:hidden">
+        <div className="flex items-center gap-3">
+          <FileText className="h-6 w-6 text-yellow-500" />
+          <div>
+            <h1 className="font-bold text-lg tracking-wide">Declaration Reader</h1>
+            <p className="text-xs text-stone-400">Interactive Primary Source Analysis</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4">
+           <input 
+            type="text" 
+            value={answers.studentName}
+            onChange={(e) => handleAnswerChange('studentName', e.target.value)}
+            placeholder="Enter Student Name"
+            className="bg-stone-800 border border-stone-700 rounded px-3 py-1 text-sm focus:outline-none focus:border-yellow-500"
+           />
+           <button onClick={() => window.print()} className="p-2 hover:bg-stone-800 rounded text-stone-300 hover:text-white" title="Print Work">
+             <Printer className="h-5 w-5" />
+           </button>
+        </div>
+      </header>
+
+      <div className="flex-1 flex relative overflow-hidden">
+        
+        {/* Main Text Area */}
+        <main className={`flex-1 overflow-y-auto p-6 md:p-12 transition-all duration-300 ${showSidebar ? 'mr-0 md:mr-96' : ''}`}>
+          <div className="max-w-3xl mx-auto pb-20">
+            
+            {/* Intro Card */}
+            <div className="mb-12 text-center border-b-2 border-stone-200 pb-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-stone-900 mb-4 tracking-tight">The Declaration of Independence</h2>
+              <p className="text-stone-500 italic">In Congress, July 4, 1776.</p>
+              <div className="mt-6 text-sm bg-blue-50 text-blue-900 p-3 rounded inline-block">
+                 <strong>Instructions:</strong> Read the text below. Click on any highlighted section (A-K) to view analysis questions specific to that passage.
+              </div>
+            </div>
+
+            {/* Text Sections */}
+            <div className="space-y-8">
+              {declarationSections.map((sec) => {
+                const status = getSectionStatus(sec.id);
+                const isActive = activeSection === sec.id;
+                const hasQuestions = sectionQuestions[sec.id];
+
+                return (
+                  <div 
+                    key={sec.id}
+                    id={`section-${sec.id}`}
+                    onClick={() => handleSectionClick(sec.id)}
+                    className={`
+                      relative group rounded-lg transition-all duration-200 cursor-pointer border-2
+                      ${isActive 
+                        ? 'bg-white border-blue-500 shadow-xl scale-[1.02]' 
+                        : 'bg-transparent border-transparent hover:bg-white hover:border-stone-200 hover:shadow-sm'
+                      }
+                    `}
+                  >
+                    {/* Section Label Badge */}
+                    <div className={`
+                      absolute -left-4 md:-left-12 top-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold shadow-sm transition-colors z-10
+                      ${isActive ? 'bg-blue-600 text-white' : 'bg-stone-200 text-stone-500 group-hover:bg-stone-300'}
+                      ${status === 'complete' ? '!bg-green-600 !text-white' : ''}
+                    `}>
+                      {sec.id}
+                    </div>
+
+                    <div className="p-6 md:p-8">
+                      {/* Section Title (Optional, for context) */}
+                      <h3 className={`text-xs font-bold uppercase tracking-widest mb-3 ${isActive ? 'text-blue-600' : 'text-stone-400'}`}>
+                        {sec.title}
+                      </h3>
+                      
+                      <p className={`text-lg md:text-xl leading-relaxed text-justify ${isActive ? 'text-stone-900' : 'text-stone-700'}`}>
+                        {sec.text}
+                      </p>
+                      
+                      {/* Hint that questions exist */}
+                      {hasQuestions && (
+                        <div className={`mt-4 flex items-center gap-2 text-sm font-medium transition-opacity ${isActive ? 'opacity-100 text-blue-600' : 'opacity-0 group-hover:opacity-100 text-stone-400'}`}>
+                          <PenTool className="h-4 w-4" />
+                          {status === 'complete' ? 'Analysis Complete' : 'Click to Analyze'}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+             {/* Global Reflection Area at bottom */}
+             <div className="mt-16 border-t-2 border-stone-200 pt-8">
+                <h3 className="text-2xl font-bold text-stone-800 mb-6">Final Reflection</h3>
+                {globalQuestions.map(q => (
+                   <div key={q.id} className="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                     <label className="block font-bold text-stone-700 mb-3">{q.prompt}</label>
+                     <textarea 
+                       className="w-full p-3 border border-stone-300 rounded focus:border-blue-500 focus:outline-none font-sans"
+                       rows={4}
+                       value={answers[q.id]}
+                       onChange={(e) => handleAnswerChange(q.id, e.target.value)}
+                       placeholder="Type your reflection here..."
+                     />
+                   </div>
+                ))}
+             </div>
+
+          </div>
+        </main>
+
+        {/* Sidebar / Action Panel */}
+        <aside 
+          className={`
+            fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-40 flex flex-col
+            ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+            print:hidden
+          `}
+        >
+          {/* Sidebar Header */}
+          <div className="bg-stone-100 p-4 border-b border-stone-200 flex justify-between items-center">
+            <div className="flex gap-2">
+               <button 
+                 onClick={() => setSidebarMode('context')}
+                 className={`px-3 py-1 text-sm rounded font-medium ${sidebarMode === 'context' ? 'bg-white shadow text-blue-900' : 'text-stone-500'}`}
+               >
+                 Current Section
+               </button>
+               <button 
+                 onClick={() => setSidebarMode('all')}
+                 className={`px-3 py-1 text-sm rounded font-medium ${sidebarMode === 'all' ? 'bg-white shadow text-blue-900' : 'text-stone-500'}`}
+               >
+                 All Tasks
+               </button>
+            </div>
+            <button onClick={() => setShowSidebar(false)} className="text-stone-400 hover:text-stone-600">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Sidebar Content */}
+          <div className="flex-1 overflow-y-auto p-6 bg-stone-50">
+            
+            {sidebarMode === 'context' && activeSection && (
+              <div className="animate-fadeIn">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                    {activeSection}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-stone-800">Section Analysis</h3>
+                    <p className="text-xs text-stone-500">Complete the tasks for this passage.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                   {sectionQuestions[activeSection] ? (
+                     sectionQuestions[activeSection].map((q, idx) => (
+                       <div key={q.id} className="bg-white p-4 rounded shadow-sm border border-stone-200">
+                          <div className="flex items-start justify-between mb-2">
+                             <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${
+                               q.type === 'findIt' ? 'bg-yellow-100 text-yellow-800' : 
+                               q.type === 'summary' ? 'bg-green-100 text-green-800' : 
+                               'bg-blue-100 text-blue-800'
+                             }`}>
+                               {q.type === 'findIt' ? 'Find It' : q.type === 'summary' ? 'Summarize' : 'Answer'}
+                             </span>
+                          </div>
+                          <p className="text-sm font-medium text-stone-800 mb-3">{q.prompt}</p>
+                          {q.type === 'findIt' ? (
+                            <div className="text-sm text-stone-500 italic bg-stone-100 p-2 rounded">
+                               Verified: You found Section {activeSection}!
+                               <input type="hidden" value={activeSection} /> {/* Auto-completing logic could go here */}
+                            </div>
+                          ) : (
+                            <textarea 
+                              className="w-full p-2 text-sm border border-stone-300 rounded focus:border-blue-500 focus:outline-none min-h-[100px]"
+                              placeholder="Type your answer..."
+                              value={answers[q.id]}
+                              onChange={(e) => handleAnswerChange(q.id, e.target.value)}
+                            />
+                          )}
+                       </div>
+                     ))
+                   ) : (
+                     <div className="text-center text-stone-500 py-8">
+                       <BookOpen className="h-12 w-12 mx-auto mb-2 opacity-20" />
+                       <p>No specific questions for this section. Keep reading!</p>
+                     </div>
+                   )}
+                </div>
+              </div>
+            )}
+
+            {sidebarMode === 'context' && !activeSection && (
+               <div className="text-center mt-20 text-stone-400">
+                  <Search className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                  <p>Click on a section of the text on the left to see analysis questions.</p>
+               </div>
+            )}
+
+            {sidebarMode === 'all' && (
+               <div className="space-y-8">
+                  <div className="bg-blue-50 p-4 rounded border border-blue-100">
+                    <h4 className="font-bold text-blue-900 mb-2">Progress Report</h4>
+                    <div className="text-sm text-blue-800">
+                      Answered: {Object.values(answers).filter(a => a.length > 0 && a !== answers.studentName).length} / 15
+                    </div>
+                  </div>
+                  
+                  {Object.entries(sectionQuestions).map(([secId, questions]) => (
+                    <div key={secId} className="border-b border-stone-200 pb-4">
+                      <h4 className="font-bold text-stone-700 mb-2 flex items-center gap-2">
+                        <span className="bg-stone-200 text-stone-600 text-xs rounded px-1.5">Sec {secId}</span>
+                        Analysis
+                      </h4>
+                      {questions.map(q => (
+                        <div key={q.id} className="mb-3 ml-4">
+                          <p className="text-xs text-stone-500 mb-1 truncate">{q.prompt}</p>
+                          <div className={`h-2 rounded-full w-full ${answers[q.id] ? 'bg-green-500' : 'bg-stone-200'}`}></div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+               </div>
+            )}
+
+          </div>
+        </aside>
+
+      </div>
+      
+      {/* Print-only view of answers */}
+      <div className="hidden print:block p-8 bg-white text-black">
+        <h1 className="text-2xl font-bold mb-2">Declaration Analysis Results</h1>
+        <h2 className="text-lg mb-6">Student: {answers.studentName}</h2>
+        
+        <div className="space-y-6">
+          {Object.entries(sectionQuestions).map(([secId, questions]) => (
+            <div key={secId}>
+              {questions.map(q => (
+                 answers[q.id] && (
+                   <div key={q.id} className="mb-4 border-b border-stone-100 pb-4 page-break-inside-avoid">
+                     <div className="flex gap-2 font-bold text-sm text-stone-600 mb-1">
+                       <span>Section {secId}</span>
+                       <span>•</span>
+                       <span className="uppercase">{q.type}</span>
+                     </div>
+                     <p className="text-sm italic mb-2">{q.prompt}</p>
+                     <p className="font-serif text-base">{answers[q.id]}</p>
+                   </div>
+                 )
+              ))}
+            </div>
+          ))}
+          <div className="mt-8 border-t border-stone-300 pt-4">
+             <h3 className="font-bold mb-2">Final Reflection</h3>
+             <p>{answers.q12}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
