@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBQ Smartboard: And Justice For All</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Material Icons & Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Material Design Colors */
+        :root {
+            --md-primary: #3f51b5;       /* Indigo 500 */
+            --md-primary-dark: #303f9f;  /* Indigo 700 */
+            --md-secondary: #ffc107;     /* Amber 500 */
+            --md-bg: #f5f5f5;            /* Grey 100 */
+            --md-surface: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-bg);
+            height: 100vh;
+            overflow: hidden;
+            color: rgba(0,0,0,0.87);
+        }
+
+        /* Document Typography */
+        .doc-text {
+            font-family: 'Merriweather', serif;
+            line-height: 2;
+            font-size: 1.125rem; /* 18px */
+            color: rgba(0,0,0,0.87);
+        }
+
+        /* Custom Scrollbar (Slim & Subtle) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bdbdbd; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9e9e9e; 
+        }
+
+        /* Vocabulary Styles */
+        .vocab-term {
+            border-bottom: 2px dotted var(--md-primary);
+            color: var(--md-primary-dark);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+        }
+        .vocab-term:hover {
+            background-color: rgba(63, 81, 181, 0.1); /* Primary with opacity */
+        }
+
+        /* Highlighter Styles */
+        .highlight-yellow {
+            background-color: #fff59d; /* Material Yellow 200 */
+            padding: 2px 0;
+        }
+        .highlight-green {
+            background-color: #a5d6a7; /* Material Green 200 */
+            padding: 2px 0;
+        }
+
+        /* Material Buttons & Ripple Simulation */
+        .md-btn {
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.2s, background-color 0.2s;
+        }
+        .md-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* Material Tabs */
+        .md-tab {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            color: rgba(0,0,0,0.6);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .md-tab:hover {
+            background-color: rgba(63, 81, 181, 0.04);
+            color: var(--md-primary);
+        }
+        .md-tab.active {
+            color: var(--md-primary);
+            border-bottom: 2px solid var(--md-primary);
+        }
+
+        /* Material Card Elevation */
+        .elevation-1 { box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px 0 rgba(0,0,0,0.14), 0 1px 3px 0 rgba(0,0,0,0.12); }
+        .elevation-2 { box-shadow: 0 3px 1px -2px rgba(0,0,0,0.2), 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12); }
+        .elevation-4 { box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12); }
+
+        /* Material Tooltip */
+        .tooltip {
+            visibility: hidden;
+            position: absolute;
+            z-index: 100;
+            background-color: rgba(97, 97, 97, 0.95);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            max-width: 300px;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none; 
+            transform: translateY(10px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- App Container -->
+    <div id="app-container" class="flex flex-col h-screen">
+        
+        <!-- Top App Bar (Material Design) -->
+        <header class="bg-indigo-600 text-white h-16 px-4 flex items-center justify-between elevation-4 z-20 shrink-0">
+            <div class="flex items-center gap-4">
+                <button class="md-btn p-2 rounded-full hover:bg-white/10 text-white">
+                    <span class="material-icons">menu</span>
+                </button>
+                <div>
+                    <h1 class="text-xl font-medium tracking-normal">And Justice For All</h1>
+                </div>
+            </div>
+
+            <!-- Action Icons -->
+            <div class="flex items-center gap-1">
+                <button onclick="clearHighlights()" class="md-btn p-2 rounded-full hover:bg-white/10 text-white" title="Reset All">
+                    <span class="material-icons">restart_alt</span>
+                </button>
+                <button class="md-btn p-2 rounded-full hover:bg-white/10 text-white" title="Help">
+                    <span class="material-icons">help_outline</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 overflow-hidden flex flex-col relative">
+            
+            <!-- Toolbar (Floating Card Style) -->
+            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 bg-white rounded-full pl-2 pr-2 py-1.5 elevation-2 flex items-center gap-2">
+                <button onclick="setTool('cursor')" id="btn-cursor" class="md-btn tool-btn active w-10 h-10 rounded-full flex items-center justify-center bg-indigo-100 text-indigo-700 transition-colors">
+                    <span class="material-icons text-xl">touch_app</span>
+                </button>
+                <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                <button onclick="setTool('highlight-yellow')" id="btn-yellow" class="md-btn tool-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-600 transition-colors" title="Key Idea (Yellow)">
+                    <span class="material-icons text-xl text-yellow-600">brush</span>
+                </button>
+                <button onclick="setTool('highlight-green')" id="btn-green" class="md-btn tool-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-600 transition-colors" title="Evidence (Green)">
+                    <span class="material-icons text-xl text-green-600">brush</span>
+                </button>
+            </div>
+
+            <!-- Document Card Container -->
+            <div class="flex-1 mx-auto w-full max-w-4xl mt-10 mb-6 px-4 flex flex-col overflow-hidden">
+                
+                <!-- Material Card -->
+                <div class="bg-white rounded-lg elevation-2 flex flex-col h-full overflow-hidden relative border border-gray-200">
+                    
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-200 bg-white shrink-0 overflow-x-auto">
+                        <button onclick="switchDoc(1)" id="tab-1" class="md-tab active flex-1 py-4 px-6 text-sm text-center min-w-fit">
+                            F. Douglass
+                        </button>
+                        <button onclick="switchDoc(2)" id="tab-2" class="md-tab flex-1 py-4 px-6 text-sm text-center min-w-fit">
+                            A. Adams
+                        </button>
+                        <button onclick="switchDoc(3)" id="tab-3" class="md-tab flex-1 py-4 px-6 text-sm text-center min-w-fit">
+                            Cherokee Nation
+                        </button>
+                    </div>
+
+                    <!-- Content -->
+                    <div id="document-viewer" class="flex-1 overflow-y-auto p-8 md:p-12 relative doc-text selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
+                        
+                        <!-- DOC 1: Douglass -->
+                        <div id="doc-1" class="document-content max-w-3xl mx-auto animate-fade-in">
+                            <div class="mb-8 pb-4 border-b border-gray-100">
+                                <h2 class="text-3xl text-gray-800 mb-2" style="font-family: 'Roboto', sans-serif; font-weight: 300;">What to the Slave is the Fourth of July?</h2>
+                                <div class="flex items-center gap-2 text-sm text-gray-500 uppercase tracking-wide font-medium">
+                                    <span class="material-icons text-base">event</span>
+                                    <span>Frederick Douglass, 1852</span>
+                                </div>
+                            </div>
+                            <div class="space-y-8">
+                                <p>
+                                    "...I have said that the Declaration of Independence is the <span class="vocab-term" data-def="A heavy metal ring secured to a ship's deck or wall, used to secure chains. Douglass means it is the anchor or core strength holding the nation together.">ring-bolt</span> to the chain of your nation's destiny; so, indeed, I regard it. The principles contained in that instrument are saving principles. Stand by those principles, be true to them on all occasions, in all places, against all foes, and at whatever cost."
+                                </p>
+                                <div class="pl-6 border-l-4 border-indigo-100 py-1 italic text-gray-600">
+                                    Douglass acknowledges the value of the original ideals before criticizing the reality.
+                                </div>
+                                <p>
+                                    "...The blessings in which you, this day, rejoice, are not enjoyed in common. The rich inheritance of justice, liberty, prosperity and independence, <span class="vocab-term" data-def="Passed down or given to the next generation, like an inheritance.">bequeathed</span> by your fathers, is shared by you, not by me. The sunlight that brought light and healing to you, has brought stripes and death to me. This Fourth July is yours, not mine. You may rejoice, I must mourn."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- DOC 2: Adams -->
+                        <div id="doc-2" class="document-content hidden max-w-3xl mx-auto animate-fade-in">
+                            <div class="mb-8 pb-4 border-b border-gray-100">
+                                <h2 class="text-3xl text-gray-800 mb-2" style="font-family: 'Roboto', sans-serif; font-weight: 300;">Remember the Ladies</h2>
+                                <div class="flex items-center gap-2 text-sm text-gray-500 uppercase tracking-wide font-medium">
+                                    <span class="material-icons text-base">mail_outline</span>
+                                    <span>Abigail Adams to John Adams, 1776</span>
+                                </div>
+                            </div>
+                            <div class="space-y-8">
+                                <p>
+                                    "...I long to hear that you have declared an independency—and by the way in the new Code of Laws which I suppose it will be necessary for you to make I desire you would Remember the Ladies, and be more generous and favorable to them than your ancestors."
+                                </p>
+                                <p>
+                                    "Do not put such unlimited power into the hands of the Husbands. Remember all Men would be <span class="vocab-term" data-def="Cruel and oppressive rulers who use power unjustly.">tyrants</span> if they could. If particular care and attention is not paid to the Ladies we are determined to <span class="vocab-term" data-def="To instigate, stir up, or promote the growth of (usually trouble or rebellion).">foment</span> a Rebellion, and will not hold ourselves bound by any Laws in which we have no voice, or Representation."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- DOC 3: Cherokee -->
+                        <div id="doc-3" class="document-content hidden max-w-3xl mx-auto animate-fade-in">
+                            <div class="mb-8 pb-4 border-b border-gray-100">
+                                <h2 class="text-3xl text-gray-800 mb-2" style="font-family: 'Roboto', sans-serif; font-weight: 300;">Cherokee Petition Protesting Removal</h2>
+                                <div class="flex items-center gap-2 text-sm text-gray-500 uppercase tracking-wide font-medium">
+                                    <span class="material-icons text-base">description</span>
+                                    <span>Chief John Ross, 1836</span>
+                                </div>
+                            </div>
+                            <div class="space-y-8">
+                                <p>
+                                    "Little did they anticipate, that when taught to think and feel as the American citizen, and to have with him a common interest, they were to be <span class="vocab-term" data-def="Steal or violently remove valuable possessions from someone; to plunder.">despoiled</span> by their guardian, to become strangers and wanderers in the land of their fathers, forced to return to the savage life, and to seek a new home in the wilds of the far west, and that without their <span class="vocab-term" data-def="Permission for something to happen or agreement to do something.">consent</span>."
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast/Definition Popup -->
+            <div id="def-toast" class="tooltip elevation-2"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- STATE MANAGEMENT ---
+        let currentTool = 'cursor'; // 'cursor', 'highlight-yellow', 'highlight-green'
+
+        // --- DOCUMENT TABS ---
+        function switchDoc(docId) {
+            // Hide all docs
+            document.querySelectorAll('.document-content').forEach(el => el.classList.add('hidden'));
+            // Show selected doc
+            document.getElementById(`doc-${docId}`).classList.remove('hidden');
+            
+            // Update tabs styling
+            document.querySelectorAll('.md-tab').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.getElementById(`tab-${docId}`).classList.add('active');
+        }
+
+        // --- TOOLBAR FUNCTIONS ---
+        function setTool(tool) {
+            currentTool = tool;
+            
+            // Reset all tool buttons to default state
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-100', 'text-indigo-700');
+                btn.classList.add('hover:bg-gray-100', 'text-gray-600');
+            });
+            
+            const activeBtnMap = {
+                'cursor': 'btn-cursor',
+                'highlight-yellow': 'btn-yellow',
+                'highlight-green': 'btn-green'
+            };
+
+            const btnId = activeBtnMap[tool];
+            if(btnId) {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('hover:bg-gray-100', 'text-gray-600');
+                btn.classList.add('bg-indigo-100', 'text-indigo-700');
+            }
+
+            // Set cursor style
+            const viewer = document.getElementById('document-viewer');
+            if (tool === 'cursor') {
+                viewer.style.cursor = 'auto';
+            } else {
+                viewer.style.cursor = 'text';
+            }
+        }
+
+        // --- HIGHLIGHTING LOGIC ---
+        document.getElementById('document-viewer').addEventListener('mouseup', function() {
+            if (currentTool === 'cursor') return;
+
+            const selection = window.getSelection();
+            if (!selection.rangeCount || selection.isCollapsed) return;
+
+            const range = selection.getRangeAt(0);
+            
+            try {
+                const span = document.createElement('span');
+                span.className = currentTool; 
+                range.surroundContents(span);
+                selection.removeAllRanges();
+            } catch (e) {
+                // Fallback or silence for complex selections across blocks
+            }
+        });
+
+        function clearHighlights() {
+            const viewer = document.getElementById('document-viewer');
+            const highlights = viewer.querySelectorAll('.highlight-yellow, .highlight-green');
+            
+            if(highlights.length === 0) return;
+
+            if(confirm("Clear all highlights?")) {
+                highlights.forEach(hl => {
+                    const parent = hl.parentNode;
+                    while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+                    parent.removeChild(hl);
+                });
+            }
+        }
+
+        // --- GLOSSARY TOOLTIP ---
+        const tooltip = document.getElementById('def-toast');
+        document.querySelectorAll('.vocab-term').forEach(term => {
+            term.addEventListener('mouseenter', (e) => {
+                const rect = e.target.getBoundingClientRect();
+                const def = e.target.getAttribute('data-def');
+                tooltip.textContent = def;
+                tooltip.style.visibility = 'visible';
+                tooltip.style.opacity = '1';
+                tooltip.style.transform = 'translateY(0)';
+                
+                // Center tooltip above word
+                const leftPos = rect.left + (rect.width/2) - (tooltip.offsetWidth/2);
+                // Constrain to screen width
+                const safeLeft = Math.max(10, Math.min(leftPos, window.innerWidth - 320));
+                
+                tooltip.style.left = `${safeLeft}px`;
+                tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
+            });
+            
+            term.addEventListener('mouseleave', () => {
+                tooltip.style.visibility = 'hidden';
+                tooltip.style.opacity = '0';
+                tooltip.style.transform = 'translateY(10px)';
+            });
+            
+            // Mobile touch support
+            term.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent triggering other click events
+                const def = e.target.getAttribute('data-def');
+                // Native alert is actually very "Material" in behavior if not style on mobile, 
+                // but let's stick to the tooltip or a custom modal if we were being strict.
+                // For simplicity in this file:
+                alert(`Definition:\n${def}`);
+            });
+        });
+
+    </script>
+</body>
+</html>
+</html>
