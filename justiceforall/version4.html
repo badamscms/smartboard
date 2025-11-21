@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBQ Smartboard: And Justice For All</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Material Icons & Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- DM Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Night Mode Theme Variables */
+        :root {
+            --bg-app: #121212;
+            --bg-surface: #1e1e1e;
+            --bg-surface-2: #2d2d2d;
+            --text-primary: #e2e2e2;
+            --text-secondary: #a0a0a0;
+            --accent-color: #818cf8; /* Indigo 400 */
+            --accent-hover: #6366f1; /* Indigo 500 */
+            
+            /* Highlighter Colors - Adjusted for Dark Mode opacity */
+            --highlight-yellow: rgba(253, 224, 71, 0.35); 
+            --highlight-green: rgba(74, 222, 128, 0.35);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-app);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* Document Typography - Updated to DM Sans */
+        .doc-text {
+            font-family: 'DM Sans', sans-serif;
+            line-height: 2;
+            font-size: 1.15rem;
+            color: #d1d5db; /* Gray 300 */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; 
+        }
+
+        /* Vocabulary Styles */
+        .vocab-term {
+            border-bottom: 2px dashed var(--accent-color);
+            color: #c7d2fe; /* Indigo 200 */
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700; 
+            position: relative;
+        }
+        .vocab-term:hover {
+            background-color: rgba(129, 140, 248, 0.15);
+            color: #fff;
+        }
+
+        /* Highlighter Styles */
+        .highlight-yellow {
+            background-color: var(--highlight-yellow);
+            border-bottom: 2px solid #fde047;
+            color: #fff;
+        }
+        .highlight-green {
+            background-color: var(--highlight-green);
+            border-bottom: 2px solid #4ade80;
+            color: #fff;
+        }
+
+        /* UI Elements */
+        .md-btn {
+            transition: all 0.2s;
+        }
+        .md-btn:active {
+            transform: scale(0.95);
+        }
+
+        .md-tab {
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .md-tab:hover {
+            color: #fff;
+            background-color: rgba(255,255,255,0.05);
+        }
+        .md-tab.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        /* Modal Animation */
+        .modal-backdrop {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .modal-backdrop.open .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Speaking Animation */
+        .speaking {
+            color: #818cf8 !important;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- App Container -->
+    <div id="app-container" class="flex flex-col h-screen">
+        
+        <!-- Top App Bar -->
+        <header class="bg-gray-900 border-b border-gray-800 h-16 px-6 flex items-center justify-between z-20 shrink-0 shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-indigo-900/50 rounded-full flex items-center justify-center border border-indigo-500/30">
+                     <span class="material-icons text-indigo-400">school</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wide text-white">And Justice For All</h1>
+                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Analysis Activity</p>
+                </div>
+            </div>
+
+            <!-- Action Icons -->
+            <div class="flex items-center gap-3">
+                <button onclick="clearHighlights()" class="md-btn p-2 rounded-full hover:bg-gray-800 text-gray-400 hover:text-red-400 transition-colors" title="Reset All Highlights">
+                    <span class="material-icons">delete_outline</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 overflow-hidden flex flex-col relative">
+            
+            <!-- Floating Toolbar (Lower Left) -->
+            <div class="absolute bottom-6 left-6 z-30 flex gap-3">
+                <!-- Highlight Tools -->
+                <div class="bg-gray-800/90 backdrop-blur-md border border-gray-700 rounded-full px-3 py-2 shadow-xl flex items-center gap-2">
+                    <button onclick="setTool('cursor')" id="btn-cursor" class="md-btn tool-btn active w-10 h-10 rounded-full flex items-center justify-center bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transition-all">
+                        <span class="material-icons text-xl">touch_app</span>
+                    </button>
+                    <div class="w-px h-5 bg-gray-600 mx-2"></div>
+                    <button onclick="setTool('highlight-yellow')" id="btn-yellow" class="md-btn tool-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-700 text-yellow-400 transition-colors" title="Key Idea (Yellow)">
+                        <span class="material-icons text-xl">brush</span>
+                    </button>
+                    <button onclick="setTool('highlight-green')" id="btn-green" class="md-btn tool-btn w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-700 text-green-400 transition-colors" title="Evidence (Green)">
+                        <span class="material-icons text-xl">brush</span>
+                    </button>
+                </div>
+
+                <!-- Scaffold: Thesis Helper Button -->
+                <button onclick="openThesisHelp()" class="bg-purple-900/80 backdrop-blur-md border border-purple-500/30 rounded-full px-4 py-2 shadow-xl flex items-center gap-2 hover:bg-purple-800 transition-all text-purple-200">
+                    <span class="material-icons">edit_note</span>
+                    <span class="font-bold text-sm pr-1">Thesis Help</span>
+                </button>
+            </div>
+
+            <!-- Document Card Container -->
+            <div class="flex-1 mx-auto w-full max-w-4xl mt-8 mb-8 px-4 flex flex-col overflow-hidden">
+                
+                <!-- Dark Card -->
+                <div class="bg-[#1e1e1e] rounded-xl shadow-2xl flex flex-col h-full overflow-hidden relative border border-gray-800">
+                    
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-800 bg-[#252525] shrink-0">
+                        <button onclick="switchDoc(1)" id="tab-1" class="md-tab active flex-1 py-4 px-4 text-sm tracking-wide">
+                            F. Douglass
+                        </button>
+                        <button onclick="switchDoc(2)" id="tab-2" class="md-tab flex-1 py-4 px-4 text-sm tracking-wide">
+                            A. Adams
+                        </button>
+                        <button onclick="switchDoc(3)" id="tab-3" class="md-tab flex-1 py-4 px-4 text-sm tracking-wide">
+                            Cherokee Nation
+                        </button>
+                    </div>
+
+                    <!-- Content -->
+                    <div id="document-viewer" class="flex-1 overflow-y-auto p-8 md:p-12 relative doc-text selection:bg-indigo-500/30 selection:text-white scroll-smooth">
+                        
+                        <!-- DOC 1: Douglass -->
+                        <div id="doc-1" class="document-content max-w-3xl mx-auto">
+                            <div class="mb-8 pb-4 border-b border-gray-700 flex justify-between items-start">
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">What to the Slave is the Fourth of July?</h2>
+                                    <div class="flex items-center gap-2 text-sm text-indigo-400 font-medium">
+                                        <span class="material-icons text-base">event</span>
+                                        <span>Frederick Douglass, 1852</span>
+                                    </div>
+                                </div>
+                                <button onclick="speakText('doc-1-text')" class="md-btn w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-indigo-400 hover:bg-indigo-600 hover:text-white transition-colors" title="Read Aloud">
+                                    <span class="material-icons">volume_up</span>
+                                </button>
+                            </div>
+                            <div id="doc-1-text" class="space-y-8">
+                                <p>
+                                    "...I have said that the Declaration of Independence is the <span class="vocab-term" data-term="Ring-bolt" data-def="A heavy metal ring secured to a ship's deck or wall. Douglass uses it as a metaphor for the core strength holding the nation together.">ring-bolt</span> to the chain of your nation's destiny; so, indeed, I regard it. The principles contained in that instrument are saving principles. Stand by those principles, be true to them on all occasions, in all places, against all foes, and at whatever cost."
+                                </p>
+                                <div class="pl-6 border-l-4 border-indigo-500/50 py-1 italic text-gray-400 text-base">
+                                    Douglass acknowledges the value of the original ideals before criticizing the reality.
+                                </div>
+                                <p>
+                                    "...The blessings in which you, this day, rejoice, are not enjoyed in common. The rich inheritance of justice, liberty, prosperity and independence, <span class="vocab-term" data-term="Bequeathed" data-def="Passed down or given to the next generation, like an inheritance in a will.">bequeathed</span> by your fathers, is shared by you, not by me. The sunlight that brought light and healing to you, has brought stripes and death to me. This Fourth July is yours, not mine. You may rejoice, I must mourn."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- DOC 2: Adams -->
+                        <div id="doc-2" class="document-content hidden max-w-3xl mx-auto">
+                            <div class="mb-8 pb-4 border-b border-gray-700 flex justify-between items-start">
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Remember the Ladies</h2>
+                                    <div class="flex items-center gap-2 text-sm text-indigo-400 font-medium">
+                                        <span class="material-icons text-base">mail_outline</span>
+                                        <span>Abigail Adams to John Adams, 1776</span>
+                                    </div>
+                                </div>
+                                <button onclick="speakText('doc-2-text')" class="md-btn w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-indigo-400 hover:bg-indigo-600 hover:text-white transition-colors" title="Read Aloud">
+                                    <span class="material-icons">volume_up</span>
+                                </button>
+                            </div>
+                            <div id="doc-2-text" class="space-y-8">
+                                <p>
+                                    "...I long to hear that you have declared an independency—and by the way in the new Code of Laws which I suppose it will be necessary for you to make I desire you would Remember the Ladies, and be more generous and favorable to them than your ancestors."
+                                </p>
+                                <p>
+                                    "Do not put such unlimited power into the hands of the Husbands. Remember all Men would be <span class="vocab-term" data-term="Tyrants" data-def="Cruel and oppressive rulers who use power unjustly.">tyrants</span> if they could. If particular care and attention is not paid to the Ladies we are determined to <span class="vocab-term" data-term="Foment" data-def="To instigate, stir up, or promote the growth of (usually trouble or rebellion).">foment</span> a Rebellion, and will not hold ourselves bound by any Laws in which we have no voice, or Representation."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- DOC 3: Cherokee -->
+                        <div id="doc-3" class="document-content hidden max-w-3xl mx-auto">
+                            <div class="mb-8 pb-4 border-b border-gray-700 flex justify-between items-start">
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Cherokee Petition Protesting Removal</h2>
+                                    <div class="flex items-center gap-2 text-sm text-indigo-400 font-medium">
+                                        <span class="material-icons text-base">description</span>
+                                        <span>Chief John Ross, 1836</span>
+                                    </div>
+                                </div>
+                                <button onclick="speakText('doc-3-text')" class="md-btn w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-indigo-400 hover:bg-indigo-600 hover:text-white transition-colors" title="Read Aloud">
+                                    <span class="material-icons">volume_up</span>
+                                </button>
+                            </div>
+                            <div id="doc-3-text" class="space-y-8">
+                                <p>
+                                    "Little did they anticipate, that when taught to think and feel as the American citizen, and to have with him a common interest, they were to be <span class="vocab-term" data-term="Despoiled" data-def="To steal or violently remove valuable possessions from someone; to plunder or rob.">despoiled</span> by their guardian, to become strangers and wanderers in the land of their fathers, forced to return to the savage life, and to seek a new home in the wilds of the far west, and that without their <span class="vocab-term" data-term="Consent" data-def="Permission for something to happen or agreement to do something.">consent</span>."
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glossary Modal -->
+    <div id="glossary-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="modal-content bg-[#1e1e1e] border border-gray-700 rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+            <button onclick="closeModal('glossary-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <span class="material-icons">close</span>
+            </button>
+            <div class="mb-2">
+                <span class="text-indigo-400 font-bold tracking-wider text-xs uppercase">Vocabulary</span>
+            </div>
+            <h3 id="modal-term" class="text-2xl font-bold text-white mb-4">Term</h3>
+            <p id="modal-def" class="text-gray-300 leading-relaxed text-lg">Definition goes here.</p>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeModal('glossary-modal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thesis Help Modal (New Scaffold) -->
+    <div id="thesis-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="modal-content bg-[#1e1e1e] border border-gray-700 rounded-2xl shadow-2xl w-full max-w-xl p-8 relative">
+            <button onclick="closeModal('thesis-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <span class="material-icons">close</span>
+            </button>
+            
+            <div class="flex items-center gap-2 mb-6">
+                <div class="p-2 bg-purple-900/30 rounded-lg">
+                     <span class="material-icons text-purple-400">school</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white">Thesis Builder</h3>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">The Formula</h4>
+                    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-200 leading-relaxed">
+                        "Although the Declaration of Independence promised <span class="text-indigo-400 font-bold">[IDEAL]</span>, groups like <span class="text-indigo-400 font-bold">[GROUP 1]</span>, <span class="text-indigo-400 font-bold">[GROUP 2]</span>, and <span class="text-indigo-400 font-bold">[GROUP 3]</span> argued that they were denied this right because <span class="text-indigo-400 font-bold">[REASON]</span>."
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Sentence Starters</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex gap-2">
+                            <span class="text-purple-400">•</span>
+                            <span>"Frederick Douglass claimed that the 'rich inheritance of justice' was..."</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-purple-400">•</span>
+                            <span>"Abigail Adams warned that if women were not represented, they would..."</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-purple-400">•</span>
+                            <span>"The Cherokee Nation argued that the government acted without..."</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button onclick="closeModal('thesis-modal')" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-purple-900/30">
+                    Return to Writing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- STATE MANAGEMENT ---
+        let currentTool = 'cursor'; 
+        let currentSpeaker = null;
+
+        // --- DOCUMENT TABS ---
+        function switchDoc(docId) {
+            // Stop audio if switching
+            if(currentSpeaker) {
+                window.speechSynthesis.cancel();
+                currentSpeaker = null;
+            }
+
+            document.querySelectorAll('.document-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`doc-${docId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.md-tab').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.getElementById(`tab-${docId}`).classList.add('active');
+        }
+
+        // --- TOOLBAR FUNCTIONS ---
+        function setTool(tool) {
+            currentTool = tool;
+            
+            // Reset
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('hover:bg-gray-700');
+                
+                if(btn.id === 'btn-yellow') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-green') btn.classList.add('text-green-400');
+            });
+            
+            const activeBtnMap = {
+                'cursor': 'btn-cursor',
+                'highlight-yellow': 'btn-yellow',
+                'highlight-green': 'btn-green'
+            };
+
+            const btnId = activeBtnMap[tool];
+            if(btnId) {
+                const btn = document.getElementById(btnId);
+                btn.classList.remove('hover:bg-gray-700', 'text-yellow-400', 'text-green-400');
+                btn.classList.add('bg-indigo-600', 'text-white');
+            }
+
+            // Set cursor
+            const viewer = document.getElementById('document-viewer');
+            if (tool === 'cursor') {
+                viewer.style.cursor = 'auto';
+            } else {
+                viewer.style.cursor = 'text';
+            }
+        }
+
+        // --- HIGHLIGHTING LOGIC ---
+        document.getElementById('document-viewer').addEventListener('mouseup', function() {
+            if (currentTool === 'cursor') return;
+
+            const selection = window.getSelection();
+            if (!selection.rangeCount || selection.isCollapsed) return;
+
+            const range = selection.getRangeAt(0);
+            
+            try {
+                // Check for vocab overlap
+                const container = range.commonAncestorContainer;
+                const parentEl = container.nodeType === 1 ? container : container.parentNode;
+                
+                if (parentEl.classList.contains('vocab-term') || parentEl.closest('.vocab-term')) {
+                    alert("Please highlight around the vocabulary words.");
+                    return;
+                }
+
+                const span = document.createElement('span');
+                span.className = currentTool; 
+                range.surroundContents(span);
+                selection.removeAllRanges();
+            } catch (e) {
+                // Silent fail
+            }
+        });
+
+        function clearHighlights() {
+            const viewer = document.getElementById('document-viewer');
+            const highlights = viewer.querySelectorAll('.highlight-yellow, .highlight-green');
+            
+            if(highlights.length === 0) return;
+
+            if(confirm("Clear all highlights?")) {
+                highlights.forEach(hl => {
+                    const parent = hl.parentNode;
+                    while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+                    parent.removeChild(hl);
+                });
+            }
+        }
+
+        // --- MODAL LOGIC ---
+        const modalTerm = document.getElementById('modal-term');
+        const modalDef = document.getElementById('modal-def');
+
+        function openModal(term, def) {
+            modalTerm.textContent = term;
+            modalDef.textContent = def;
+            document.getElementById('glossary-modal').classList.add('open');
+        }
+
+        function openThesisHelp() {
+            document.getElementById('thesis-modal').classList.add('open');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('open');
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.classList.remove('open'));
+            }
+        });
+
+        // Vocab Listeners
+        document.querySelectorAll('.vocab-term').forEach(term => {
+            term.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                const word = e.target.getAttribute('data-term');
+                const def = e.target.getAttribute('data-def');
+                openModal(word, def);
+            });
+        });
+
+        // --- TEXT TO SPEECH ---
+        function speakText(elementId) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                return;
+            }
+
+            const textEl = document.getElementById(elementId);
+            const text = textEl.innerText;
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9; // Slightly slower for comprehension
+            utterance.pitch = 1;
+            
+            window.speechSynthesis.speak(utterance);
+            currentSpeaker = true;
+
+            utterance.onend = function() {
+                currentSpeaker = false;
+            };
+        }
+
+    </script>
+</body>
+</html>
