@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rope of Sand: Articles of Confederation Simulation</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .serif {
+            font-family: 'Merriweather', serif;
+        }
+        .parchment {
+            background-color: #fdfbf7;
+            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { Scroll, Coins, Gavel, FileWarning, Info, Check, X, RefreshCw, Users, ShieldAlert } = lucide;
+
+        // --- DATA: The 13 Original States & Motivations ---
+        const initialStates = [
+            { id: 1, name: 'New Hampshire', region: 'North', vote: false, motivation: {
+                r1: "We are poor farmers. We have no hard currency to give you.",
+                r2: "We hate the British, but we need their manufactured goods.",
+                r3: "We might agree, but we fear a distant government taking our liberty."
+            }},
+            { id: 2, name: 'Massachusetts', region: 'North', vote: true, motivation: {
+                r1: "Our merchants need the navy to protect our ships from pirates! Here is $10.",
+                r2: "Yes! Ban British trade. We need to build up our own manufacturing.",
+                r3: "We are desperate! Shays' Rebellion is scaring us. We need a strong gov."
+            }},
+            { id: 3, name: 'Rhode Island', region: 'North', vote: false, motivation: {
+                r1: "Absolutely not. We print our own paper money, we won't give you gold.",
+                r2: "We rely on smuggling. A ban hurts our economy.",
+                r3: "NEVER. We will veto everything. We like our independence. (Rogue Island!)"
+            }},
+            { id: 4, name: 'Connecticut', region: 'North', vote: true, motivation: {
+                r1: "We can contribute a little, but our farmers are struggling.",
+                r2: "We support New England trade interests. Vote Yes.",
+                r3: "We see the need for funds, but we are wary of New York's power."
+            }},
+            { id: 5, name: 'New York', region: 'Middle', vote: true, motivation: {
+                r1: "We have a great port. We need naval protection.",
+                r2: "Fine, but this will hurt our port revenue.",
+                r3: "We need a government that works, but we don't want to lose our port tariffs."
+            }},
+            { id: 6, name: 'New Jersey', region: 'Middle', vote: true, motivation: {
+                r1: "We are squeezed between NY and PA. We need a national system.",
+                r2: "Yes, protect us from foreign competition.",
+                r3: "YES! We hate paying tariffs to New York. A central tax is better."
+            }},
+            { id: 7, name: 'Pennsylvania', region: 'Middle', vote: true, motivation: {
+                r1: "We are wealthy and willing to pay, but only if others do too.",
+                r2: "Our industries are growing. Cut off the British!",
+                r3: "The current system is chaos. We need a change."
+            }},
+            { id: 8, name: 'Delaware', region: 'Middle', vote: true, motivation: {
+                r1: "We are small. We need a navy because we can't build one alone.",
+                r2: "We follow Pennsylvania's lead usually.",
+                r3: "As a small state, we fear the big states, but we need protection."
+            }},
+            { id: 9, name: 'Maryland', region: 'South', vote: false, motivation: {
+                r1: "Our plantation owners have debts. We cannot spare cash.",
+                r2: "We export tobacco. If we ban British trade, who buys our crop?",
+                r3: "We are worried about federal interference in our affairs."
+            }},
+            { id: 10, name: 'Virginia', region: 'South', vote: true, motivation: {
+                r1: "We are the biggest state. We will lead, but we resent having only 1 vote.",
+                r2: "It hurts our farmers, but we must stand strong against Britain.",
+                r3: "We need a government, but this 1-vote system is unfair to us!"
+            }},
+            { id: 11, name: 'North Carolina', region: 'South', vote: false, motivation: {
+                r1: "We are independent farmers. Leave us alone.",
+                r2: "We need to sell our naval stores (tar/pitch) to the British.",
+                r3: "No. Keep the government in the state capital, not far away."
+            }},
+            { id: 12, name: 'South Carolina', region: 'South', vote: false, motivation: {
+                r1: "Our economy is ruined from the war. We have nothing to give.",
+                r2: "We export rice and indigo. We need British markets.",
+                r3: "We fear a central government might try to end slavery."
+            }},
+            { id: 13, name: 'Georgia', region: 'South', vote: true, motivation: {
+                r1: "We need help! The Spanish are threatening our border. Take our money!",
+                r2: "We need protection more than trade right now.",
+                r3: "We are weak and exposed. We need a strong union to defend us."
+            }}
+        ];
+
+        const ROUNDS = {
+            1: {
+                title: "Round 1: The Empty Treasury",
+                subtitle: "Can we raise $100 for a Navy to fight Pirates?",
+                goal: "Goal: $100",
+                type: "money",
+                passCondition: 100,
+                icon: Coins,
+                desc: "The Central Government has requested $10 from each state. However, under the Articles, payment is voluntary."
+            },
+            2: {
+                title: "Round 2: The Trade Ban",
+                subtitle: "Pass a law to ban trade with Britain.",
+                goal: "Goal: 9/13 Votes",
+                type: "votes",
+                passCondition: 9,
+                icon: Scroll,
+                desc: "To pass a major law, you need a Supermajority (9 out of 13). Simple majority (7) is not enough."
+            },
+            3: {
+                title: "Round 3: The Amendment",
+                subtitle: "Amend the Articles to allow Federal Taxation.",
+                goal: "Goal: 13/13 Votes",
+                type: "votes",
+                passCondition: 13,
+                icon: FileWarning,
+                desc: "To change the Constitution (The Articles), EVERY single state must agree. Total Unanimity."
+            }
+        };
+
+        const App = () => {
+            const [round, setRound] = useState(1);
+            const [states, setStates] = useState(initialStates);
+            const [showResult, setShowResult] = useState(false);
+            const [revealMotivations, setRevealMotivations] = useState(false);
+
+            // Reset votes when changing rounds
+            useEffect(() => {
+                const resetStates = initialStates.map(s => {
+                    // Default logic for initial state of buttons based on the scenario
+                    // In Round 1, most say no. In Round 3, RI says no.
+                    let defaultVote = false;
+                    if (round === 1) defaultVote = [2, 5, 7, 13].includes(s.id); // Only a few pay
+                    if (round === 2) defaultVote = [2, 4, 5, 6, 7, 8, 10, 13].includes(s.id); // 8 votes (Fail)
+                    if (round === 3) defaultVote = s.id !== 3; // Everyone but RI
+                    return { ...s, vote: defaultVote };
+                });
+                setStates(resetStates);
+                setShowResult(false);
+                setRevealMotivations(false);
+            }, [round]);
+
+            const toggleVote = (id) => {
+                setStates(states.map(s => s.id === id ? { ...s, vote: !s.vote } : s));
+            };
+
+            const calculateResults = () => {
+                let result = { passed: false, total: 0, text: "" };
+                
+                if (round === 1) {
+                    const funds = states.filter(s => s.vote).length * 10;
+                    result.total = funds;
+                    result.passed = funds >= 100;
+                    result.text = result.passed 
+                        ? `Success! You raised $${funds}. The Navy sails!` 
+                        : `Failure. You only raised $${funds}. The pirates sink your merchant ships.`;
+                } else {
+                    const votes = states.filter(s => s.vote).length;
+                    result.total = votes;
+                    result.passed = votes >= ROUNDS[round].passCondition;
+                    result.text = result.passed
+                        ? `Motion Passed! (${votes}/13 States Approved)`
+                        : `Motion Failed. (${votes}/13 States Approved). Needed ${ROUNDS[round].passCondition}.`;
+                }
+                return result;
+            };
+
+            const result = calculateResults();
+            const CurrentIcon = ROUNDS[round].icon;
+
+            return (
+                <div className="min-h-screen pb-12">
+                    {/* Header */}
+                    <header className="bg-slate-900 text-white p-6 shadow-lg sticky top-0 z-50">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                            <div className="flex items-center gap-3 mb-4 md:mb-0">
+                                <Gavel className="w-8 h-8 text-amber-400" />
+                                <div>
+                                    <h1 className="text-2xl font-bold serif tracking-wide">Continental Congress</h1>
+                                    <p className="text-slate-400 text-sm">Articles of Confederation Simulation • 1781-1787</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                                {[1, 2, 3].map(num => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setRound(num)}
+                                        className={`px-4 py-2 rounded-lg font-bold transition-all ${
+                                            round === num 
+                                            ? 'bg-amber-500 text-slate-900 shadow-[0_0_15px_rgba(245,158,11,0.5)]' 
+                                            : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                                        }`}
+                                    >
+                                        Round {num}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main Stage */}
+                    <main className="max-w-7xl mx-auto p-4 md:p-6">
+                        
+                        {/* Scenario Card */}
+                        <div className="bg-white rounded-xl shadow-md border-l-8 border-amber-500 p-6 mb-8">
+                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2 text-amber-600 font-bold uppercase tracking-wider text-sm">
+                                        <CurrentIcon className="w-5 h-5" />
+                                        <span>Current Agenda</span>
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-slate-800 serif mb-2">{ROUNDS[round].title}</h2>
+                                    <p className="text-lg text-slate-600 mb-4">{ROUNDS[round].subtitle}</p>
+                                    <p className="text-slate-500 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                        <span className="font-bold">The Rule:</span> {ROUNDS[round].desc}
+                                    </p>
+                                </div>
+
+                                <div className="bg-slate-100 p-6 rounded-xl flex flex-col items-center justify-center min-w-[250px]">
+                                    <span className="text-slate-500 font-bold uppercase text-xs tracking-widest mb-2">Current Tally</span>
+                                    <div className="text-5xl font-black text-slate-800 mb-2">
+                                        {round === 1 
+                                            ? `$${states.filter(s => s.vote).length * 10}` 
+                                            : `${states.filter(s => s.vote).length} / 13`
+                                        }
+                                    </div>
+                                    <div className={`text-sm font-bold px-3 py-1 rounded-full ${result.passed ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        Target: {ROUNDS[round].passCondition} {round === 1 ? '$' : 'Votes'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="flex justify-between items-center mb-6">
+                            <button 
+                                onClick={() => setRevealMotivations(!revealMotivations)}
+                                className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-medium"
+                            >
+                                <Info className="w-5 h-5" />
+                                {revealMotivations ? "Hide Motivations" : "Reveal Motivations"}
+                            </button>
+                            
+                            <div className="flex gap-3">
+                                <button 
+                                    onClick={() => setShowResult(true)}
+                                    className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-lg transition-transform hover:scale-105"
+                                >
+                                    <Gavel className="w-5 h-5" />
+                                    Ratify / Vote
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* States Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {states.map((state) => (
+                                <div 
+                                    key={state.id} 
+                                    className={`relative rounded-xl border-2 transition-all duration-300 p-4 parchment overflow-hidden group ${
+                                        state.vote 
+                                        ? 'border-green-500 shadow-[0_4px_20px_rgba(34,197,94,0.15)]' 
+                                        : 'border-red-300 shadow-sm opacity-90'
+                                    }`}
+                                >
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 className="font-bold text-slate-800 serif text-lg">{state.name}</h3>
+                                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{state.region}</span>
+                                        </div>
+                                        {state.vote 
+                                            ? <Check className="text-green-600 w-6 h-6" />
+                                            : <X className="text-red-400 w-6 h-6" />
+                                        }
+                                    </div>
+
+                                    {/* Motivation Box */}
+                                    <div className={`text-sm mb-4 transition-all duration-300 ${revealMotivations ? 'opacity-100' : 'opacity-0 h-0 group-hover:h-auto group-hover:opacity-100'}`}>
+                                        <p className="italic text-slate-600 leading-snug">
+                                            "{state.motivation[`r${round}`]}"
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => toggleVote(state.id)}
+                                        className={`w-full py-2 rounded-lg font-bold text-sm transition-colors ${
+                                            state.vote
+                                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                            : 'bg-red-50 text-red-800 hover:bg-red-100'
+                                        }`}
+                                    >
+                                        {round === 1 
+                                            ? (state.vote ? "Contribute $10" : "Withhold Funds")
+                                            : (state.vote ? "Vote YES" : "Vote NO")
+                                        }
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Result Modal */}
+                        {showResult && (
+                            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                                <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-bounce-in transform scale-100">
+                                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${result.passed ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                        {result.passed ? <Check className="w-8 h-8" /> : <ShieldAlert className="w-8 h-8" />}
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-center mb-2 serif">
+                                        {result.passed ? "Success!" : "Gridlock!"}
+                                    </h2>
+                                    <p className="text-center text-slate-600 text-lg mb-6">
+                                        {result.text}
+                                    </p>
+                                    
+                                    {!result.passed && round === 3 && (
+                                        <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-6 text-sm text-amber-900">
+                                            <p className="font-bold flex items-center gap-2 mb-1"><Info className="w-4 h-4"/> Historical Fact:</p>
+                                            During the Articles of Confederation, Rhode Island vetoed a 5% tax on imports, single-handedly stopping the US from paying its war debts.
+                                        </div>
+                                    )}
+
+                                    <button 
+                                        onClick={() => setShowResult(false)}
+                                        className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors"
+                                    >
+                                        Return to Floor
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    
+    <script>
+        // Lucide Icon Initializer
+        lucide.createIcons();
+    </script>
+</body>
+</html>
