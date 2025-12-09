@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rope of Sand: Articles of Confederation Simulation</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .serif {
+            font-family: 'Merriweather', serif;
+        }
+        .parchment {
+            background-color: #fdfbf7;
+            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+        }
+        /* Animation for result modal */
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        .animate-bounce-in {
+            animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        /* Custom Scrollbar for parchment areas */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(120, 53, 15, 0.3);
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(120, 53, 15, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- ICONS ---
+        const Coins = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+        );
+        const Scroll = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M8 17.8a4 4 0 1 0 4-4H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2-2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2Z"/><path d="M12 2v8"/><path d="M4 10h16"/></svg>
+        );
+        const Gavel = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m14.5 12.5-8 8a2.121 2.121 0 0 1-3-3l8-8"/><path d="m16 16 6-6"/><path d="m8 8 6-6"/><path d="m9 7 8 8"/><path d="m21 11-8-8"/></svg>
+        );
+        const FileWarning = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 13v4"/><path d="M12 21h.01"/></svg>
+        );
+        const Check = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="20 6 9 17 4 12"/></svg>
+        );
+        const X = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+        );
+        const ShieldAlert = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        );
+        const FolderLock = (props) => (
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 17.5c0 2.485 0 4.5 4.5 4.5h11c4.5 0 4.5-2.015 4.5-4.5V11c0-2.485 0-4.5-4.5-4.5h-5.5l-2-2.5H6.5C2 4 2 6.015 2 8.5v9Z" /><path d="M12 15v2" /><path d="M12 14a1 1 0 0 1 1 1v1H11v-1a1 1 0 0 1 1-1Z" /></svg>
+        );
+        const Eye = (props) => (
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+        );
+        const EyeOff = (props) => (
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" /><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line x1="2" x2="22" y1="2" y2="22" /></svg>
+        );
+        const Info = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        );
+
+
+        // --- DATA ---
+        // vote: null (Undecided), true (Yes), false (No)
+        const initialStates = [
+            { id: 1, name: 'New Hampshire', region: 'North', vote: null, motivation: {
+                r1: "REPORT: The war left our farms in ruin and our pockets empty. We have barely enough hard currency to trade locally, let alone send to Philadelphia. While we sympathize with the sailors, we simply cannot afford to contribute. VOTE NO.",
+                r2: "REPORT: We have little industry to protect. However, we despise the British for their wartime actions. We will stand with our New England neighbors who want to build up manufacturing. VOTE YES.",
+                r3: "REPORT: We fought a revolution to stop a distant government (London) from taxing us. However, our neighbors are desperate. We will vote YES, but we are worried about the unanimity rule. If one state dissents, this fails. VOTE YES."
+            }},
+            { id: 2, name: 'Massachusetts', region: 'North', vote: null, motivation: {
+                r1: "REPORT: Our merchants are losing millions! The Barbary Pirates are seizing our ships in the Mediterranean. We MUST have a navy to protect our livelihood. We have the money, and we are happy to pay it for protection. VOTE YES.",
+                r2: "REPORT: British factories are dumping cheap goods here, driving our own blacksmiths and weavers out of business. We must ban British goods to save American jobs! VOTE YES.",
+                r3: "REPORT: Chaos is spreading! Shays' Rebellion proved that without money for an army, we are helpless. We NEED this amendment. We are watching Rhode Island closely... if they veto this, we are all doomed. VOTE YES."
+            }},
+            { id: 3, name: 'Rhode Island', region: 'North', vote: null, motivation: {
+                r1: "REPORT: Absolutely not. We print our own paper money to help our farmers pay debts. The central government refuses to accept it—they only want gold. If our money isn't good enough for them, they get nothing. VOTE NO.",
+                r2: "REPORT: Our economy runs on smuggling and trade. Banning British goods would destroy Newport's economy. We will not let big states like Massachusetts tell us who to trade with. VOTE NO.",
+                r3: "REPORT: The rule is UNANIMITY. That means if even ONE state votes No, the tax dies. We will be that state. We have the best port, and if Congress taxes imports, they steal OUR money. We will use our veto power to kill this law. VOTE NO."
+            }},
+            { id: 4, name: 'Connecticut', region: 'North', vote: null, motivation: {
+                r1: "REPORT: We are known as the 'Provisions State' and supplied much food during the war, which was never paid for. However, we see the danger of pirates. We will contribute a token amount to show unity. VOTE YES.",
+                r2: "REPORT: We are tired of relying on British imports. We want to manufacture our own clocks and goods. A ban on British trade helps us become self-sufficient. VOTE YES.",
+                r3: "REPORT: We support the tax to pay off the war debt. It is the only honorable thing to do. We hope all 13 states can finally agree on something. VOTE YES."
+            }},
+            { id: 5, name: 'New York', region: 'Middle', vote: null, motivation: {
+                r1: "REPORT: As a major shipping hub, our vessels are at high risk. We need the sea lanes open. We will pay our share, provided the Southern states pay theirs as well. VOTE YES.",
+                r2: "REPORT: This will hurt the profits of New York City merchants who import British luxury goods. However, the political pressure to stand up to Britain is too high to ignore. Reluctantly, VOTE YES.",
+                r3: "REPORT: Usually, we hate giving up our port taxes. But the national debt is a crisis. We are willing to vote YES this time to save the union... but we hear rumors that Rhode Island plans to ruin it. VOTE YES."
+            }},
+            { id: 6, name: 'New Jersey', region: 'Middle', vote: null, motivation: {
+                r1: "REPORT: We are squeezed between the giants of NY and PA. We have no navy of our own. We desperately need a national force to protect our small shoreline. VOTE YES.",
+                r2: "REPORT: We support this. We want to build our own industries in Newark and Trenton without being undercut by cheap British imports. VOTE YES.",
+                r3: "REPORT: PLEASE PASS THIS! Right now, we buy foreign goods through New York, and New York keeps the tax money. It's like New York is taxing New Jersey! We would much rather pay the Federal government. VOTE YES."
+            }},
+            { id: 7, name: 'Pennsylvania', region: 'Middle', vote: null, motivation: {
+                r1: "REPORT: Philadelphia is the heart of the nation. We are wealthy and can afford to contribute. However, we are tired of carrying the financial burden for the whole country while others pay nothing. We will pay... this time. VOTE YES.",
+                r2: "REPORT: Our ironworks and artisans are suffering. We need protection from British competition. A trade ban is essential for our industrial growth. VOTE YES.",
+                r3: "REPORT: The current system is broken. We have riots, debts, and no respect from Europe. We need a government that can pay its bills. We strongly support the tax amendment. VOTE YES."
+            }},
+            { id: 8, name: 'Delaware', region: 'Middle', vote: null, motivation: {
+                r1: "REPORT: We are small and vulnerable. If pirates attack, we cannot defend ourselves. We rely entirely on the Union for protection. We will scrape together what funds we can. VOTE YES.",
+                r2: "REPORT: We usually follow Pennsylvania's lead on economic matters. If it helps the region's industry, we support it. VOTE YES.",
+                r3: "REPORT: Small states like us need a strong central referee to stop the big states from bullying us. A funded Congress protects us better than a broke one. VOTE YES."
+            }},
+            { id: 9, name: 'Maryland', region: 'South', vote: null, motivation: {
+                r1: "REPORT: Our plantation owners are drowning in debt to British merchants. We have no cash to spare for a navy that mostly protects Northern ships. VOTE NO.",
+                r2: "REPORT: This is disastrous for us! We grow tobacco. We sell almost all of it to Britain. If we ban trade with them, who buys our crop? We will go bankrupt. VOTE NO.",
+                r3: "REPORT: We are worried about federal power, but the debt is crushing us. We will vote YES, but we doubt the 'rogue states' (like Rhode Island) will agree. Unanimity is a high bar. VOTE YES."
+            }},
+            { id: 10, name: 'Virginia', region: 'South', vote: null, motivation: {
+                r1: "REPORT: We are the largest and wealthiest state. We believe in the glory of the nation. We will lead by example and contribute funds, but we demand that the Northern states recognize our leadership. VOTE YES.",
+                r2: "REPORT: This hurts our farmers who need to sell tobacco. BUT, we are patriots first. Britain is disrespecting us. We must stand united, even if it costs us money. VOTE YES.",
+                r3: "REPORT: We acknowledge the government is broken. We are angry that tiny Rhode Island has the same voting power as massive Virginia. We will support the tax, but if Rhode Island vetoes this, the Articles must be destroyed. VOTE YES."
+            }},
+            { id: 11, name: 'North Carolina', region: 'South', vote: null, motivation: {
+                r1: "REPORT: We are a state of independent small farmers. We distrust vital government. We don't have ships being captured. This sounds like a 'Massachusetts problem', not a 'North Carolina problem'. VOTE NO.",
+                r2: "REPORT: We produce naval stores (tar, pitch, timber) for the British Navy. Banning trade with Britain cuts off our main customer. We cannot support this. VOTE NO.",
+                r3: "REPORT: We fought the revolution to keep our money in our own pockets. But the army is unpaid and dangerous. We will hold our nose and vote YES to pay the soldiers. VOTE YES."
+            }},
+            { id: 12, name: 'South Carolina', region: 'South', vote: null, motivation: {
+                r1: "REPORT: The war was fought on our soil. Our fields were burned, our economy ruined. We literally have no money to give. We need aid, we cannot give it. VOTE NO.",
+                r2: "REPORT: We export rice and indigo. We need British markets to survive and rebuild. A trade war now would destroy what is left of our economy. VOTE NO.",
+                r3: "REPORT: We are terrified of Federal power. But we are more terrified of a French invasion because we can't pay our debts. We will vote YES, but we hope this is temporary. VOTE YES."
+            }},
+            { id: 13, name: 'Georgia', region: 'South', vote: null, motivation: {
+                r1: "REPORT: We are less worried about pirates and more worried about the Spanish on our southern border and Creek nation on our west. We need a Federal army to protect us! We will pay in hopes of getting protection. VOTE YES.",
+                r2: "REPORT: We need a strong alliance. If backing the trade ban gets the Northern states to help defend our borders, we will do it. We are too weak to stand alone. VOTE YES.",
+                r3: "REPORT: We are the youngest and weakest state. We are exposed and vulnerable. We need a strong Union to survive. We support a stronger government out of necessity. VOTE YES."
+            }}
+        ];
+
+        const ROUNDS = {
+            1: {
+                title: "Round 1: The Empty Treasury",
+                subtitle: "Can we raise $100 for a Navy to fight Pirates?",
+                context: "SITUATION REPORT (1785): Barbary Pirates from North Africa are capturing American merchant ships and enslaving sailors. The Continental Congress has no navy to protect them and no money to pay the ransom. We are asking each state to voluntarily contribute $10 to the national treasury to build frigates.",
+                goal: "Goal: $100",
+                type: "money",
+                passCondition: 100,
+                icon: Coins,
+                desc: "The Central Government has requested $10 from each state. However, under the Articles, payment is voluntary."
+            },
+            2: {
+                title: "Round 2: The Trade Ban",
+                subtitle: "Pass a law to ban trade with Britain.",
+                context: "SITUATION REPORT (1786): Great Britain is flooding our markets with cheap manufactured goods, bankrupting American workshops. They have also banned our ships from the British West Indies. We propose a national law to ban all British imports until they treat us fairly. This requires 9 states to pass.",
+                goal: "Goal: 9/13 Votes",
+                type: "votes",
+                passCondition: 9,
+                icon: Scroll,
+                desc: "To pass a major law, you need a Supermajority (9 out of 13). Simple majority (7) is not enough."
+            },
+            3: {
+                title: "Round 3: The Amendment",
+                subtitle: "Amend the Articles to allow Federal Taxation.",
+                context: "SITUATION REPORT (1787): The nation is $40 million in debt from the Revolution. Soldiers are unpaid and mutinous. France is demanding repayment. We propose an amendment to the Articles of Confederation to allow Congress to collect a permanent 5% tax on imports (The Impost). This requires 13/13 votes.",
+                goal: "Goal: 13/13 Votes",
+                type: "votes",
+                passCondition: 13,
+                icon: FileWarning,
+                desc: "To change the Constitution (The Articles), EVERY single state must agree. Total Unanimity."
+            }
+        };
+
+        const App = () => {
+            const [round, setRound] = useState(1);
+            const [states, setStates] = useState(initialStates);
+            const [showResult, setShowResult] = useState(false);
+            const [selectedStateForBriefing, setSelectedStateForBriefing] = useState(null);
+            const [briefingRevealed, setBriefingRevealed] = useState(false);
+
+            // Reset votes to NULL when changing rounds
+            useEffect(() => {
+                let resetStates = initialStates.map(s => ({ ...s, vote: null }));
+                
+                // For Round 3: Move Rhode Island to the end for dramatic effect
+                if (round === 3) {
+                    const ri = resetStates.find(s => s.id === 3);
+                    const others = resetStates.filter(s => s.id !== 3);
+                    resetStates = [...others, ri];
+                }
+
+                setStates(resetStates);
+                setShowResult(false);
+                setBriefingRevealed(false);
+                setSelectedStateForBriefing(null);
+            }, [round]);
+
+            const setVote = (id, choice) => {
+                setStates(states.map(s => s.id === id ? { ...s, vote: choice } : s));
+            };
+
+            const calculateResults = () => {
+                let result = { passed: false, total: 0, text: "" };
+                
+                if (round === 1) {
+                    const funds = states.filter(s => s.vote === true).length * 10;
+                    result.total = funds;
+                    result.passed = funds >= 100;
+                    result.text = result.passed 
+                        ? `Success! You raised $${funds}. The Navy sails!` 
+                        : `Failure. You only raised $${funds}. The pirates sink your merchant ships.`;
+                } else {
+                    const votes = states.filter(s => s.vote === true).length;
+                    result.total = votes;
+                    result.passed = votes >= ROUNDS[round].passCondition;
+                    result.text = result.passed
+                        ? `Motion Passed! (${votes}/13 States Approved)`
+                        : `Motion Failed. (${votes}/13 States Approved). Needed ${ROUNDS[round].passCondition}.`;
+                }
+                return result;
+            };
+
+            const result = calculateResults();
+            const CurrentIcon = ROUNDS[round].icon;
+            const currentYesVotes = round === 1 
+                ? states.filter(s => s.vote === true).length * 10 
+                : states.filter(s => s.vote === true).length;
+
+            return (
+                <div className="min-h-screen pb-12 relative">
+                    {/* Header */}
+                    <header className="bg-slate-900 text-white p-6 shadow-lg sticky top-0 z-40">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                            <div className="flex items-center gap-3 mb-4 md:mb-0">
+                                <Gavel className="w-8 h-8 text-amber-400" />
+                                <div>
+                                    <h1 className="text-2xl font-bold serif tracking-wide">Continental Congress</h1>
+                                    <p className="text-slate-400 text-sm">Articles of Confederation Simulation • 1781-1787</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                                {[1, 2, 3].map(num => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setRound(num)}
+                                        className={`px-4 py-2 rounded-lg font-bold transition-all ${
+                                            round === num 
+                                            ? 'bg-amber-500 text-slate-900 shadow-[0_0_15px_rgba(245,158,11,0.5)]' 
+                                            : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                                        }`}
+                                    >
+                                        Round {num}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main Stage */}
+                    <main className="max-w-7xl mx-auto p-4 md:p-6">
+                        
+                        {/* Scenario Card */}
+                        <div className="bg-white rounded-xl shadow-md border-l-8 border-amber-500 p-6 mb-8">
+                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2 text-amber-600 font-bold uppercase tracking-wider text-sm">
+                                        <CurrentIcon className="w-5 h-5" />
+                                        <span>Current Agenda</span>
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-slate-800 serif mb-2">{ROUNDS[round].title}</h2>
+                                    <p className="text-lg text-slate-600 mb-4">{ROUNDS[round].subtitle}</p>
+                                    
+                                    {/* Added Historical Context Box */}
+                                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-4 text-slate-800 leading-relaxed">
+                                        <span className="font-bold text-amber-800 block mb-1">📜 Historical Context:</span>
+                                        {ROUNDS[round].context}
+                                    </div>
+
+                                    <p className="text-slate-500 text-sm italic">
+                                        <span className="font-bold">The Rule:</span> {ROUNDS[round].desc}
+                                    </p>
+                                </div>
+
+                                <div className="bg-slate-100 p-6 rounded-xl flex flex-col items-center justify-center min-w-[250px] shadow-inner">
+                                    <span className="text-slate-500 font-bold uppercase text-xs tracking-widest mb-2">Current Tally</span>
+                                    <div className="text-5xl font-black text-slate-800 mb-2">
+                                        {round === 1 ? `$${currentYesVotes}` : `${currentYesVotes} / 13`}
+                                    </div>
+                                    <div className={`text-sm font-bold px-3 py-1 rounded-full ${result.passed ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        Target: {ROUNDS[round].passCondition} {round === 1 ? '$' : 'Votes'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="flex justify-end items-center mb-6">
+                             <button 
+                                onClick={() => setShowResult(true)}
+                                className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-lg transition-transform hover:scale-105"
+                            >
+                                <Gavel className="w-5 h-5" />
+                                Ratify / Vote
+                            </button>
+                        </div>
+
+                        {/* States Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {states.map((state) => (
+                                <div 
+                                    key={state.id} 
+                                    className={`relative rounded-xl border-2 transition-all duration-300 p-4 parchment overflow-hidden flex flex-col justify-between ${
+                                        state.vote === true
+                                        ? 'bg-green-100 border-green-600 shadow-[0_0_20px_rgba(34,197,94,0.5)] transform scale-[1.02]' 
+                                        : state.vote === false
+                                            ? 'bg-red-100 border-red-600 shadow-[0_0_20px_rgba(239,68,68,0.5)] transform scale-[1.02]'
+                                            : 'border-slate-300 shadow-sm bg-slate-50'
+                                    }`}
+                                >
+                                    <div>
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div>
+                                                <h3 className="font-bold text-slate-800 serif text-lg">{state.name}</h3>
+                                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{state.region}</span>
+                                            </div>
+                                            {/* Status Icon */}
+                                            {state.vote === true && <Check className="text-green-600 w-8 h-8" />}
+                                            {state.vote === false && <X className="text-red-400 w-8 h-8" />}
+                                            {state.vote === null && <div className="w-8 h-8 rounded-full border-2 border-slate-300 bg-slate-100"></div>}
+                                        </div>
+
+                                        <button 
+                                            onClick={() => { setSelectedStateForBriefing(state); setBriefingRevealed(false); }}
+                                            className="w-full text-left mb-4 p-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded text-amber-900 text-xs font-bold flex items-center gap-2 transition-colors"
+                                        >
+                                            <FolderLock className="w-4 h-4" />
+                                            Confidential Briefing
+                                        </button>
+                                    </div>
+
+                                    {/* Vote Controls - Side by Side if Undecided, Full width reset if decided */}
+                                    <div className="mt-2">
+                                        {state.vote === null ? (
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => setVote(state.id, true)}
+                                                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded font-bold text-sm transition-colors"
+                                                >
+                                                    {round === 1 ? 'Pay $10' : 'Yea'}
+                                                </button>
+                                                <button
+                                                    onClick={() => setVote(state.id, false)}
+                                                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded font-bold text-sm transition-colors"
+                                                >
+                                                    Nay
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => setVote(state.id, null)}
+                                                className="w-full bg-slate-200 hover:bg-slate-300 text-slate-600 py-2 rounded font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                                            >
+                                                Retract Vote
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* BRIEFING MODAL */}
+                        {selectedStateForBriefing && (
+                            <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                                <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden animate-bounce-in max-h-[90vh] flex flex-col">
+                                    <div className="bg-slate-800 p-4 flex justify-between items-center text-white shrink-0">
+                                        <div className="flex items-center gap-2">
+                                            <FolderLock className="w-5 h-5 text-amber-400" />
+                                            <span className="font-bold tracking-wider">STATE BRIEFING: {selectedStateForBriefing.name.toUpperCase()}</span>
+                                        </div>
+                                        <button onClick={() => setSelectedStateForBriefing(null)} className="hover:text-red-400 font-bold text-2xl">&times;</button>
+                                    </div>
+                                    
+                                    <div className="p-12 text-center flex-1 flex flex-col items-center justify-center relative parchment custom-scroll overflow-y-auto">
+                                        
+                                        {!briefingRevealed ? (
+                                            <div className="text-center">
+                                                <div className="bg-slate-100 p-6 rounded-full inline-block mb-6">
+                                                    <EyeOff className="w-12 h-12 text-slate-400" />
+                                                </div>
+                                                <h3 className="text-2xl font-bold text-slate-800 mb-2">Classified Information</h3>
+                                                <p className="text-slate-500 mb-8 max-w-sm mx-auto">
+                                                    This information is for the representatives of <strong>{selectedStateForBriefing.name}</strong> only.
+                                                    Ensure no other states are looking before revealing.
+                                                </p>
+                                                <button 
+                                                    onClick={() => setBriefingRevealed(true)}
+                                                    className="bg-amber-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-amber-700 transition-colors shadow-lg flex items-center gap-3 mx-auto"
+                                                >
+                                                    <Eye className="w-6 h-6" /> Reveal Instructions
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="animate-bounce-in w-full text-left">
+                                                <div className="border-4 border-double border-slate-300 p-8 bg-white/50 rounded-lg">
+                                                    <h4 className="font-serif text-xl font-bold text-amber-900 mb-6 uppercase border-b border-amber-900/20 pb-4">
+                                                        Official Instructions from the State Legislature
+                                                    </h4>
+                                                    <p className="text-xl font-serif text-slate-800 leading-relaxed mb-8">
+                                                        "{selectedStateForBriefing.motivation[`r${round}`]}"
+                                                    </p>
+                                                    
+                                                    <div className="bg-slate-800 text-white p-4 rounded-lg text-sm mb-6">
+                                                        <strong>Strategy Tip:</strong> Read this argument to the class if asked to defend your vote.
+                                                    </div>
+
+                                                    <button 
+                                                        onClick={() => setSelectedStateForBriefing(null)}
+                                                        className="w-full bg-slate-800 text-white px-6 py-3 rounded hover:bg-slate-700 font-bold"
+                                                    >
+                                                        Close Briefing
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        {/* Watermark */}
+                                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-slate-900/5 text-9xl font-black pointer-events-none select-none z-0">
+                                            TOP SECRET
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Result Modal */}
+                        {showResult && (
+                            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                                <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-bounce-in transform scale-100">
+                                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${result.passed ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                        {result.passed ? <Check className="w-8 h-8" /> : <ShieldAlert className="w-8 h-8" />}
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-center mb-2 serif">
+                                        {result.passed ? "Success!" : "Gridlock!"}
+                                    </h2>
+                                    <p className="text-center text-slate-600 text-lg mb-6">
+                                        {result.text}
+                                    </p>
+                                    
+                                    {!result.passed && round === 3 && (
+                                        <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-6 text-sm text-amber-900">
+                                            <p className="font-bold flex items-center gap-2 mb-1"><Info className="w-4 h-4"/> Historical Fact:</p>
+                                            During the Articles of Confederation, Rhode Island vetoed a 5% tax on imports, single-handedly stopping the US from paying its war debts.
+                                        </div>
+                                    )}
+
+                                    <button 
+                                        onClick={() => setShowResult(false)}
+                                        className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors"
+                                    >
+                                        Return to Floor
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
