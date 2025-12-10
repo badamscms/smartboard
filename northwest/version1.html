@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Northwest Ordinance | 1787</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
+        .cinzel { font-family: 'Cinzel', serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .text-glow { text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+        
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+        .interactive { pointer-events: auto; }
+        
+        /* Custom scrollbar for content */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONS (Embedded SVGs to prevent crashes) ---
+        const MapIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        );
+        const GridIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        );
+        const UsersIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        );
+        const ScaleIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+        );
+        const ArrowRightIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        );
+        const ArrowLeftIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        );
+
+        // --- 3D SCENE COMPONENT ---
+        const Scene = ({ chapter }) => {
+            const mountRef = useRef(null);
+            const sceneRef = useRef(null);
+            const statesRef = useRef([]);
+            const gridRef = useRef(null);
+            const particlesRef = useRef(null);
+            
+            useEffect(() => {
+                if (!mountRef.current) return;
+
+                // 1. Setup Scene
+                const scene = new THREE.Scene();
+                scene.fog = new THREE.FogExp2(0x050505, 0.02);
+                sceneRef.current = scene;
+
+                const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.shadowMap.enabled = true;
+                mountRef.current.appendChild(renderer.domElement);
+
+                // 2. Lights
+                const ambientLight = new THREE.AmbientLight(0x404040, 2);
+                scene.add(ambientLight);
+
+                const spotLight = new THREE.SpotLight(0xffd700, 1); // Gold light
+                spotLight.position.set(10, 20, 10);
+                spotLight.castShadow = true;
+                scene.add(spotLight);
+
+                const blueLight = new THREE.PointLight(0x4ade80, 0.5); // Green/Blue hue
+                blueLight.position.set(-10, 10, -10);
+                scene.add(blueLight);
+
+                // 3. Create "States" (Abstract Pillars)
+                const stateData = [
+                    { name: 'OH', x: 2, z: 2, h: 0.2, color: 0xcd7f32 }, // Ohio
+                    { name: 'IN', x: 0, z: 2, h: 0.2, color: 0xc0c0c0 }, // Indiana
+                    { name: 'IL', x: -2, z: 2, h: 0.2, color: 0xcd7f32 }, // Illinois
+                    { name: 'MI', x: 1, z: -0.5, h: 0.2, color: 0xc0c0c0 }, // Michigan
+                    { name: 'WI', x: -1.5, z: -1, h: 0.2, color: 0xcd7f32 }, // Wisconsin
+                ];
+
+                const statesGroup = new THREE.Group();
+                stateData.forEach(d => {
+                    const geometry = new THREE.BoxGeometry(1.5, d.h, 1.5);
+                    geometry.translate(0, d.h/2, 0); 
+                    
+                    const material = new THREE.MeshPhysicalMaterial({
+                        color: d.color,
+                        metalness: 0.6,
+                        roughness: 0.2,
+                        transmission: 0,
+                        clearcoat: 1.0
+                    });
+                    const cube = new THREE.Mesh(geometry, material);
+                    cube.position.set(d.x, -2, d.z);
+                    cube.castShadow = true;
+                    cube.receiveShadow = true;
+                    
+                    // Add outline
+                    const edges = new THREE.EdgesGeometry(geometry);
+                    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.1 }));
+                    cube.add(line);
+
+                    statesGroup.add(cube);
+                    statesRef.current.push({ mesh: cube, originalH: d.h, targetH: d.h });
+                });
+                scene.add(statesGroup);
+
+                // 4. The Grid (Land Ordinance)
+                const gridHelper = new THREE.GridHelper(20, 20, 0x4ade80, 0x112211); 
+                gridHelper.position.y = -1.9;
+                gridHelper.material.transparent = true;
+                gridHelper.material.opacity = 0; 
+                scene.add(gridHelper);
+                gridRef.current = gridHelper;
+
+                // 5. Particles
+                const particlesGeom = new THREE.BufferGeometry();
+                const particleCount = 200;
+                const posArray = new Float32Array(particleCount * 3);
+                for(let i=0; i<particleCount * 3; i++) {
+                    posArray[i] = (Math.random() - 0.5) * 20;
+                }
+                particlesGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                const particlesMat = new THREE.PointsMaterial({
+                    size: 0.05,
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.4
+                });
+                const particlesMesh = new THREE.Points(particlesGeom, particlesMat);
+                scene.add(particlesMesh);
+                particlesRef.current = particlesMesh;
+
+                // Animation Loop
+                let frameId;
+                const animate = () => {
+                    frameId = requestAnimationFrame(animate);
+
+                    const targetPos = getCameraTarget(chapter);
+                    camera.position.lerp(targetPos, 0.03);
+                    camera.lookAt(0, 0, 0);
+
+                    updateSceneObjects(chapter, statesRef.current, gridRef.current);
+
+                    statesGroup.rotation.y += 0.001;
+                    particlesMesh.rotation.y -= 0.0005;
+
+                    renderer.render(scene, camera);
+                };
+                animate();
+
+                const handleResize = () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                };
+                window.addEventListener('resize', handleResize);
+
+                return () => {
+                    cancelAnimationFrame(frameId);
+                    window.removeEventListener('resize', handleResize);
+                    if (mountRef.current && renderer.domElement) {
+                        mountRef.current.removeChild(renderer.domElement);
+                    }
+                };
+            }, []);
+
+            return <div ref={mountRef} id="canvas-container" />;
+        };
+
+        const getCameraTarget = (chapter) => {
+            switch(chapter) {
+                case 0: return new THREE.Vector3(0, 10, 10);
+                case 1: return new THREE.Vector3(0, 8, 0.1); 
+                case 2: return new THREE.Vector3(6, 2, 6); 
+                case 3: return new THREE.Vector3(-4, 4, 8);
+                default: return new THREE.Vector3(0, 5, 10);
+            }
+        };
+
+        const updateSceneObjects = (chapter, states, grid) => {
+            if (!grid || !states) return;
+
+            // Grid Visibility
+            if (chapter === 1) {
+                if (grid.material.opacity < 0.5) grid.material.opacity += 0.01;
+            } else {
+                if (grid.material.opacity > 0) grid.material.opacity -= 0.02;
+            }
+
+            // State Heights (Population Growth)
+            states.forEach((state, i) => {
+                let targetScale = 1;
+                let targetColor = new THREE.Color(0xcd7f32); // Bronze
+
+                if (chapter >= 2) {
+                    targetScale = 8; // Tall
+                }
+                
+                if (chapter === 3) {
+                    targetColor = new THREE.Color(0xffd700); // Gold
+                }
+
+                state.mesh.scale.y = THREE.MathUtils.lerp(state.mesh.scale.y, targetScale, 0.05);
+                state.mesh.material.color.lerp(targetColor, 0.05);
+                
+                if (chapter === 3) {
+                     state.mesh.material.emissive = new THREE.Color(0x222200);
+                     state.mesh.material.emissiveIntensity = Math.sin(Date.now() * 0.002) * 0.5 + 0.5;
+                } else {
+                     state.mesh.material.emissive = new THREE.Color(0x000000);
+                }
+            });
+        };
+
+
+        // --- UI COMPONENT ---
+        const App = () => {
+            const [chapter, setChapter] = useState(0);
+            const totalChapters = 4;
+
+            const chapters = [
+                {
+                    title: "The Frontier",
+                    subtitle: "A Vast, Unorganized Wilderness",
+                    content: "After the Revolution, the U.S. gained control of the land north of the Ohio River. But who owned it? Virginia? New York? Or the Nation? The Northwest Ordinance of 1787 settled this: The land belonged to the Federal Government, not existing states.",
+                    icon: MapIcon
+                },
+                {
+                    title: "The Grid",
+                    subtitle: "Order from Chaos",
+                    content: "Before people could move there, the land had to be measured. The Land Ordinance created a structured grid system of 'Townships' (6x6 miles). This generated revenue for the government and set aside land for public schools.",
+                    icon: GridIcon
+                },
+                {
+                    title: "Path to Statehood",
+                    subtitle: "No More Colonies",
+                    content: "The most revolutionary idea: New territories would not be colonies. They would follow a 3-step path to become EQUAL states. \n1. Appointed Governor \n2. 5,000 Free Men = Territory Legislature \n3. 60,000 People = Statehood.",
+                    icon: UsersIcon
+                },
+                {
+                    title: "Liberty & Law",
+                    subtitle: "A New Standard of Rights",
+                    content: "The Ordinance established a Bill of Rights for the territory: Religious freedom, trial by jury, and most importantly, Article 6: 'There shall be neither slavery nor involuntary servitude.' This banned slavery in the Midwest forever.",
+                    icon: ScaleIcon
+                }
+            ];
+
+            const nextChapter = () => {
+                if (chapter < totalChapters - 1) setChapter(c => c + 1);
+            };
+
+            const prevChapter = () => {
+                if (chapter > 0) setChapter(c => c - 1);
+            };
+
+            const CurrentIcon = chapters[chapter].icon;
+
+            return (
+                <div className="w-full h-full relative">
+                    <Scene chapter={chapter} />
+                    
+                    <div id="ui-layer" className="flex flex-col justify-between p-8 md:p-12">
+                        
+                        {/* Header */}
+                        <header className="flex justify-between items-start">
+                            <div>
+                                <h1 className="cinzel text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500 text-glow">
+                                    1787
+                                </h1>
+                                <h2 className="text-slate-400 tracking-[0.3em] text-sm md:text-base uppercase mt-2">
+                                    The Northwest Ordinance
+                                </h2>
+                            </div>
+                            
+                            {/* Navigation Dots */}
+                            <div className="flex gap-2 interactive">
+                                {chapters.map((_, i) => (
+                                    <button 
+                                        key={i}
+                                        onClick={() => setChapter(i)}
+                                        className={`h-1 transition-all duration-300 rounded-full ${i === chapter ? 'w-8 bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.8)]' : 'w-2 bg-slate-700 hover:bg-slate-500'}`}
+                                    />
+                                ))}
+                            </div>
+                        </header>
+
+                        {/* Main Content Card - Bottom Left */}
+                        <div className="flex flex-col md:flex-row items-end gap-8 mb-8">
+                            
+                            <div className="glass-panel p-8 rounded-2xl max-w-xl interactive transition-all duration-500 ease-out transform translate-y-0 opacity-100">
+                                <div className="flex items-center gap-3 text-amber-400 mb-4">
+                                    <CurrentIcon />
+                                    <span className="uppercase tracking-widest text-xs font-bold">Chapter 0{chapter + 1}</span>
+                                </div>
+                                
+                                <h3 className="cinzel text-3xl font-bold text-white mb-2">
+                                    {chapters[chapter].title}
+                                </h3>
+                                <h4 className="text-lg text-slate-300 italic serif mb-6 border-l-2 border-amber-500 pl-4">
+                                    {chapters[chapter].subtitle}
+                                </h4>
+                                
+                                <p className="text-slate-200 leading-relaxed text-sm md:text-base whitespace-pre-line">
+                                    {chapters[chapter].content}
+                                </p>
+
+                                <div className="mt-8 flex gap-4">
+                                    <button 
+                                        onClick={prevChapter}
+                                        disabled={chapter === 0}
+                                        className={`flex items-center gap-2 px-6 py-3 rounded-full border border-slate-600 font-medium transition-all ${chapter === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white hover:text-black hover:scale-105'}`}
+                                    >
+                                        <ArrowLeftIcon /> Back
+                                    </button>
+                                    <button 
+                                        onClick={nextChapter}
+                                        disabled={chapter === totalChapters - 1}
+                                        className={`flex-1 flex justify-center items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-bold shadow-lg transition-all ${chapter === totalChapters - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-amber-500/20 hover:scale-105'}`}
+                                    >
+                                        {chapter === totalChapters - 1 ? 'End of Exhibit' : 'Next Chapter'} <ArrowRightIcon />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {/* Contextual Stats (Dynamic) */}
+                            <div className="glass-panel p-6 rounded-2xl interactive hidden md:block w-64">
+                                <span className="text-slate-400 text-xs uppercase tracking-widest">Status</span>
+                                <div className="mt-2 space-y-4">
+                                    <div>
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span>Population</span>
+                                            <span className="text-amber-400">{chapter >= 2 ? "60,000+" : "< 5,000"}</span>
+                                        </div>
+                                        <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                                            <div className={`h-full bg-amber-500 transition-all duration-1000 ${chapter >= 2 ? 'w-full' : 'w-1/12'}`}></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span>Slavery</span>
+                                            <span className={chapter === 3 ? "text-red-400" : "text-slate-500"}>{chapter === 3 ? "BANNED" : "Allowed"}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span>States Created</span>
+                                            <span className="text-slate-300">05</span>
+                                        </div>
+                                        <div className="flex gap-1 mt-1">
+                                            {[...Array(5)].map((_, i) => (
+                                                <div key={i} className={`h-1 w-full rounded-full transition-colors duration-500 ${chapter >= 2 ? 'bg-amber-500' : 'bg-slate-700'}`}></div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
