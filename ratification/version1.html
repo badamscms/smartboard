@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratify 1788 | The Convention</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-fed: #3b82f6; /* Blue for Feds */
+            --accent-anti: #ef4444; /* Red for Anti-Feds */
+            --accent-gold: #fbbf24; /* Gold for Undecided */
+            --font-serif: 'Georgia', serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s ease; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3 { font-family: var(--font-serif); }
+        h1 { text-align: center; color: var(--accent-gold); letter-spacing: 2px; text-transform: uppercase; font-size: 1.5rem; margin-bottom: 10px; }
+        p { line-height: 1.6; color: var(--text-secondary); margin-bottom: 15px; }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-fed { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; }
+        .btn-anti { background: linear-gradient(135deg, #7f1d1d 0%, #ef4444 100%); color: white; }
+        .btn-undecided { background: linear-gradient(135deg, #78350f 0%, #fbbf24 100%); color: #0f172a; }
+        .btn-action { background: var(--text-primary); color: var(--bg-color); text-align: center; margin-top: 20px;}
+
+        /* STAGES */
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* TAB NAVIGATION */
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); border: none; color: var(--text-secondary); cursor: pointer; border-radius: 8px; font-size: 0.8rem; }
+        .tab.active { background: var(--accent-gold); color: var(--bg-color); font-weight: bold; }
+
+        /* CONTENT STYLES */
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+        .fed-theme .badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .anti-theme .badge { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .undecided-theme .badge { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+        .argument-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-left: 4px solid var(--text-secondary); }
+        .fed-theme .argument-box { border-color: var(--accent-fed); }
+        .anti-theme .argument-box { border-color: var(--accent-anti); }
+        
+        .script-text { font-style: italic; color: var(--text-primary); font-family: var(--font-serif); font-size: 1.1rem; }
+
+        /* SCORECARD (Undecided Only) */
+        .slider-container { margin-top: 20px; }
+        input[type="range"] { width: 100%; accent-color: var(--accent-gold); }
+        .labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;}
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Ratification 1788</h1>
+            <div style="height: 2px; background: linear-gradient(90deg, transparent, var(--accent-gold), transparent); width: 100%; opacity: 0.5;"></div>
+        </header>
+
+        <div id="view-select" class="card fade-in">
+            <h2>Select Your Faction</h2>
+            <p>The fate of the Union rests in your hands. Which delegation do you represent?</p>
+            
+            <button class="btn btn-fed" onclick="selectRole('fed')">
+                Federalists<br>
+                <span style="font-size:0.8rem; opacity:0.8; font-weight:normal">Order, Strength, Union</span>
+            </button>
+            
+            <button class="btn btn-anti" onclick="selectRole('anti')">
+                Anti-Federalists<br>
+                <span style="font-size:0.8rem; opacity:0.8; font-weight:normal">Liberty, Rights, Local Power</span>
+            </button>
+            
+            <button class="btn btn-undecided" onclick="selectRole('undecided')">
+                Undecided Delegates<br>
+                <span style="font-size:0.8rem; opacity:0.8; font-weight:normal">Skeptical, Cautious, The Deciding Vote</span>
+            </button>
+        </div>
+
+        <div id="view-dashboard" class="hidden fade-in">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <span id="user-badge" class="badge">Role</span>
+                <button onclick="resetGame()" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.8rem;">Change Role</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="setRound(1)">1. Tyranny?</button>
+                <button class="tab" onclick="setRound(2)">2. States</button>
+                <button class="tab" onclick="setRound(3)">3. Rights</button>
+            </div>
+
+            <div id="content-area" class="card">
+                </div>
+
+            <button id="final-vote-btn" class="btn btn-action hidden" onclick="showVoteScreen()">Go to Final Vote</button>
+        </div>
+
+        <div id="view-vote" class="card hidden fade-in">
+            <h2>The Final Ballot</h2>
+            <p>You have heard the arguments. How do you cast your vote for the State?</p>
+            
+            <button class="btn btn-fed" onclick="castVote('Yes')">Ratify Unconditionally<br><span style="font-size:0.8rem; font-weight:normal">Trust the system.</span></button>
+            <button class="btn btn-undecided" onclick="castVote('Compromise')">Ratify with Conditions<br><span style="font-size:0.8rem; font-weight:normal">Yes, BUT demand a Bill of Rights.</span></button>
+            <button class="btn btn-anti" onclick="castVote('No')">Reject<br><span style="font-size:0.8rem; font-weight:normal">Too dangerous. Start over.</span></button>
+            
+            <button onclick="backToDash()" style="margin-top:20px; background:none; border:none; color:var(--text-secondary); width:100%; cursor:pointer;">Back to Debate</button>
+        </div>
+        
+        <div id="view-result" class="card hidden fade-in" style="text-align:center;">
+            <h2 id="result-title">Vote Submitted</h2>
+            <p id="result-msg">Waiting for the final tally...</p>
+            <button class="btn btn-action" onclick="resetGame()">New Simulation</button>
+        </div>
+
+    </div>
+
+    <script>
+        // DATA STORE
+        const data = {
+            fed: {
+                theme: 'fed-theme',
+                name: 'Federalist',
+                rounds: [
+                    {
+                        title: "Round 1: Executive Power",
+                        strategy: "Argue that we need a leader to protect us from Europe.",
+                        script: "We do not fear a President! Without a strong leader (Commander in Chief), who will protect our ships from pirates or our borders from Spain? Checks and balances will stop him from becoming a King."
+                    },
+                    {
+                        title: "Round 2: State Power",
+                        strategy: "Argue that 'United we Stand, Divided we Fall'.",
+                        script: "If Virginia has one law and New York has another, we are not a country; we are a mess. The Supremacy Clause ensures we act as ONE nation."
+                    },
+                    {
+                        title: "Round 3: Bill of Rights",
+                        strategy: "Argue that listing rights is dangerous and unnecessary.",
+                        script: "Why list rights? If we list them, people will think those are the ONLY rights we have. The government is only given specific powers. It has no power to touch your press or religion!"
+                    }
+                ]
+            },
+            anti: {
+                theme: 'anti-theme',
+                name: 'Anti-Federalist',
+                rounds: [
+                    {
+                        title: "Round 1: Executive Power",
+                        strategy: "Attack the Presidency as a monarchy in disguise.",
+                        script: "Look at Article II! No term limits? Command of the army? This is not a President; this is a King with a different title. He will use the army against us!"
+                    },
+                    {
+                        title: "Round 2: State Power",
+                        strategy: "Defend local courts and local laws.",
+                        script: "They want to erase our state lines. A judge in a distant capital will decide your fate, not your neighbors. We fought a revolution to govern ourselves!"
+                    },
+                    {
+                        title: "Round 3: Bill of Rights",
+                        strategy: "Demand written guarantees. Do not yield.",
+                        script: "They say we don't need it written down? I don't trust them! If it is not in ink, it does not exist. We demand a Bill of Rights or we vote NO."
+                    }
+                ]
+            },
+            undecided: {
+                theme: 'undecided-theme',
+                name: 'Undecided Delegate',
+                rounds: [
+                    {
+                        title: "Round 1: Executive Power",
+                        strategy: "Listen closely. Is the President too strong?",
+                        script: "Ask the Federalists: 'What happens if we get a bad President? How do we remove him?'"
+                    },
+                    {
+                        title: "Round 2: State Power",
+                        strategy: "Weigh the need for unity vs. local control.",
+                        script: "Ask the Anti-Federalists: 'If the states are supreme, how do we pay our debts or defend ourselves?'"
+                    },
+                    {
+                        title: "Round 3: Bill of Rights",
+                        strategy: "This is the dealbreaker. Are you safe without one?",
+                        script: "Ask both sides: 'Why can't we just add the Bill of Rights now to be safe?'"
+                    }
+                ]
+            }
+        };
+
+        let currentRole = null;
+        let currentRound = 0;
+
+        function selectRole(role) {
+            currentRole = role;
+            document.getElementById('view-select').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.remove('hidden');
+            
+            // Apply Theme
+            document.getElementById('view-dashboard').className = `fade-in ${data[role].theme}`;
+            document.getElementById('user-badge').innerText = data[role].name;
+            
+            // Load Round 1
+            setRound(1);
+        }
+
+        function setRound(roundNum) {
+            currentRound = roundNum - 1;
+            const content = data[currentRole].rounds[currentRound];
+            
+            // Update Tabs
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                if(i === currentRound) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+
+            // Build HTML
+            let html = `
+                <h3>${content.title}</h3>
+                <p><strong>Strategy:</strong> ${content.strategy}</p>
+                <div class="argument-box">
+                    <p class="script-text">"${content.script}"</p>
+                </div>
+            `;
+
+            // Add interactive slider only for Undecideds
+            if(currentRole === 'undecided') {
+                html += `
+                    <div class="slider-container">
+                        <p style="font-size:0.8rem; margin-bottom:5px;">Who won this round?</p>
+                        <input type="range" min="0" max="100" value="50">
+                        <div class="labels">
+                            <span>Anti-Feds</span>
+                            <span>Federalists</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('content-area').innerHTML = html;
+
+            // Show Vote Button if Round 3
+            if(roundNum === 3 && currentRole === 'undecided') {
+                document.getElementById('final-vote-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('final-vote-btn').classList.add('hidden');
+            }
+        }
+
+        function showVoteScreen() {
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-vote').classList.remove('hidden');
+        }
+
+        function backToDash() {
+            document.getElementById('view-vote').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.remove('hidden');
+        }
+
+        function castVote(vote) {
+            document.getElementById('view-vote').classList.add('hidden');
+            document.getElementById('view-result').classList.remove('hidden');
+            
+            document.getElementById('result-title').innerText = "Vote: " + vote;
+            if(vote === "Compromise") {
+                document.getElementById('result-msg').innerText = "You have saved the Union by demanding the Bill of Rights.";
+            } else if (vote === "Yes") {
+                document.getElementById('result-msg').innerText = "You have sided with Hamilton. A risky bet on a strong government.";
+            } else {
+                document.getElementById('result-msg').innerText = "You have rejected the Constitution. The Union may dissolve.";
+            }
+        }
+
+        function resetGame() {
+            location.reload();
+        }
+
+    </script>
+</body>
+</html>
