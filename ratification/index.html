@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratify 1788 | Teacher Edition</title>
+    
+    <!-- DM Sans Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-fed: #3b82f6;
+            --accent-anti: #ef4444;
+            --accent-gold: #fbbf24;
+            --accent-green: #10b981;
+            --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s ease; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        /* TYPOGRAPHY */
+        h1 { text-align: center; color: var(--accent-gold); letter-spacing: 1px; text-transform: uppercase; font-size: 1.5rem; margin-bottom: 5px; font-weight: 700; }
+        h2 { font-weight: 700; margin-bottom: 10px; font-size: 1.25rem;}
+        h3 { font-weight: 700; margin-bottom: 5px; color: var(--text-primary); font-size: 1.1rem; }
+        p { line-height: 1.6; color: var(--text-secondary); margin-bottom: 15px; font-size: 0.95rem; }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-fed { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; }
+        .btn-anti { background: linear-gradient(135deg, #7f1d1d 0%, #ef4444 100%); color: white; }
+        .btn-teacher { background: linear-gradient(135deg, #78350f 0%, #fbbf24 100%); color: #0f172a; }
+        
+        .btn-action { 
+            background: var(--text-primary); 
+            color: var(--bg-color); 
+            text-align: center; 
+            margin-top: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        
+        .btn-speak {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px dashed var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .btn-speak:hover { background: rgba(255,255,255,0.2); border-color: var(--text-primary); }
+
+        /* INFLUENCE METER */
+        .meter-container {
+            margin-bottom: 20px;
+        }
+        .meter-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .meter-bar-bg {
+            height: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .meter-fill {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(90deg, #64748b, #94a3b8);
+            transition: width 0.5s ease;
+        }
+
+        /* AVATAR BOX */
+        .avatar-box {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid var(--text-secondary);
+        }
+        .avatar-icon { font-size: 2rem; }
+        
+        /* TIMER */
+        .timer-box {
+            background: #000;
+            color: var(--accent-green);
+            font-weight: 700;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: 1px solid #333;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .timer-active { color: var(--accent-anti); animation: pulse 1s infinite; }
+
+        /* CONTENT STYLES */
+        .context-box {
+            font-size: 0.9rem;
+            color: #d1d5db;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.6;
+        }
+        .argument-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px; position: relative;}
+        .arg-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
+        .script-text { font-style: italic; color: var(--text-primary); font-size: 1.05rem; font-weight: 500; }
+        
+        .source-box {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid var(--accent-gold);
+        }
+        .source-quote { font-family: 'Georgia', serif; font-size: 0.9rem; color: #d1d5db; font-style: italic; margin-bottom: 5px;}
+        .source-cite { font-size: 0.75rem; color: var(--text-secondary); text-align: right; text-transform: uppercase; font-weight: bold;}
+
+        /* MODAL (NEWS FLASH) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            backdrop-filter: blur(5px);
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        
+        .modal-card {
+            background: #1e1e1e;
+            width: 90%; max-width: 400px;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            border: 2px solid var(--accent-gold);
+        }
+        .modal-overlay.open .modal-card { transform: translateY(0); }
+        .news-icon { font-size: 3rem; margin-bottom: 10px; display: block; animation: bounce 2s infinite; }
+        .news-label { color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; font-size: 0.8rem; margin-bottom: 10px; }
+
+        /* UTILS */
+        .hidden { display: none; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); border: none; color: var(--text-secondary); cursor: pointer; border-radius: 8px; font-size: 0.8rem; font-family: var(--font-sans); font-weight: 500; }
+        .tab.active { background: var(--text-primary); color: var(--bg-color); font-weight: bold; }
+        
+        /* ANIMATIONS */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+
+    </style>
+</head>
+<body>
+
+    <!-- NEWS FLASH MODAL -->
+    <div id="news-modal" class="modal-overlay">
+        <div class="modal-card">
+            <span class="news-icon">📰</span>
+            <div class="news-label">Breaking News</div>
+            <h2 id="news-title">Crisis in Boston!</h2>
+            <p id="news-body">Riots have broken out due to unpaid debts.</p>
+            <button class="btn btn-action" onclick="closeNews()">Return to Convention</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <h1>Ratify 1788</h1>
+            <div style="text-align:center; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Debate Simulation</div>
+        </header>
+
+        <!-- VIEW 1: ROLE SELECTION -->
+        <div id="view-select" class="card">
+            <h2>Select Your Role</h2>
+            <p>Students, choose your faction. Teacher, choose the Judge role.</p>
+            <button class="btn btn-fed" onclick="initGame('fed')">Student: Federalists<br><span style="font-size:0.8rem; opacity:0.8; font-weight:normal">Defend the Constitution</span></button>
+            <button class="btn btn-anti" onclick="initGame('anti')">Student: Anti-Federalists<br><span style="font-size:0.8rem; opacity:0.8; font-weight:normal">Challenge the Power Grab</span></button>
+            <button class="btn btn-teacher" onclick="initGame('teacher')">Teacher / Judge<br><span style="font-size:0.8rem; opacity:0.8; font-weight:normal">Guide the Debate & Vote</span></button>
+        </div>
+
+        <!-- VIEW 2: DASHBOARD -->
+        <div id="view-dashboard" class="hidden">
+            
+            <!-- Avatar Display -->
+            <div id="avatar-display" class="avatar-box fade-in">
+                <div class="avatar-icon">📜</div>
+                <div>
+                    <div id="avatar-name" style="font-weight:bold; color:var(--text-primary)">Delegate Name</div>
+                    <div id="avatar-desc" style="font-size:0.8rem; color:var(--text-secondary)">Description</div>
+                </div>
+            </div>
+
+            <!-- Influence Meter (Students Only) -->
+            <div class="meter-container" id="student-meter">
+                <div class="meter-label">
+                    <span>Faction Influence</span>
+                    <span id="score-val">20%</span>
+                </div>
+                <div class="meter-bar-bg">
+                    <div id="meter-fill" class="meter-fill"></div>
+                </div>
+            </div>
+
+            <!-- Timer -->
+            <div class="timer-box" id="timer" onclick="toggleTimer()">02:00</div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="triggerRound(1)">1. Executive</button>
+                <button class="tab" onclick="triggerRound(2)">2. States</button>
+                <button class="tab" onclick="triggerRound(3)">3. Rights</button>
+            </div>
+
+            <!-- Content -->
+            <div id="content-area" class="card"></div>
+
+            <!-- Interaction Buttons -->
+             <button id="btn-speak" class="btn btn-speak" onclick="increaseScore()">🗣️ I presented this argument!</button>
+
+            <!-- Vote Button (Teacher Only) -->
+            <button id="final-vote-btn" class="btn btn-action hidden" onclick="showVoteScreen()">Go to Final Vote</button>
+            
+            <button class="btn" style="background:transparent; color:var(--text-secondary); text-align:center; font-weight:normal; font-size:0.8rem; margin-top:10px;" onclick="location.reload()">Restart</button>
+        </div>
+
+        <!-- VIEW 3: VOTING (Teacher Only) -->
+        <div id="view-vote" class="card hidden">
+            <h2>The State Decides</h2>
+            <p>Teacher, based on the class debate, how does this state vote?</p>
+            <button class="btn btn-fed" onclick="castVote('Yes')">Ratify Immediately<br><span style="font-size:0.75rem; font-weight:normal">The Federalists dominated.</span></button>
+            <button class="btn btn-teacher" onclick="castVote('Compromise')">Ratify with Bill of Rights<br><span style="font-size:0.75rem; font-weight:normal">Both sides made valid points.</span></button>
+            <button class="btn btn-anti" onclick="castVote('No')">Reject Constitution<br><span style="font-size:0.75rem; font-weight:normal">The Anti-Federalists won the day.</span></button>
+            <button onclick="document.getElementById('view-vote').classList.add('hidden'); document.getElementById('view-dashboard').classList.remove('hidden');" style="margin-top:15px; width:100%; background:none; border:none; color:var(--text-secondary); cursor:pointer;">Back</button>
+        </div>
+        
+        <!-- VIEW 4: RESULTS -->
+        <div id="view-result" class="card hidden" style="text-align:center;">
+            <h2 id="result-title"></h2>
+            <div style="font-size:4rem; margin: 20px 0;">🗳️</div>
+            <p id="result-msg"></p>
+            <button class="btn btn-action" onclick="location.reload()">Play Again</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        const newsEvents = {
+            1: {
+                title: "Shays' Rebellion!",
+                body: "Farmers in Massachusetts are burning courthouses! The Articles of Confederation government has no army to stop them. Chaos is spreading."
+            },
+            2: {
+                title: "Trade War!",
+                body: "New York just taxed firewood coming from Connecticut. New Jersey is threatening to tax New York's lighthouse. We are fighting each other!"
+            },
+            3: {
+                title: "The People Demand Rights!",
+                body: "Town hall meetings are erupting. Veterans are asking: 'We fought the British for rights, why aren't they written in this new document?'"
+            }
+        };
+
+        const content = {
+            fed: {
+                theme: 'var(--accent-fed)',
+                rounds: [
+                    { 
+                        title: "Round 1: The Presidency", 
+                        context: "Under the Articles of Confederation, the government was paralyzed. When Shays' Rebellion broke out in 1786, Congress had no authority to raise troops to stop the violence. We need a distinct Executive Branch with a Commander-in-Chief to enforce laws and protect the nation from internal chaos and foreign threats.",
+                        fact: "George Washington, the hero of the Revolution, presided over the Convention. Delegates trusted the Presidency largely because they knew he would be the first one to hold the office.",
+                        scripts: [
+                            "We need 'Energy in the Executive.' A committee cannot lead an army. If the President breaks the law, we have impeachment.",
+                            "In war, decisions must be made in seconds. A single Commander-in-Chief can act immediately, while Congress would just argue."
+                        ],
+                        source: "Energy in the Executive is a leading character in the definition of good government.",
+                        author: "Alexander Hamilton, Federalist No. 70"
+                    },
+                    { 
+                        title: "Round 2: Federal Power", 
+                        context: "Currently, states act like separate countries—taxing each other's trade and printing worthless money. We cannot pay our war debts to France because Congress must beg states for funds. The 'Supremacy Clause' is essential: it makes the Constitution the supreme law, binding the states into a true Union.",
+                        fact: "By 1787, the United States was on the verge of bankruptcy. Some soldiers from the Revolution had still not been paid, leading to mutinies and unrest.",
+                        scripts: [
+                            "If states can ignore Congress, we are not a nation. The 'Supremacy Clause' ensures we have ONE currency and ONE foreign policy.",
+                            "We must have the power to tax directly. A government that must beg the states for money is a government that will fail."
+                        ],
+                        source: "Government implies the power of making laws... and of enforcing them.",
+                        author: "Alexander Hamilton, Federalist No. 15"
+                    },
+                    { 
+                        title: "Round 3: Bill of Rights", 
+                        context: "The Constitution grants the government *limited* powers. It deals with war, trade, and diplomacy—not your personal life. Listing specific rights is actually dangerous; if we list 'Freedom of Speech' but forget 'Freedom of Privacy,' a future tyrant might claim we don't have it. The structure of the government itself is the best protection.",
+                        fact: "James Madison initially opposed the Bill of Rights, calling it a 'parchment barrier'—a paper promise that a government could easily ignore when it wanted to.",
+                        scripts: [
+                            "Listing rights is dangerous! If we write down 'Freedom of Speech,' the gov will assume they can control everything else we forgot to list.",
+                            "Your State Constitutions already protect your rights! The Federal government deals with war and trade, not your local newspaper."
+                        ],
+                        source: "The Constitution is itself, in every rational sense, and to every useful purpose, A BILL OF RIGHTS.",
+                        author: "Alexander Hamilton, Federalist No. 84"
+                    }
+                ]
+            },
+            anti: {
+                theme: 'var(--accent-anti)',
+                rounds: [
+                    { 
+                        title: "Round 1: The Presidency", 
+                        context: "We just fought a bloody revolution to escape a King. This new Constitution creates a President with command of a standing army and no term limits. With the power of the veto and the sword, this 'President' will easily become a tyrant like King George III. It is an elected monarchy in disguise.",
+                        fact: "Critics dubbed the proposed President the 'Fetus of Monarchy,' believing the office was designed to eventually turn into a Kingship.",
+                        scripts: [
+                            "This President is a King in disguise! He commands the standing army. He will use soldiers to collect taxes and enforce his will.",
+                            "The President will live in a 'Federal City' far away, surrounded by rich flatterers. He will forget the common people completely."
+                        ],
+                        source: "Your President may easily become king... If your American chief be a man of ambition... how easy is it for him to render himself absolute!",
+                        author: "Patrick Henry, Speech in Virginia"
+                    },
+                    { 
+                        title: "Round 2: State Sovereignty", 
+                        context: "The 'Supremacy Clause' declares that Federal law overrides State law. This means a distant government in a capital city can nullify the laws we pass here at home. We believe a Republic only works in a small area where representatives know their neighbors. A massive central government will inevitably become distant, corrupt, and oppressive.",
+                        fact: "Anti-Federalists feared the 'Federal City' (Washington D.C.) would become a playground for the rich and elite, completely disconnected from the needs of regular farmers.",
+                        scripts: [
+                            "They want to destroy the states! A judge in a distant capital will erase our local laws. A government that large cannot understand us.",
+                            "Why does the central government need a standing army in peacetime? It is only to oppress the states and collect taxes by force!"
+                        ],
+                        source: "It is impossible to have a representation of the people of this continent of the matter proposed by the constitution.",
+                        author: "Robert Yates, Brutus No. 1"
+                    },
+                    { 
+                        title: "Round 3: Bill of Rights", 
+                        context: "They ask us to sign away our sovereignty on a promise of 'good intentions.' The document does not guarantee Freedom of Speech, Press, or Religion. It does not guarantee a Trial by Jury in civil cases. Without these written protections, the 'Necessary and Proper' clause gives Congress the power to do whatever it wants.",
+                        fact: "Three delegates at the Convention—George Mason, Elbridge Gerry, and Edmund Randolph—refused to sign the final document, largely because it lacked a Bill of Rights.",
+                        scripts: [
+                            "Trust you? Never! If our rights are not written in ink, they will be stolen. I would sooner chop off my hand than sign this.",
+                            "They say they have limited powers, but the 'General Welfare' clause allows them to do anything! We need a Bill of Rights to stop them."
+                        ],
+                        source: "There is no Declaration of Rights, and the laws of the general government being paramount...",
+                        author: "George Mason, Objections to this Constitution"
+                    }
+                ]
+            },
+            teacher: {
+                theme: 'var(--accent-gold)',
+                rounds: [
+                    { 
+                        title: "Round 1: Executive Power", 
+                        context: "Goal: Focus on the tension between Order and Liberty. The Articles had too much Liberty (chaos); does the Constitution have too much Order (tyranny)?",
+                        fact: "Teacher Tip: Remind students that memories of British soldiers quartering in homes were fresh. The fear of a 'standing army' was very real.",
+                        scripts: [
+                            "Ask Feds: 'If we elect a corrupt President, is Impeachment really enough to stop him if he controls the Army?'",
+                            "Ask Anti-Feds: 'Without a leader, how do we stop the riots in Boston (Shays' Rebellion)? Who gives the orders?'"
+                        ],
+                        source: "Teacher Tip: Remind them that Washington is likely to be the first President. Does that change their fear?",
+                        author: "Discussion Guide"
+                    },
+                    { 
+                        title: "Round 2: Supremacy Clause", 
+                        context: "Goal: Discuss the concept of Federalism. Why is it bad for New York to tax New Jersey? Why is it bad for a distant government to control local laws?",
+                        fact: "Teacher Tip: Use the analogy of a school project. If everyone does their own thing, the project fails. You need a team leader (Federal Gov), but no one wants a bossy leader.",
+                        scripts: [
+                            "Ask Anti-Feds: 'If Virginia refuses to pay taxes for the war debt, why should New York have to pay it?'",
+                            "Ask Feds: 'What is to stop Congress from using the 'Necessary and Proper' clause to take over everything?'"
+                        ],
+                        source: "Teacher Tip: Use the 'Trade War' news event to show why a central referee is needed.",
+                        author: "Discussion Guide"
+                    },
+                    { 
+                        title: "Round 3: Bill of Rights", 
+                        context: "Goal: Analyze the compromise. The Federalists won the structure (Strong Gov), but the Anti-Federalists won the moral victory (Bill of Rights).",
+                        fact: "Teacher Tip: The Bill of Rights was not added until 1791, three years after Ratification. It was the fulfillment of the promise made during these debates.",
+                        scripts: [
+                            "Ask Feds: 'If you truly believe in free speech, why are you so afraid to just write it down to make people happy?'",
+                            "Ask Anti-Feds: 'Are you willing to let the nation collapse and be invaded by Spain just because of this list?'"
+                        ],
+                        source: "Teacher Tip: Guide the class toward the Massachusetts Compromise (Ratify now, Amend later).",
+                        author: "Discussion Guide"
+                    }
+                ]
+            }
+        };
+
+        let currentRole = '';
+        let currentScore = 20;
+        let timerInterval;
+        let timeLeft = 120;
+        let timerRunning = false;
+
+        // --- INIT ---
+        function initGame(role) {
+            currentRole = role;
+            
+            // Random Avatar
+            const titles = ["Delegate from the City", "Wealthy Landowner", "Revolutionary War Veteran", "Local Magistrate"];
+            let name = titles[Math.floor(Math.random() * titles.length)];
+            let desc = role === 'fed' ? "You want Order & Economy." : "You want Liberty & Tradition.";
+            
+            // Teacher Override
+            if(role === 'teacher') {
+                name = "Convention President";
+                desc = "You control the flow of debate.";
+                document.getElementById('student-meter').style.display = 'none'; // Hide meter for teacher
+                document.getElementById('btn-speak').style.display = 'none'; // Hide speak button for teacher
+            }
+            
+            document.getElementById('avatar-name').innerText = name;
+            document.getElementById('avatar-desc').innerText = desc;
+            
+            // UI Setup
+            const color = role === 'fed' ? 'var(--accent-fed)' : role === 'anti' ? 'var(--accent-anti)' : 'var(--accent-gold)';
+            document.querySelector('.avatar-box').style.borderColor = color;
+            document.getElementById('meter-fill').style.background = color;
+
+            document.getElementById('view-select').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.remove('hidden');
+            
+            triggerRound(1); // Starts with News Flash 1
+        }
+
+        // --- ROUND LOGIC ---
+        function triggerRound(num) {
+            // 1. Show News Flash
+            showNews(num);
+
+            // 2. Set Content
+            // Update Tabs
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                if(i === num - 1) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+
+            // Populate Text
+            const data = content[currentRole].rounds[num-1];
+            
+            // Generate Scripts HTML
+            let scriptsHtml = data.scripts.map((text, index) => `
+                <div class="argument-box">
+                    <div class="arg-label">Argument ${String.fromCharCode(65 + index)}</div>
+                    <p class="script-text">"${text}"</p>
+                </div>
+            `).join('');
+
+            document.getElementById('content-area').innerHTML = `
+                <h3>${data.title}</h3>
+                <div class="context-box">
+                    <strong style="color:var(--text-primary);">Context:</strong> ${data.context}
+                    <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); color:#94a3b8; font-style:italic;">
+                        <strong>💡 Did You Know?</strong> ${data.fact}
+                    </div>
+                </div>
+                
+                ${scriptsHtml}
+
+                <div class="source-box">
+                    <div class="source-quote">"${data.source}"</div>
+                    <div class="source-cite">— ${data.author}</div>
+                </div>
+            `;
+
+            // Vote Button Visibility (Teacher Only)
+            if(num === 3 && currentRole === 'teacher') {
+                document.getElementById('final-vote-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('final-vote-btn').classList.add('hidden');
+            }
+            
+            resetTimer();
+        }
+
+        // --- NEWS FLASH ---
+        function showNews(roundNum) {
+            const news = newsEvents[roundNum];
+            document.getElementById('news-title').innerText = news.title;
+            document.getElementById('news-body').innerText = news.body;
+            document.getElementById('news-modal').classList.add('open');
+        }
+
+        function closeNews() {
+            document.getElementById('news-modal').classList.remove('open');
+        }
+
+        // --- GAMIFICATION ---
+        function increaseScore() {
+            if(currentRole === 'teacher') return;
+            if(currentScore < 100) {
+                currentScore += 15;
+                if(currentScore > 100) currentScore = 100;
+                updateMeter();
+            }
+        }
+
+        function updateMeter() {
+            document.getElementById('meter-fill').style.width = currentScore + "%";
+            document.getElementById('score-val').innerText = currentScore + "%";
+        }
+
+        // --- TIMER ---
+        function toggleTimer() {
+            if(timerRunning) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timer').classList.remove('timer-active');
+            } else {
+                timerRunning = true;
+                document.getElementById('timer').classList.add('timer-active');
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if(timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        timerRunning = false;
+                        document.getElementById('timer').classList.remove('timer-active');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timeLeft = 120; 
+            updateTimerDisplay();
+            document.getElementById('timer').classList.remove('timer-active');
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer').innerText = `${m}:${s}`;
+        }
+
+        // --- VOTING & CONFETTI ---
+        function showVoteScreen() {
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-vote').classList.remove('hidden');
+        }
+
+        function castVote(vote) {
+            document.getElementById('view-vote').classList.add('hidden');
+            document.getElementById('view-result').classList.remove('hidden');
+            
+            const title = document.getElementById('result-title');
+            const msg = document.getElementById('result-msg');
+            
+            if(vote === 'Yes') {
+                title.innerText = "Ratification Passed";
+                title.style.color = "var(--accent-fed)";
+                msg.innerText = "The Federalists dominated. The Constitution is ratified without changes. The new government is strong, but many feel betrayed.";
+                fireConfetti(0.5); 
+            } else if(vote === 'No') {
+                title.innerText = "Ratification Failed";
+                title.style.color = "var(--accent-anti)";
+                msg.innerText = "The Anti-Federalists blocked the vote. The Union is in peril. The states remain separate and vulnerable.";
+            } else {
+                title.innerText = "The Great Compromise";
+                title.style.color = "var(--accent-gold)";
+                msg.innerText = "You saved the Union! By ratifying NOW with a promise to add a Bill of Rights later, you united the country.";
+                fireConfetti(1.0); 
+            }
+        }
+
+        function fireConfetti(ratio) {
+            var count = 200 * ratio;
+            var defaults = { origin: { y: 0.7 } };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+    </script>
+</body>
+</html>
