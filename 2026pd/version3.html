@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Empowered Educator Workshop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 20px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-white font-sans text-slate-900">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-slate-200 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-lg">
+                        <i data-lucide="brain" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <span class="font-bold text-xl text-slate-800">AI-Empowered Educator</span>
+                </div>
+                
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#agenda" class="nav-link text-sm font-medium transition-colors hover:text-blue-600 text-slate-600">Agenda</a>
+                    <a href="#brisk" class="nav-link text-sm font-medium transition-colors hover:text-blue-600 text-slate-600">Brisk AI</a>
+                    <a href="#gems-intro" class="nav-link text-sm font-medium transition-colors hover:text-blue-600 text-slate-600">What is a Gem?</a>
+                    <a href="#workshop" class="nav-link text-sm font-medium transition-colors hover:text-blue-600 text-slate-600">Gem Workshop</a>
+                    <a href="#resources" class="nav-link text-sm font-medium transition-colors hover:text-blue-600 text-slate-600">Resources</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-slate-900">
+                        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#agenda" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50">Agenda</a>
+                <a href="#brisk" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50">Brisk AI</a>
+                <a href="#gems-intro" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50">What is a Gem?</a>
+                <a href="#workshop" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50">Gem Workshop</a>
+                <a href="#resources" class="mobile-nav-link block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50">Resources</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+            <div class="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-700 text-sm font-medium mb-6 animate-fade-in-up">
+                <i data-lucide="sparkles" class="w-4 h-4 mr-2"></i>
+                Professional Development Workshop
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                Efficiency with Brisk. <br />
+                Creativity with <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Gemini.</span>
+            </h1>
+            <p class="max-w-2xl mx-auto text-xl text-slate-600 mb-10 animate-fade-in-up" style="animation-delay: 0.2s;">
+                Join us to master the two most powerful AI tools for educators. 
+                Detect AI writing, grade faster, and build custom "Gems" that act as your co-teacher.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.3s;">
+                <a href="#workshop" class="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    Start Building Gems
+                </a>
+                <a href="#agenda" class="px-8 py-4 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-bold hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    View Agenda
+                </a>
+            </div>
+        </section>
+
+        <!-- Agenda Section -->
+        <section id="agenda" class="py-20 bg-slate-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900">Workshop Agenda</h2>
+                    <p class="text-slate-500 mt-2">60-90 Minute Session</p>
+                </div>
+                <div class="space-y-2">
+                    <!-- Item 1 -->
+                    <div class="relative pl-8 sm:pl-32 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-slate-200 before:ml-[3.5rem] sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3">
+                            <div class="absolute left-0 sm:left-24 w-7 h-7 bg-white border-2 border-slate-400 rounded-full z-10 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-slate-400"></div>
+                            </div>
+                            <div class="hidden sm:block absolute left-0 w-24 text-right pr-6 text-slate-500 font-mono text-sm pt-1">00-10</div>
+                            <div class="sm:hidden mb-2 text-slate-500 font-mono text-sm pl-8">00-10</div>
+                            <div class="pl-8 sm:pl-0">
+                                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <i data-lucide="users" class="w-5 h-5 text-slate-500"></i>
+                                    The Hook & The 'Why'
+                                </h3>
+                                <p class="text-slate-600 mt-2 max-w-xl leading-relaxed">Why are we drowning in grading? Introduction to the problem and our two solutions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="relative pl-8 sm:pl-32 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-slate-200 before:ml-[3.5rem] sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3">
+                            <div class="absolute left-0 sm:left-24 w-7 h-7 bg-white border-2 border-orange-500 rounded-full z-10 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
+                            </div>
+                            <div class="hidden sm:block absolute left-0 w-24 text-right pr-6 text-slate-500 font-mono text-sm pt-1">10-25</div>
+                            <div class="sm:hidden mb-2 text-slate-500 font-mono text-sm pl-8">10-25</div>
+                            <div class="pl-8 sm:pl-0">
+                                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <i data-lucide="zap" class="w-5 h-5 text-slate-500"></i>
+                                    Part 1: Brisk AI
+                                </h3>
+                                <p class="text-slate-600 mt-2 max-w-xl leading-relaxed">Focus on efficiency. Using 'Inspect Writing' for AI detection and generating feedback in seconds.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="relative pl-8 sm:pl-32 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-slate-200 before:ml-[3.5rem] sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3">
+                            <div class="absolute left-0 sm:left-24 w-7 h-7 bg-white border-2 border-blue-500 rounded-full z-10 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                            </div>
+                            <div class="hidden sm:block absolute left-0 w-24 text-right pr-6 text-slate-500 font-mono text-sm pt-1">25-35</div>
+                            <div class="sm:hidden mb-2 text-slate-500 font-mono text-sm pl-8">25-35</div>
+                            <div class="pl-8 sm:pl-0">
+                                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <i data-lucide="brain" class="w-5 h-5 text-slate-500"></i>
+                                    Part 2: Intro to Gems
+                                </h3>
+                                <p class="text-slate-600 mt-2 max-w-xl leading-relaxed">Understanding the difference between a standard chat and a custom 'Gem' with a persona.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item 4 -->
+                    <div class="relative pl-8 sm:pl-32 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-slate-200 before:ml-[3.5rem] sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3">
+                            <div class="absolute left-0 sm:left-24 w-7 h-7 bg-white border-2 border-indigo-600 rounded-full z-10 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-indigo-600"></div>
+                            </div>
+                            <div class="hidden sm:block absolute left-0 w-24 text-right pr-6 text-slate-500 font-mono text-sm pt-1">35-65</div>
+                            <div class="sm:hidden mb-2 text-slate-500 font-mono text-sm pl-8">35-65</div>
+                            <div class="pl-8 sm:pl-0">
+                                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <i data-lucide="sparkles" class="w-5 h-5 text-slate-500"></i>
+                                    Part 3: Build-a-Gem
+                                </h3>
+                                <p class="text-slate-600 mt-2 max-w-xl leading-relaxed">Hands-on activity. You will build and test a custom AI co-teacher using our templates.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item 5 -->
+                    <div class="relative pl-8 sm:pl-32 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-slate-200 before:ml-[3.5rem] sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3">
+                            <div class="absolute left-0 sm:left-24 w-7 h-7 bg-white border-2 border-green-500 rounded-full z-10 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                            </div>
+                            <div class="hidden sm:block absolute left-0 w-24 text-right pr-6 text-slate-500 font-mono text-sm pt-1">65-75</div>
+                            <div class="sm:hidden mb-2 text-slate-500 font-mono text-sm pl-8">65-75</div>
+                            <div class="pl-8 sm:pl-0">
+                                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-slate-500"></i>
+                                    Share & Test
+                                </h3>
+                                <p class="text-slate-600 mt-2 max-w-xl leading-relaxed">Partner up and try to 'break' your colleague's Gem.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brisk Section -->
+        <section id="brisk" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-4 uppercase tracking-wide">
+                            Efficiency Engine
+                        </div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-6">Brisk AI: The Grading Speed-Run</h2>
+                        <p class="text-lg text-slate-600 mb-8">
+                            Brisk lives in your browser and overlays directly on Google Docs. It is your primary tool for speed and academic integrity checks.
+                        </p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                <div class="bg-orange-500 rounded-lg p-3 h-fit text-white">
+                                    <i data-lucide="users" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900">Inspect Writing (AI Detection)</h3>
+                                    <p class="text-slate-600 text-sm mt-1">Don't rely on a score. Watch the video replay of the document's version history to see <em>how</em> the student wrote it.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                <div class="bg-orange-500 rounded-lg p-3 h-fit text-white">
+                                    <i data-lucide="zap" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900">Instant Feedback</h3>
+                                    <p class="text-slate-600 text-sm mt-1">Select text → Click 'Give Feedback' → Choose 'Glow & Grow'. It leaves comments directly in the Doc.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <a href="https://www.briskteaching.com/" target="_blank" rel="noreferrer" class="inline-flex items-center text-orange-600 font-bold hover:text-orange-700 hover:underline">
+                                Get the Chrome Extension <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-100 rounded-2xl p-8 border border-slate-200 shadow-inner flex flex-col justify-center items-center text-center">
+                        <div class="w-full max-w-sm bg-white rounded-lg shadow-lg p-6 mb-6 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                            <div class="h-4 w-3/4 bg-slate-200 rounded mb-4"></div>
+                            <div class="h-4 w-full bg-slate-200 rounded mb-2"></div>
+                            <div class="h-4 w-5/6 bg-slate-200 rounded mb-2"></div>
+                            <div class="h-4 w-full bg-slate-200 rounded mb-6"></div>
+                            <div class="flex gap-2 justify-end">
+                                <div class="px-3 py-1 bg-orange-100 text-orange-600 text-xs font-bold rounded">Inspect</div>
+                                <div class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-bold rounded">Feedback</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 text-sm italic">"Brisk overlays directly on top of Google Docs, Slides, and more."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gems Intro -->
+        <section id="gems-intro" class="py-20 bg-indigo-900 text-white relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                <div class="absolute right-0 top-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl mix-blend-multiply filter"></div>
+                <div class="absolute left-0 bottom-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl mix-blend-multiply filter"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold mb-4">What is a Gem?</h2>
+                    <p class="text-indigo-200 text-lg max-w-2xl mx-auto">
+                        A "Gem" is a custom version of Google Gemini that remembers instructions. 
+                        Stop repeating "You are a teacher..." every time you start a chat.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                        <div class="flex items-center gap-3 mb-4 text-indigo-200">
+                            <div class="p-2 bg-indigo-800 rounded-lg"><i data-lucide="brain" class="w-5 h-5"></i></div>
+                            <h3 class="font-bold">Standard Gemini Chat</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm text-indigo-100">
+                            <li class="flex gap-2"><i data-lucide="x" class="text-red-400 w-5 h-5 flex-shrink-0"></i> Forgets who it is in new chats.</li>
+                            <li class="flex gap-2"><i data-lucide="x" class="text-red-400 w-5 h-5 flex-shrink-0"></i> Requires long, repetitive prompting.</li>
+                            <li class="flex gap-2"><i data-lucide="x" class="text-red-400 w-5 h-5 flex-shrink-0"></i> Generic tone by default.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl p-8 border border-white/30 shadow-2xl transform md:-translate-y-4">
+                        <div class="flex items-center gap-3 mb-4 text-white">
+                            <div class="p-2 bg-white/20 rounded-lg"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+                            <h3 class="font-bold text-xl">Custom Gem</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm text-white">
+                            <li class="flex gap-2"><i data-lucide="check-circle" class="text-green-300 w-5 h-5 flex-shrink-0"></i> Saves your specific instructions forever.</li>
+                            <li class="flex gap-2"><i data-lucide="check-circle" class="text-green-300 w-5 h-5 flex-shrink-0"></i> Has a specific "Persona" (e.g., Tutor, Critic).</li>
+                            <li class="flex gap-2"><i data-lucide="check-circle" class="text-green-300 w-5 h-5 flex-shrink-0"></i> Consistent output every single time.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workshop Section -->
+        <section id="workshop" class="py-20 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold mb-4 uppercase tracking-wide">
+                        Hands-On Activity
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900">Gem Workshop: Choose Your Builder</h2>
+                    <p class="text-slate-600 mt-4 max-w-2xl mx-auto">
+                        Don't start from scratch. Choose one of these "Recipes," copy the instructions, and paste them into the Gem Manager.
+                    </p>
+                    <div class="mt-6">
+                        <a href="https://gemini.google.com/gems/manager" target="_blank" rel="noreferrer" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors shadow-md">
+                            Open Gemini Manager <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards will be injected here if dynamic, but we can hardcode for HTML version -->
+                    
+                    <!-- Card 1 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="p-1 bg-blue-500 w-full h-2"></div>
+                        <div class="p-6 flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-blue-100 text-blue-600"><i data-lucide="users" class="w-5 h-5"></i></div>
+                                <h3 class="font-bold text-lg text-slate-900 leading-tight">The Special Ed Leveler</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-6">Instantly modify complex texts for different reading levels without losing meaning.</p>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4 relative group max-h-48 overflow-y-auto custom-scrollbar">
+                                <pre class="text-xs text-slate-700 whitespace-pre-wrap font-mono prompt-text">You are an expert Special Education co-teacher. Your goal is to modify complex texts for students with specific learning disabilities without losing the core meaning. 
+
+When I paste a text, follow this protocol:
+1. Rewrite it at a [Insert Grade Level] reading level.
+2. Bold key vocabulary words and add a simple definition in parentheses immediately following the word.
+3. Break any paragraph longer than 3 sentences into bullet points.
+4. Add a "Check for Understanding" question at the end.</pre>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                            <button class="copy-btn w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy System Instructions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="p-1 bg-orange-500 w-full h-2"></div>
+                        <div class="p-6 flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-orange-100 text-orange-600"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                                <h3 class="font-bold text-lg text-slate-900 leading-tight">The Unit Hook Generator</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-6">Stuck on how to start a lesson? This creative partner generates 3 engaging openers.</p>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4 relative group max-h-48 overflow-y-auto custom-scrollbar">
+                                <pre class="text-xs text-slate-700 whitespace-pre-wrap font-mono prompt-text">You are a creative director for educational content. When I give you a standard or topic, generate 3 'Hooks' to start the lesson.
+
+1. A Mystery: A strange fact, image description, or artifact to spark curiosity.
+2. A Debate: A controversial statement related to the topic that students must agree/disagree with.
+3. A Real-World Connection: How this topic affects their daily life right now.
+
+Keep the tone energetic and tailored to teenagers.</pre>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                            <button class="copy-btn w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy System Instructions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="p-1 bg-purple-500 w-full h-2"></div>
+                        <div class="p-6 flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-purple-100 text-purple-600"><i data-lucide="book-open" class="w-5 h-5"></i></div>
+                                <h3 class="font-bold text-lg text-slate-900 leading-tight">The Historical Persona</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-6">Create a tutor that acts like a historical figure for students to interview.</p>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4 relative group max-h-48 overflow-y-auto custom-scrollbar">
+                                <pre class="text-xs text-slate-700 whitespace-pre-wrap font-mono prompt-text">You are [Insert Historical Figure]. Speak in the first person using language from your time period, but keep explanations simple enough for high schoolers. 
+
+Answer student questions about your life, discoveries, and context. 
+- Do not break character. 
+- If asked about modern technology, express confusion but curiosity.
+- Always end your response with a question back to the student to keep them thinking.</pre>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                            <button class="copy-btn w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy System Instructions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="p-1 bg-teal-500 w-full h-2"></div>
+                        <div class="p-6 flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-teal-100 text-teal-600"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                                <h3 class="font-bold text-lg text-slate-900 leading-tight">The Lesson Plan Architect</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-6">Generate a structured 5E lesson plan including time allocations and checks for understanding.</p>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4 relative group max-h-48 overflow-y-auto custom-scrollbar">
+                                <pre class="text-xs text-slate-700 whitespace-pre-wrap font-mono prompt-text">You are an expert curriculum designer. When I give you a standard, topic, and grade level, generate a comprehensive 5E Lesson Plan (Engage, Explore, Explain, Elaborate, Evaluate). 
+
+For each phase, provide: 
+1. Estimated time. 
+2. Teacher actions. 
+3. Student actions. 
+4. A specific check for understanding.
+
+Ensure the plan focuses on active learning rather than passive lecture.</pre>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                            <button class="copy-btn w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy System Instructions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="p-1 bg-pink-500 w-full h-2"></div>
+                        <div class="p-6 flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-pink-100 text-pink-600"><i data-lucide="graduation-cap" class="w-5 h-5"></i></div>
+                                <h3 class="font-bold text-lg text-slate-900 leading-tight">The Socratic Tutor</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-6">A student-facing tutor that never gives the answer, only hints and guiding questions.</p>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4 relative group max-h-48 overflow-y-auto custom-scrollbar">
+                                <pre class="text-xs text-slate-700 whitespace-pre-wrap font-mono prompt-text">You are a friendly but firm Socratic Tutor. Your goal is to help students find the answer themselves, never to give it to them. 
+
+When a student asks a question: 
+1. Acknowledge their effort or praise what they got right. 
+2. Ask a guiding question that prompts them to recall prior knowledge or analyze the problem. 
+3. If they are still stuck, provide a specific hint, but never the solution.
+
+If a student asks you to "just give the answer," politely refuse and offer another clue.</pre>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                            <button class="copy-btn w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy System Instructions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+                        <div class="p-1 bg-rose-500 w-full h-2"></div>
+                        <div class="p-6 flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-rose-100 text-rose-600"><i data-lucide="clipboard-check" class="w-5 h-5"></i></div>
+                                <h3 class="font-bold text-lg text-slate-900 leading-tight">The Rubric Builder</h3>
+                            </div>
+                            <p class="text-slate-600 text-sm mb-6">Stop struggling with criteria. Generate professional, tiered rubrics for any assignment in seconds.</p>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4 relative group max-h-48 overflow-y-auto custom-scrollbar">
+                                <pre class="text-xs text-slate-700 whitespace-pre-wrap font-mono prompt-text">You are an assessment expert. I will give you an assignment description and a grade level.
+
+Create a table-format rubric with 4 levels of mastery (Exceeding, Meeting, Approaching, Beginning).
+
+Include specific criteria for:
+1. Content Accuracy
+2. Organization/Structure
+3. Critical Thinking
+4. Conventions/Grammar
+
+For each cell, write specific, observable indicators of performance rather than vague adjectives.</pre>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                            <button class="copy-btn w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white text-slate-700 border border-slate-300 hover:bg-slate-50">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy System Instructions
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="resources" class="bg-slate-900 text-slate-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">About this Session</h3>
+                    <p class="max-w-xs text-sm leading-relaxed">
+                        Designed to help teachers reclaim their time and creativity using the latest tools from Google and Brisk Teaching.
+                    </p>
+                </div>
+                <div class="flex flex-col md:items-end">
+                    <h3 class="text-white font-bold text-lg mb-4">Important Links</h3>
+                    <ul class="space-y-2 text-sm text-right">
+                        <li><a href="https://gemini.google.com" target="_blank" rel="noreferrer" class="hover:text-white hover:underline">Google Gemini</a></li>
+                        <li><a href="https://www.briskteaching.com" target="_blank" rel="noreferrer" class="hover:text-white hover:underline">Brisk Teaching</a></li>
+                        <li><a href="#" class="hover:text-white hover:underline">Post-Session Survey</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-slate-800 text-center text-xs">
+                &copy; <span id="year"></span> Professional Development Series. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Timer -->
+    <div id="timer-container" class="fixed bottom-4 right-4 z-50 animate-fade-in-up">
+        <!-- Minimized View (Hidden by default) -->
+        <button id="timer-minimized" class="hidden bg-slate-900 text-white p-3 rounded-full shadow-lg hover:bg-slate-800 transition-colors">
+            <i data-lucide="clock" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Full View -->
+        <div id="timer-full" class="bg-white rounded-xl shadow-2xl border border-slate-200 p-4 w-64">
+            <div class="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+                <div class="flex items-center gap-2 text-slate-700 font-bold text-sm">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span>Workshop Timer</span>
+                </div>
+                <button id="minimize-btn" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="text-center mb-4">
+                <div id="timer-display" class="text-4xl font-mono font-bold text-slate-800 tracking-wider">
+                    30:00
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Activity Time Remaining</p>
+            </div>
+
+            <div class="flex justify-center gap-2">
+                <button id="timer-toggle" class="p-2 rounded-lg text-white transition-colors bg-green-600 hover:bg-green-700">
+                    <i data-lucide="play" id="play-icon" class="w-5 h-5"></i>
+                </button>
+                <button id="timer-reset" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Footer Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Menu Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+        let isMenuOpen = false;
+
+        mobileMenuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            mobileMenu.classList.toggle('hidden');
+            
+            // Re-render icon
+            menuIcon.setAttribute('data-lucide', isMenuOpen ? 'x' : 'menu');
+            lucide.createIcons();
+        });
+
+        // Close mobile menu on link click
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                isMenuOpen = false;
+                mobileMenu.classList.add('hidden');
+                menuIcon.setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
+            });
+        });
+
+        // Scroll Spy Logic
+        const sections = ['hero', 'agenda', 'brisk', 'gems-intro', 'workshop', 'resources'];
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    // Check if section is in viewport (top third)
+                    if (rect.top <= 150 && rect.bottom >= 150) {
+                        current = section;
+                    }
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                link.classList.add('text-slate-600');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.remove('text-slate-600');
+                    link.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+                }
+            });
+        });
+
+        // Copy Button Logic
+        const copyBtns = document.querySelectorAll('.copy-btn');
+        
+        copyBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Find the associated prompt text
+                const card = this.closest('div').parentNode; // Go up to card container
+                const prompt = card.querySelector('.prompt-text').innerText;
+
+                navigator.clipboard.writeText(prompt).then(() => {
+                    const originalHTML = this.innerHTML;
+                    
+                    // Change style to success
+                    this.classList.remove('bg-white', 'text-slate-700', 'border-slate-300', 'hover:bg-slate-50');
+                    this.classList.add('bg-green-600', 'text-white');
+                    this.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Copied!`;
+                    lucide.createIcons();
+
+                    // Revert after 2 seconds
+                    setTimeout(() => {
+                        this.classList.remove('bg-green-600', 'text-white');
+                        this.classList.add('bg-white', 'text-slate-700', 'border-slate-300', 'hover:bg-slate-50');
+                        this.innerHTML = originalHTML;
+                        lucide.createIcons();
+                    }, 2000);
+                });
+            });
+        });
+
+        // Timer Logic
+        let timeLeft = 30 * 60; // 30 minutes
+        let timerInterval = null;
+        let isRunning = false;
+        
+        const timerDisplay = document.getElementById('timer-display');
+        const timerToggle = document.getElementById('timer-toggle');
+        const timerReset = document.getElementById('timer-reset');
+        const minimizeBtn = document.getElementById('minimize-btn');
+        const timerFull = document.getElementById('timer-full');
+        const timerMinimized = document.getElementById('timer-minimized');
+        const playIcon = document.getElementById('play-icon');
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateDisplay() {
+            timerDisplay.textContent = formatTime(timeLeft);
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                // Pause
+                clearInterval(timerInterval);
+                timerToggle.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+                timerToggle.classList.add('bg-green-600', 'hover:bg-green-700');
+                timerToggle.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i>`;
+            } else {
+                // Play
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                    }
+                }, 1000);
+                timerToggle.classList.remove('bg-green-600', 'hover:bg-green-700');
+                timerToggle.classList.add('bg-amber-500', 'hover:bg-amber-600');
+                timerToggle.innerHTML = `<i data-lucide="pause" class="w-5 h-5"></i>`;
+            }
+            isRunning = !isRunning;
+            lucide.createIcons();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 30 * 60;
+            updateDisplay();
+            timerToggle.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            timerToggle.classList.add('bg-green-600', 'hover:bg-green-700');
+            timerToggle.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i>`;
+            lucide.createIcons();
+        }
+
+        timerToggle.addEventListener('click', toggleTimer);
+        timerReset.addEventListener('click', resetTimer);
+
+        minimizeBtn.addEventListener('click', () => {
+            timerFull.classList.add('hidden');
+            timerMinimized.classList.remove('hidden');
+        });
+
+        timerMinimized.addEventListener('click', () => {
+            timerMinimized.classList.add('hidden');
+            timerFull.classList.remove('hidden');
+        });
+
+    </script>
+</body>
+</html>
