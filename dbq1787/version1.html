@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The 1787 Project | 4K Smartboard Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+        
+        /* SMARTBOARD OPTIMIZATION V2:
+           1. Base font size 24px (1.5x standard) for 4K readability.
+           2. Scrollbars widened to 24px for finger/stylus use.
+           3. High contrast text.
+        */
+        html {
+            font-size: 24px; 
+            touch-action: manipulation; /* Prevents double-tap zoom delay */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 - Higher contrast */
+            overscroll-behavior: none;
+        }
+        
+        .font-serif {
+            font-family: 'Merriweather', serif;
+        }
+        
+        .font-display {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* MASSIVE SCROLLBARS FOR TOUCH */
+        ::-webkit-scrollbar {
+            width: 24px;
+            height: 24px; /* For horizontal scroll */
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 12px;
+            border: 4px solid #1e293b; /* Adds padding look */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .parchment {
+            background-color: #fcfbc9; /* Slightly darker parchment for less glare */
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            color: #1f2937; /* Darker gray text for better contrast on parchment */
+        }
+
+        .glossary-term {
+            border-bottom: 4px dotted #d97706; /* Thicker underline */
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 800;
+            color: #78350f;
+            padding: 0 4px;
+        }
+        
+        .glossary-term:hover, .glossary-term:active {
+            background-color: #fef3c7;
+            color: #451a03;
+            border-radius: 4px;
+        }
+
+        .highlightable {
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .comparison-text .highlightable {
+            background-color: var(--highlight-bg, rgba(251, 191, 36, 0.4));
+            border-bottom: 4px solid var(--highlight-border, #d97706);
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- INTERNAL ICONS (Scaled Up) ---
+        const Icon = ({ children, className }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="3" /* Thicker stroke for distance viewing */
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className}
+            >
+                {children}
+            </svg>
+        );
+
+        const BookOpen = ({ className }) => <Icon className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Icon>;
+        const Scale = ({ className }) => <Icon className={className}><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></Icon>;
+        const PenTool = ({ className }) => <Icon className={className}><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.5 7.5"/><path d="m9 9 5-5"/></Icon>;
+        const HelpCircle = ({ className }) => <Icon className={className}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></Icon>;
+        const Award = ({ className }) => <Icon className={className}><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></Icon>;
+        const ShieldAlert = ({ className }) => <Icon className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></Icon>;
+        const Scroll = ({ className }) => <Icon className={className}><path d="M8 2h2v15a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a2 2 0 0 1 2-2h4"/><path d="M19 17V5a2 2 0 0 0-2-2H8"/><path d="M8 21h12a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H8"/><path d="M19 17v4"/></Icon>;
+        const Gavel = ({ className }) => <Icon className={className}><path d="m14.5 12.5-8 8a2.121 2.121 0 0 1-3-3l8-8"/><path d="m16 16 6-6"/><path d="m8 8 6-6"/><path d="m9 7 8 8"/><path d="m21 11-8-8"/></Icon>;
+        const CheckCircle2 = ({ className }) => <Icon className={className}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></Icon>;
+        const ArrowRight = ({ className }) => <Icon className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></Icon>;
+        const RefreshCw = ({ className }) => <Icon className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></Icon>;
+        const RotateCcw = ({ className }) => <Icon className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/><path d="M3 3v9h9"/></Icon>;
+
+        // --- DATA OBJECTS ---
+        
+        const VOCABULARY = {
+            "Assent": "Official approval or agreement.",
+            "Letters of Marque": "Official licenses granting permission to capture enemy ships.",
+            "Coin Money": "To print or create an official currency.",
+            "Imposts": "Taxes on imported goods.",
+            "Excises": "Taxes on goods made or sold within the country.",
+            "Commerce": "The activity of buying and selling, especially on a large scale (Trade).",
+            "League": "A loose union or alliance for mutual benefit, not a single unified country.",
+            "Ambition": "A strong desire to achieve power or status.",
+            "Absolute": "Total power; complete and unlimited authority.",
+            "Despotism": "The exercise of absolute power, especially in a cruel and oppressive way."
+        };
+
+        const DOCUMENTS = [
+            {
+                id: 1,
+                title: "Articles of Confederation",
+                author: "Continental Congress",
+                year: "1781",
+                icon: <Scroll className="w-12 h-12" />, 
+                type: "Legal Document",
+                content: `The United States in Congress assembled shall have the sole and exclusive right and power of determining on peace and war... but the United States in Congress assembled shall never engage in a war, nor grant <span class="glossary-term" data-term="Letters of Marque">letters of marque</span> and reprisal in time of peace, nor enter into any treaties or alliances, <span class="highlightable">nor <span class="glossary-term" data-term="Coin Money">coin money</span>, nor regulate the value thereof</span>, <span class="highlightable">without the <span class="glossary-term" data-term="Assent">assent</span> of nine states</span>.`,
+                summary: "This document created the first government. It focused on limiting power to prevent tyranny, but made it very hard to get anything done.",
+                quiz: [
+                    {
+                        question: "What requirement made it difficult for Congress to declare war?",
+                        options: ["The President's signature", "Approval from 9 of 13 states", "A popular vote by citizens", "Permission from Great Britain"],
+                        correct: 1
+                    },
+                    {
+                        question: "Which power was restricted in this excerpt?",
+                        options: ["Coining money", "Electing a King", "Trading with Indians", "Building ships"],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "U.S. Constitution",
+                author: "Constitutional Convention",
+                year: "1788",
+                icon: <Gavel className="w-12 h-12" />,
+                type: "Legal Document",
+                content: `The Congress shall have <span class="highlightable">power to lay and collect taxes</span>, duties, <span class="glossary-term" data-term="Imposts">imposts</span> and <span class="glossary-term" data-term="Excises">excises</span>, to pay the debts and provide for the common defense and general welfare of the United States... to regulate <span class="glossary-term" data-term="Commerce">commerce</span> with foreign nations, and among the several states... <span class="highlightable">to raise and support Armies</span>.`,
+                summary: "This document replaced the Articles. It gave the central government specific tools (taxes, armies) to actually run the country.",
+                quiz: [
+                    {
+                        question: "What major financial power did the Constitution give Congress?",
+                        options: ["To ban all taxes", "To lay and collect taxes", "To ask states for donations", "To steal gold"],
+                        correct: 1
+                    },
+                    {
+                        question: "The power to 'raise armies' solved which problem?",
+                        options: ["The government couldn't defend the country", "The army was too big", "Soldiers were too expensive", "The King controlled the troops"],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Federalist No. 21",
+                author: "Alexander Hamilton",
+                year: "1787",
+                icon: <PenTool className="w-12 h-12" />,
+                type: "Political Essay",
+                content: `The fundamental defect of the Articles of Confederation is a <span class="highlightable">total want of power</span> in Congress... The United States, as they exist under the present Articles, form a <span class="highlightable"><span class="glossary-term" data-term="League">league</span></span>, but it is nothing more than that.`,
+                summary: "Hamilton argues that a 'league' of friendship is not enough. He believes the government failed because it was too weak.",
+                quiz: [
+                    {
+                        question: "What does Hamilton call the government under the Articles?",
+                        options: ["A mighty empire", "A perfect union", "A league", "A kingdom"],
+                        correct: 2
+                    },
+                    {
+                        question: "Does Hamilton think the government needs MORE or LESS power?",
+                        options: ["More power", "Less power", "The same amount", "No power at all"],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Speech at Virginia Convention",
+                author: "Patrick Henry",
+                year: "1788",
+                icon: <ShieldAlert className="w-12 h-12" />,
+                type: "Anti-Federalist Speech",
+                content: `This Constitution is said to have beautiful features; but... they appear to me horribly frightful... <span class="highlightable">Your President may easily become King</span>. If your American chief be a man of <span class="glossary-term" data-term="Ambition">ambition</span>, how easy is it for him to render himself <span class="glossary-term" data-term="Absolute">absolute</span>! <span class="highlightable">The army is in his hands...</span>`,
+                summary: "Henry warns that the new Constitution makes the government TOO strong. He fears the President will use the army to become a dictator.",
+                quiz: [
+                    {
+                        question: "What is Patrick Henry's biggest fear?",
+                        options: ["The President becoming a King", "Taxes being too low", "The army being too weak", "States having too much power"],
+                        correct: 0
+                    },
+                    {
+                        question: "Why is he afraid of the President having the army?",
+                        options: ["He might lose a war", "He might use it to become all-powerful", "Soldiers are expensive", "He prefers the navy"],
+                        correct: 1
+                    }
+                ]
+            }
+        ];
+
+        // --- COMPONENTS ---
+
+        const DefinitionTooltip = ({ term, def, onClose }) => (
+            <div className="absolute z-50 bottom-full mb-6 left-1/2 transform -translate-x-1/2 w-[500px] p-8 bg-slate-900 text-white text-2xl rounded-2xl shadow-2xl border-4 border-amber-500/50 slide-in">
+                <div className="font-bold text-amber-400 mb-4 text-3xl border-b-2 border-amber-500/30 pb-2">{term}</div>
+                <div className="text-slate-100 leading-normal">{def}</div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-6 h-6 bg-slate-900 border-r-4 border-b-4 border-amber-500/50"></div>
+            </div>
+        );
+
+        const DocumentCard = ({ doc, onQuizComplete, fullWidth = false }) => {
+            const [activeTooltip, setActiveTooltip] = useState(null);
+            const [quizIndex, setQuizIndex] = useState(0);
+            const [quizFinished, setQuizFinished] = useState(false);
+
+            const handleTextClick = (e) => {
+                if (e.target.classList.contains('glossary-term')) {
+                    const term = e.target.getAttribute('data-term');
+                    setActiveTooltip(activeTooltip === term ? null : term);
+                } else {
+                    setActiveTooltip(null);
+                }
+            };
+
+            const handleQuizAnswer = (optionIndex) => {
+                if (optionIndex === doc.quiz[quizIndex].correct) {
+                    if (quizIndex + 1 < doc.quiz.length) {
+                        setQuizIndex(quizIndex + 1);
+                    } else {
+                        setQuizFinished(true);
+                        onQuizComplete(doc.id);
+                    }
+                } else {
+                    alert("Try again! Look back at the text.");
+                }
+            };
+
+            const resetQuiz = () => {
+                setQuizIndex(0);
+                setQuizFinished(false);
+            }
+
+            return (
+                <div className={`bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 ${fullWidth ? 'w-full' : ''}`}>
+                    <div className="bg-slate-50 p-8 border-b border-slate-200 flex justify-between items-center">
+                        <div className="flex items-center space-x-8">
+                            <div className="p-5 bg-indigo-100 text-indigo-700 rounded-2xl shadow-sm">
+                                {doc.icon}
+                            </div>
+                            <div>
+                                <h3 className="font-display font-bold text-slate-900 text-4xl">{doc.title}</h3>
+                                <p className="text-lg text-slate-500 uppercase tracking-wider font-bold mt-2">{doc.author} | {doc.year}</p>
+                            </div>
+                        </div>
+                        {quizFinished && (
+                            <div className="flex items-center text-green-700 text-xl font-bold bg-green-100 px-6 py-3 rounded-xl">
+                                <CheckCircle2 className="w-8 h-8 mr-3"/> Analyzed
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="p-10 relative grid grid-cols-1 xl:grid-cols-2 gap-12">
+                        {/* Text Column */}
+                        <div className="space-y-8">
+                            {/* Summary Box */}
+                            <div className="p-6 bg-indigo-50 border-l-[12px] border-indigo-600 text-indigo-900 text-2xl rounded-r-xl shadow-sm leading-relaxed">
+                                <span className="font-bold">Summary:</span> {doc.summary}
+                            </div>
+
+                            {/* Document Text */}
+                            <div 
+                                className="parchment p-10 rounded-2xl font-serif text-3xl leading-loose shadow-inner border-2 border-stone-300 relative min-h-[400px]"
+                                onClick={handleTextClick}
+                                dangerouslySetInnerHTML={{ __html: doc.content }}
+                            >
+                            </div>
+                        </div>
+
+                        {/* Quiz Column */}
+                        <div className="flex flex-col justify-center">
+                            {activeTooltip && (
+                                <div className="absolute top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2">
+                                    <DefinitionTooltip 
+                                        term={activeTooltip} 
+                                        def={VOCABULARY[activeTooltip]} 
+                                    />
+                                </div>
+                            )}
+
+                            {/* Quiz Section */}
+                            {!quizFinished ? (
+                                <div className="bg-slate-100 rounded-3xl p-10 border-4 border-slate-300 shadow-lg">
+                                    <div className="flex justify-between items-center mb-8">
+                                        <span className="text-base font-bold text-slate-500 uppercase tracking-widest">Check Understanding {quizIndex + 1}/{doc.quiz.length}</span>
+                                        <HelpCircle className="w-8 h-8 text-slate-400" />
+                                    </div>
+                                    <h4 className="font-bold text-slate-800 text-3xl mb-8 leading-snug">{doc.quiz[quizIndex].question}</h4>
+                                    <div className="grid grid-cols-1 gap-5">
+                                        {doc.quiz[quizIndex].options.map((opt, i) => (
+                                            <button 
+                                                key={i}
+                                                onClick={() => handleQuizAnswer(i)}
+                                                className="text-left p-6 rounded-2xl text-2xl font-medium bg-white border-2 border-slate-300 hover:bg-indigo-50 hover:border-indigo-600 hover:text-indigo-900 transition-all shadow-md active:scale-95 touch-manipulation"
+                                            >
+                                                {opt}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="h-full flex flex-col items-center justify-center p-12 bg-green-50 text-green-800 rounded-3xl text-center border-4 border-green-200 shadow-inner">
+                                    <CheckCircle2 className="w-24 h-24 mb-6 text-green-600" />
+                                    <div className="text-4xl font-bold mb-8">Complete!</div>
+                                    <button onClick={resetQuiz} className="flex items-center px-8 py-4 bg-white rounded-full text-green-700 text-xl font-bold shadow-lg hover:shadow-xl border-2 border-green-200 active:scale-95 transition-transform">
+                                        <RefreshCw className="w-6 h-6 mr-3"/> Review Quiz
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ComparisonView = ({ docA, docB, title, leftTheme, rightTheme, points }) => {
+            const [activeTooltip, setActiveTooltip] = useState(null);
+
+            const handleTextClick = (e) => {
+                if (e.target.classList.contains('glossary-term')) {
+                    const term = e.target.getAttribute('data-term');
+                    setActiveTooltip(activeTooltip === term ? null : term);
+                } else {
+                    setActiveTooltip(null);
+                }
+            };
+
+            return (
+                <div className="slide-in w-full max-w-[98vw] mx-auto">
+                    <div className="text-center mb-10">
+                        <h2 className="text-5xl font-display font-bold text-white mb-3">{title}</h2>
+                        <p className="text-2xl text-slate-400">Comparing the opposing sides</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 relative">
+                         {/* VS Badge */}
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-900 rounded-full p-4 z-10 hidden lg:block shadow-2xl">
+                            <div className="bg-amber-500 text-slate-900 font-bold text-4xl w-24 h-24 flex items-center justify-center rounded-full border-8 border-slate-900 shadow-inner">VS</div>
+                        </div>
+
+                        {/* Left Side */}
+                        <div 
+                            className={`bg-slate-800 rounded-[2rem] p-10 border-8 ${leftTheme.border} flex flex-col h-full relative shadow-2xl`}
+                            style={{'--highlight-bg': leftTheme.highlightBg, '--highlight-border': leftTheme.highlightBorder}}
+                        >
+                            <div className="flex items-center space-x-8 mb-10 border-b-2 border-slate-700 pb-8">
+                                <div className={`w-24 h-24 ${leftTheme.bg} rounded-3xl flex items-center justify-center text-white flex-shrink-0 shadow-lg`}>
+                                    {docA.icon}
+                                </div>
+                                <div>
+                                    <h3 className="font-display text-4xl font-bold text-white leading-tight">{docA.title}</h3>
+                                    <p className={`${leftTheme.text} text-2xl font-medium mt-1`}>{docA.author}</p>
+                                </div>
+                            </div>
+                            
+                            <ul className="space-y-8 mb-10 flex-grow">
+                                {points.left.map((point, idx) => (
+                                    <li key={idx} className={`bg-slate-900/80 p-8 rounded-2xl border-l-[12px] ${leftTheme.border} shadow-xl`}>
+                                        <div className={`text-base ${leftTheme.text} uppercase font-bold mb-3 tracking-widest`}>{point.label}</div>
+                                        <p className="text-slate-200 italic text-2xl mb-4 leading-relaxed">
+                                            <span style={{backgroundColor: 'var(--highlight-bg)', padding: '4px 8px', borderRadius: '6px', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.8)'}}>
+                                                "{point.quote}"
+                                            </span>
+                                        </p>
+                                        <p className="text-xl text-slate-400 leading-relaxed">{point.analysis}</p>
+                                    </li>
+                                ))}
+                            </ul>
+
+                             <div className="mt-auto bg-slate-900/50 p-6 rounded-2xl border-2 border-slate-700">
+                                <div className={`text-base ${leftTheme.text} uppercase font-bold mb-4 flex items-center`}><BookOpen className="w-6 h-6 mr-3"/> Original Text Reference</div>
+                                <div 
+                                    className="parchment p-8 rounded-xl text-2xl font-serif leading-relaxed comparison-text"
+                                    onClick={handleTextClick}
+                                    dangerouslySetInnerHTML={{ __html: docA.content }}
+                                ></div>
+                            </div>
+                        </div>
+
+                        {/* Right Side */}
+                        <div 
+                            className={`bg-slate-800 rounded-[2rem] p-10 border-8 ${rightTheme.border} flex flex-col h-full relative shadow-2xl`}
+                            style={{'--highlight-bg': rightTheme.highlightBg, '--highlight-border': rightTheme.highlightBorder}}
+                        >
+                            <div className="flex items-center space-x-8 mb-10 border-b-2 border-slate-700 pb-8">
+                                <div className={`w-24 h-24 ${rightTheme.bg} rounded-3xl flex items-center justify-center text-white flex-shrink-0 shadow-lg`}>
+                                    {docB.icon}
+                                </div>
+                                <div>
+                                    <h3 className="font-display text-4xl font-bold text-white leading-tight">{docB.title}</h3>
+                                    <p className={`${rightTheme.text} text-2xl font-medium mt-1`}>{docB.author}</p>
+                                </div>
+                            </div>
+
+                            <ul className="space-y-8 mb-10 flex-grow">
+                                {points.right.map((point, idx) => (
+                                    <li key={idx} className={`bg-slate-900/80 p-8 rounded-2xl border-l-[12px] ${rightTheme.border} shadow-xl`}>
+                                        <div className={`text-base ${rightTheme.text} uppercase font-bold mb-3 tracking-widest`}>{point.label}</div>
+                                        <p className="text-slate-200 italic text-2xl mb-4 leading-relaxed">
+                                            <span style={{backgroundColor: 'var(--highlight-bg)', padding: '4px 8px', borderRadius: '6px', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.8)'}}>
+                                                "{point.quote}"
+                                            </span>
+                                        </p>
+                                        <p className="text-xl text-slate-400 leading-relaxed">{point.analysis}</p>
+                                    </li>
+                                ))}
+                            </ul>
+
+                             <div className="mt-auto bg-slate-900/50 p-6 rounded-2xl border-2 border-slate-700">
+                                <div className={`text-base ${rightTheme.text} uppercase font-bold mb-4 flex items-center`}><BookOpen className="w-6 h-6 mr-3"/> Original Text Reference</div>
+                                <div 
+                                    className="parchment p-8 rounded-xl text-2xl font-serif leading-relaxed comparison-text"
+                                    onClick={handleTextClick}
+                                    dangerouslySetInnerHTML={{ __html: docB.content }}
+                                ></div>
+                            </div>
+                        </div>
+
+                         {activeTooltip && (
+                            <div className="absolute top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2">
+                                <DefinitionTooltip 
+                                    term={activeTooltip} 
+                                    def={VOCABULARY[activeTooltip]} 
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )
+        };
+
+
+        const ThesisBuilder = () => {
+            const [step, setStep] = useState(1);
+            const [side, setSide] = useState("");
+            const [evidence, setEvidence] = useState("");
+            const [reasoning, setReasoning] = useState("");
+
+            const copyToClipboard = () => {
+                const text = `I believe that ${side === 'Hamilton' ? 'Alexander Hamilton' : 'Patrick Henry'} makes the more effective argument. At this time in history, the United States most needed ${side === 'Hamilton' ? 'a strong government to solve problems' : 'protection from a powerful leader'}. The evidence shows that ${evidence}. This supports ${side}'s argument because ${reasoning}.`;
+                navigator.clipboard.writeText(text);
+                alert("Thesis copied to clipboard!");
+            };
+
+            return (
+                <div className="bg-white rounded-[2rem] shadow-2xl p-12 border-2 border-slate-200 max-w-[95vw] mx-auto min-h-[70vh] flex flex-col justify-center">
+                    <div className="text-center mb-12">
+                        <h2 className="font-display text-5xl font-bold text-slate-900 mb-4">The Final Verdict</h2>
+                        <p className="text-3xl text-slate-500">Construct your argument step-by-step.</p>
+                    </div>
+
+                    <div className="space-y-10 max-w-6xl mx-auto w-full">
+                        {/* Step 1: Pick a Side */}
+                        <div className={`p-10 rounded-3xl border-4 transition-all ${step === 1 ? 'border-indigo-500 bg-indigo-50 shadow-2xl scale-100' : 'border-slate-100 opacity-60'}`}>
+                            <h3 className="font-bold text-3xl text-slate-800 mb-8">Step 1: Whose argument was better for 1787?</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <button 
+                                    onClick={() => { setSide("Hamilton"); setStep(2); }}
+                                    className={`p-10 rounded-2xl border-4 text-left flex items-center space-x-8 hover:shadow-2xl transition-all ${side === "Hamilton" ? 'bg-indigo-600 text-white ring-8 ring-indigo-200 border-transparent transform scale-105' : 'bg-white border-slate-200 text-slate-600'}`}
+                                >
+                                    <PenTool className="w-16 h-16 flex-shrink-0" />
+                                    <div>
+                                        <div className="font-bold text-3xl">Alexander Hamilton</div>
+                                        <div className="text-xl opacity-90 mt-2">We needed ORDER & STRENGTH.</div>
+                                    </div>
+                                </button>
+                                <button 
+                                    onClick={() => { setSide("Henry"); setStep(2); }}
+                                    className={`p-10 rounded-2xl border-4 text-left flex items-center space-x-8 hover:shadow-2xl transition-all ${side === "Henry" ? 'bg-amber-600 text-white ring-8 ring-amber-200 border-transparent transform scale-105' : 'bg-white border-slate-200 text-slate-600'}`}
+                                >
+                                    <ShieldAlert className="w-16 h-16 flex-shrink-0" />
+                                    <div>
+                                        <div className="font-bold text-3xl">Patrick Henry</div>
+                                        <div className="text-xl opacity-90 mt-2">We needed LIBERTY & CAUTION.</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Step 2: Evidence */}
+                        {step >= 2 && (
+                            <div className={`p-10 rounded-3xl border-4 transition-all ${step === 2 ? 'border-indigo-500 bg-indigo-50 shadow-2xl scale-100' : 'border-slate-100 opacity-60'}`}>
+                                <h3 className="font-bold text-3xl text-slate-800 mb-4">Step 2: Choose your strongest evidence</h3>
+                                <p className="text-2xl text-slate-500 mb-6">What specific fact from the documents proves your point?</p>
+                                <textarea 
+                                    className="w-full p-6 border-4 border-slate-300 rounded-2xl focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 text-2xl leading-relaxed"
+                                    rows="4"
+                                    placeholder="e.g., The Articles required 9 states to agree to do anything, which made it too weak..."
+                                    value={evidence}
+                                    onChange={(e) => setEvidence(e.target.value)}
+                                ></textarea>
+                                {step === 2 && <button onClick={() => setStep(3)} className="mt-6 px-8 py-4 bg-indigo-600 text-white rounded-xl text-2xl font-bold hover:bg-indigo-700 flex items-center shadow-lg transform active:scale-95">Next Step <ArrowRight className="ml-3 w-8 h-8"/></button>}
+                            </div>
+                        )}
+
+                        {/* Step 3: Reasoning */}
+                        {step >= 3 && (
+                            <div className={`p-10 rounded-3xl border-4 transition-all ${step === 3 ? 'border-indigo-500 bg-indigo-50 shadow-2xl scale-100' : 'border-slate-100 opacity-60'}`}>
+                                <h3 className="font-bold text-3xl text-slate-800 mb-4">Step 3: Explain your reasoning</h3>
+                                <p className="text-2xl text-slate-500 mb-6">Why does this evidence matter? Connect it to "Effectiveness".</p>
+                                <textarea 
+                                    className="w-full p-6 border-4 border-slate-300 rounded-2xl focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 text-2xl leading-relaxed"
+                                    rows="4"
+                                    placeholder="e.g., This matters because a government that cannot tax or defend itself is useless..."
+                                    value={reasoning}
+                                    onChange={(e) => setReasoning(e.target.value)}
+                                ></textarea>
+                            </div>
+                        )}
+
+                        {/* Final Output */}
+                        {step >= 3 && evidence && reasoning && (
+                            <div className="mt-12 p-12 bg-slate-900 rounded-3xl text-slate-100 shadow-2xl border-4 border-slate-700 animate-fade-in">
+                                <h3 className="font-display font-bold text-amber-400 mb-8 flex items-center text-4xl">
+                                    <Award className="w-12 h-12 mr-5" /> Your Thesis Statement
+                                </h3>
+                                <p className="font-serif text-3xl leading-loose italic mb-10">
+                                    "I believe that <span className="text-amber-300 font-bold">{side === 'Hamilton' ? 'Alexander Hamilton' : 'Patrick Henry'}</span> makes the more effective argument. 
+                                    At this time in history, the United States most needed <span className="text-amber-300 font-bold">{side === 'Hamilton' ? 'a strong government to solve problems' : 'protection from a powerful leader'}</span>. 
+                                    The evidence shows that {evidence}. This supports {side}'s argument because {reasoning}."
+                                </p>
+                                <button 
+                                    onClick={copyToClipboard}
+                                    className="bg-amber-600 hover:bg-amber-700 text-white text-2xl font-bold py-6 px-10 rounded-2xl transition-colors w-full shadow-xl active:scale-95 border-b-8 border-amber-800 active:border-b-0 active:translate-y-2"
+                                >
+                                    Copy to Clipboard
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [view, setView] = useState('doc1');
+            const [completedDocs, setCompletedDocs] = useState([]);
+
+            const handleDocComplete = (id) => {
+                if (!completedDocs.includes(id)) {
+                    setCompletedDocs([...completedDocs, id]);
+                }
+            };
+            
+            const handleReset = () => {
+                if(confirm("Are you sure you want to reset the entire class session? This will clear progress.")){
+                    setCompletedDocs([]);
+                    setView('doc1');
+                }
+            };
+
+            const progress = (completedDocs.length / DOCUMENTS.length) * 100;
+
+            const NavButton = ({ id, label, icon: Icon, isCompare = false }) => (
+                <button 
+                    onClick={() => setView(id)}
+                    className={`whitespace-nowrap px-8 py-6 rounded-2xl font-bold text-xl flex items-center transition-all shadow-md touch-manipulation mx-2
+                        ${view === id 
+                            ? (isCompare ? 'bg-indigo-600 text-white scale-110 ring-4 ring-indigo-400 z-10' : 'bg-amber-500 text-slate-900 scale-110 ring-4 ring-amber-300 z-10') 
+                            : 'text-slate-300 bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 opacity-80 hover:opacity-100'}`}
+                >
+                    {Icon && <Icon className="w-8 h-8 mr-3" />} {label}
+                </button>
+            );
+
+            return (
+                <div className="min-h-screen pb-40 bg-[#0b1120]">
+                    {/* Header */}
+                    <header className="bg-slate-900 border-b-2 border-slate-800 sticky top-0 z-40 shadow-2xl">
+                        <div className="max-w-[98vw] mx-auto px-8 py-6">
+                            <div className="flex justify-between items-center mb-8">
+                                <div>
+                                    <h1 className="font-display text-5xl text-amber-50 drop-shadow-lg tracking-wide">The 1787 Project</h1>
+                                    <p className="text-slate-400 text-2xl mt-1">Architects of a Nation: Weakness vs. Strength</p>
+                                </div>
+                                <div className="flex items-center space-x-8">
+                                     <div className="text-right hidden xl:block">
+                                        <div className="text-lg text-slate-400 mb-2 font-bold uppercase tracking-widest">Class Progress</div>
+                                        <div className="w-80 h-6 bg-slate-800 rounded-full overflow-hidden border-2 border-slate-700">
+                                            <div className="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-500 shadow-[0_0_15px_rgba(251,191,36,0.6)]" style={{width: `${progress}%`}}></div>
+                                        </div>
+                                    </div>
+                                    <button onClick={handleReset} className="p-4 bg-slate-800 rounded-full text-slate-400 hover:text-red-400 hover:bg-slate-700 border-2 border-slate-700 transition-colors" title="Reset Class Session">
+                                        <RotateCcw className="w-8 h-8" />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {/* Navigation */}
+                            <nav className="flex overflow-x-auto pb-6 pt-2 scrollbar-hide items-center">
+                                <NavButton id="doc1" label="1. Articles" icon={Scroll} />
+                                <NavButton id="doc2" label="2. Constitution" icon={Gavel} />
+                                <NavButton id="compare12" label="Compare 1 vs 2" icon={Scale} isCompare={true} />
+                                <div className="w-1 bg-slate-700 mx-6 h-16 self-center rounded-full"></div>
+                                <NavButton id="doc3" label="3. Hamilton" icon={PenTool} />
+                                <NavButton id="doc4" label="4. Henry" icon={ShieldAlert} />
+                                <NavButton id="compare34" label="Compare 3 vs 4" icon={Scale} isCompare={true} />
+                                <div className="w-1 bg-slate-700 mx-6 h-16 self-center rounded-full"></div>
+                                <NavButton id="thesis" label="Thesis Builder" icon={Award} />
+                            </nav>
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="max-w-[98vw] mx-auto px-8 py-12">
+                        
+                        {view === 'doc1' && (
+                            <div className="animate-fade-in space-y-10">
+                                <div className="text-center text-slate-500 mb-4 font-bold uppercase tracking-[0.2em] text-xl">Analyzing Document 1 of 4</div>
+                                <DocumentCard doc={DOCUMENTS[0]} onQuizComplete={handleDocComplete} fullWidth={true} />
+                                <div className="flex justify-end">
+                                    <button onClick={() => setView('doc2')} className="px-10 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold flex items-center hover:bg-indigo-500 shadow-xl transform active:scale-95 transition-all">Next Document <ArrowRight className="ml-4 w-8 h-8"/></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'doc2' && (
+                            <div className="animate-fade-in space-y-10">
+                                <div className="text-center text-slate-500 mb-4 font-bold uppercase tracking-[0.2em] text-xl">Analyzing Document 2 of 4</div>
+                                <DocumentCard doc={DOCUMENTS[1]} onQuizComplete={handleDocComplete} fullWidth={true} />
+                                <div className="flex justify-between">
+                                     <button onClick={() => setView('doc1')} className="px-10 py-6 bg-slate-800 text-slate-300 rounded-2xl text-2xl font-bold hover:bg-slate-700 border-2 border-slate-700 active:scale-95 transition-all">Previous</button>
+                                    <button onClick={() => setView('compare12')} className="px-10 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold flex items-center hover:bg-indigo-500 shadow-xl transform active:scale-95 transition-all">Compare 1 & 2 <ArrowRight className="ml-4 w-8 h-8"/></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'compare12' && (
+                            <div className="animate-fade-in space-y-10">
+                                <ComparisonView 
+                                    docA={DOCUMENTS[0]} 
+                                    docB={DOCUMENTS[1]} 
+                                    title="System vs. System"
+                                    leftTheme={{
+                                        border: "border-slate-500", 
+                                        text: "text-slate-400", 
+                                        bg: "bg-slate-600",
+                                        highlightBg: "rgba(148, 163, 184, 0.4)", // Slate 400
+                                        highlightBorder: "#64748b"
+                                    }}
+                                    rightTheme={{
+                                        border: "border-indigo-500", 
+                                        text: "text-indigo-400", 
+                                        bg: "bg-indigo-600",
+                                        highlightBg: "rgba(129, 140, 248, 0.4)", // Indigo 400
+                                        highlightBorder: "#4f46e5"
+                                    }}
+                                    points={{
+                                        left: [
+                                            { label: "The Constraint", quote: "Without the assent of nine states.", analysis: "It was extremely hard to pass any laws." },
+                                            { label: "The Weakness", quote: "Nor coin money, nor regulate... value.", analysis: "The government was broke and money was worthless." }
+                                        ],
+                                        right: [
+                                            { label: "The Power", quote: "Power to lay and collect taxes.", analysis: "The government could finally pay its bills." },
+                                            { label: "The Strength", quote: "To raise and support Armies.", analysis: "The government could defend the nation and stop rebellions." }
+                                        ]
+                                    }}
+                                />
+                                <div className="flex justify-end pt-10">
+                                    <button onClick={() => setView('doc3')} className="px-10 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold flex items-center hover:bg-indigo-500 shadow-xl transform active:scale-95 transition-all">Move to The Debate <ArrowRight className="ml-4 w-8 h-8"/></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'doc3' && (
+                            <div className="animate-fade-in space-y-10">
+                                <div className="text-center text-slate-500 mb-4 font-bold uppercase tracking-[0.2em] text-xl">Analyzing Document 3 of 4</div>
+                                <DocumentCard doc={DOCUMENTS[2]} onQuizComplete={handleDocComplete} fullWidth={true} />
+                                <div className="flex justify-end">
+                                    <button onClick={() => setView('doc4')} className="px-10 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold flex items-center hover:bg-indigo-500 shadow-xl transform active:scale-95 transition-all">Next Document <ArrowRight className="ml-4 w-8 h-8"/></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'doc4' && (
+                            <div className="animate-fade-in space-y-10">
+                                <div className="text-center text-slate-500 mb-4 font-bold uppercase tracking-[0.2em] text-xl">Analyzing Document 4 of 4</div>
+                                <DocumentCard doc={DOCUMENTS[3]} onQuizComplete={handleDocComplete} fullWidth={true} />
+                                <div className="flex justify-between">
+                                    <button onClick={() => setView('doc3')} className="px-10 py-6 bg-slate-800 text-slate-300 rounded-2xl text-2xl font-bold hover:bg-slate-700 border-2 border-slate-700 active:scale-95 transition-all">Previous</button>
+                                    <button onClick={() => setView('compare34')} className="px-10 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold flex items-center hover:bg-indigo-500 shadow-xl transform active:scale-95 transition-all">Compare 3 & 4 <ArrowRight className="ml-4 w-8 h-8"/></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'compare34' && (
+                             <div className="animate-fade-in space-y-10">
+                                <ComparisonView 
+                                    docA={DOCUMENTS[2]} 
+                                    docB={DOCUMENTS[3]} 
+                                    title="Hamilton vs. Henry"
+                                    leftTheme={{
+                                        border: "border-indigo-500", 
+                                        text: "text-indigo-400", 
+                                        bg: "bg-indigo-600",
+                                        highlightBg: "rgba(129, 140, 248, 0.4)", // Indigo 400
+                                        highlightBorder: "#4f46e5"
+                                    }}
+                                    rightTheme={{
+                                        border: "border-amber-500", 
+                                        text: "text-amber-500", 
+                                        bg: "bg-amber-600",
+                                        highlightBg: "rgba(251, 191, 36, 0.4)", // Amber 400
+                                        highlightBorder: "#d97706"
+                                    }}
+                                    points={{
+                                        left: [
+                                            { label: "On Power", quote: "Total want of power.", analysis: "Believed the government was too weak to survive." },
+                                            { label: "On the Old System", quote: "It is nothing more than [a league].", analysis: "A 'friendship' isn't enough; we need a Nation." }
+                                        ],
+                                        right: [
+                                            { label: "On Power", quote: "Your President may easily become King.", analysis: "Believed the new government was too strong." },
+                                            { label: "On the Threat", quote: "The army is in his hands.", analysis: "Feared the leader would use the army against the people." }
+                                        ]
+                                    }}
+                                />
+                                <div className="flex justify-end pt-10">
+                                    <button onClick={() => setView('thesis')} className="px-12 py-8 bg-amber-600 text-white rounded-2xl text-3xl font-bold flex items-center hover:bg-amber-500 shadow-2xl border-b-8 border-amber-800 transform active:translate-y-2 active:border-b-0 transition-all">Build Your Thesis <ArrowRight className="ml-4 w-10 h-10"/></button>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'thesis' && (
+                            <div className="slide-in">
+                                <ThesisBuilder />
+                            </div>
+                        )}
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
