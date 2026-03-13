@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Declaration Comparison: Rhetorical Connections</title>
+    <!-- Google Fonts: Instrument Sans for a "Google Sans" aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Instrument Sans"', 'sans-serif'],
+                        serif: ['"Libre Baskerville"', 'serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .parchment {
+            background-color: #fcfaf2;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+        }
+        .highlight-change {
+            background-color: #fef3c7;
+            border-bottom: 2px solid #f59e0b;
+            font-weight: 600;
+        }
+        .term-link {
+            border-bottom: 1px dotted #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .term-link:hover {
+            background-color: #e2e8f0;
+            color: #1e40af;
+        }
+        .full-text-p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+        }
+        #glossary-overlay, #analysis-overlay {
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+        .grievance-list li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .grievance-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #64748b;
+        }
+        /* Custom scrollbar */
+        .doc-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .doc-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .doc-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        /* Connection Line Styles */
+        #connection-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .connect-btn {
+            transition: all 0.2s;
+        }
+        .connect-btn:hover {
+            transform: scale(1.1);
+        }
+        .active-connection {
+            background-color: white !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
+
+    <!-- Glossary Overlay -->
+    <div id="glossary-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeGlossary()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            <h3 id="glossary-title" class="text-2xl font-bold text-slate-900 mb-2">Term</h3>
+            <p id="glossary-def" class="text-slate-600 leading-relaxed text-lg font-sans">Definition goes here.</p>
+        </div>
+    </div>
+
+    <!-- Rhetorical Analysis Overlay -->
+    <div id="analysis-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-8 relative">
+            <button onclick="closeAnalysis()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold uppercase tracking-widest text-slate-400">Rhetorical Mirroring</h3>
+            </div>
+            <h4 id="analysis-title" class="text-2xl font-bold text-slate-900 mb-4">Mirroring Analysis</h4>
+            <p id="analysis-text" class="text-slate-600 leading-relaxed text-lg font-sans">Details here.</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 py-6 px-6 text-center">
+        <h1 class="text-3xl font-bold mb-1 tracking-tight text-slate-900">The Language of Liberty</h1>
+        <p class="text-slate-500 max-w-4xl mx-auto text-sm">
+            Analyze how Elizabeth Cady Stanton utilized Jefferson's structure to demand equality.
+        </p>
+        <div class="mt-4 flex justify-center gap-6">
+            <label class="flex items-center cursor-pointer">
+                <input type="checkbox" id="syncScrollToggle" class="sr-only peer" checked>
+                <div class="relative w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                <span class="ms-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Sync Scroll</span>
+            </label>
+            <div class="text-xs font-semibold text-blue-600 flex items-center gap-1 uppercase tracking-wider animate-pulse">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zM16.146 16.146a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414z"></path></svg>
+                Click icons to see connections
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto py-4 px-4 relative">
+        <svg id="connection-canvas"><line id="current-line" x1="0" y1="0" x2="0" y2="0" stroke="#3b82f6" stroke-width="2" stroke-dasharray="8,4" style="opacity:0;" /></svg>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-12 h-[78vh]">
+            
+            <!-- 1776 Column -->
+            <section id="col1776" class="parchment flex flex-col rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
+                <div class="p-4 bg-white/90 border-b border-slate-200 flex justify-between items-center z-20">
+                    <h2 class="text-sm font-bold text-blue-900 uppercase tracking-widest">1776: Declaration of Independence</h2>
+                </div>
+                
+                <div id="scroll1776" class="p-8 doc-scroll overflow-y-auto flex-1 font-serif">
+                    <div class="space-y-12">
+                        <div id="p1776-intro" class="relative group">
+                            <button onclick="toggleConnection('intro', this)" class="connect-btn absolute -right-6 top-0 w-8 h-8 rounded-full bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shadow-sm hover:bg-blue-600 hover:text-white z-30">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            </button>
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-blue-800 mb-2 tracking-[0.2em]">The Opening</h3>
+                            <p class="full-text-p">When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another...</p>
+                        </div>
+
+                        <div id="p1776-preamble" class="relative group">
+                            <button onclick="toggleConnection('preamble', this)" class="connect-btn absolute -right-6 top-0 w-8 h-8 rounded-full bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shadow-sm hover:bg-blue-600 hover:text-white z-30">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            </button>
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-blue-800 mb-2 tracking-[0.2em]">The Self-Evident Truths</h3>
+                            <p class="full-text-p">We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain <span class="term-link" onclick="openGlossary('unalienable')">unalienable Rights</span>...</p>
+                        </div>
+
+                        <div id="p1776-grievance" class="relative group">
+                            <button onclick="toggleConnection('grievance', this)" class="connect-btn absolute -right-6 top-0 w-8 h-8 rounded-full bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shadow-sm hover:bg-blue-600 hover:text-white z-30">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            </button>
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-blue-800 mb-2 tracking-[0.2em]">The King's History</h3>
+                            <p class="full-text-p">The history of the present King of Great Britain is a history of repeated injuries and <span class="term-link" onclick="openGlossary('usurpations')">usurpations</span>, all having in direct object the establishment of an absolute Tyranny over these States.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1848 Column -->
+            <section id="col1848" class="parchment flex flex-col rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
+                <div class="p-4 bg-white/90 border-b border-slate-200 flex justify-between items-center z-20">
+                    <h2 class="text-sm font-bold text-rose-900 uppercase tracking-widest">1848: Declaration of Sentiments</h2>
+                </div>
+
+                <div id="scroll1848" class="p-8 doc-scroll overflow-y-auto flex-1 font-serif">
+                    <div class="space-y-12">
+                        <div id="p1848-intro" class="relative group">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-rose-800 mb-2 tracking-[0.2em]">The Opening</h3>
+                            <p class="full-text-p">When, in the course of human events, it becomes necessary for <span class="highlight-change">one portion of the family of man</span> to assume... a position different from that which they have hitherto occupied...</p>
+                        </div>
+
+                        <div id="p1848-preamble" class="relative group">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-rose-800 mb-2 tracking-[0.2em]">The Self-Evident Truths</h3>
+                            <p class="full-text-p">We hold these truths to be self-evident: that <span class="highlight-change">all men and women</span> are created equal; that they are endowed by their Creator with certain <span class="term-link" onclick="openGlossary('inalienable')">inalienable rights</span>...</p>
+                        </div>
+
+                        <div id="p1848-grievance" class="relative group">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-rose-800 mb-2 tracking-[0.2em]">The History of Man</h3>
+                            <p class="full-text-p">The history of mankind is a history of repeated injuries and usurpations on the part of <span class="highlight-change">man toward woman</span>, having in direct object the establishment of an absolute tyranny over her.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const connections = {
+            'intro': {
+                title: "Mirroring the 'Necessity'",
+                text: "Stanton borrows Jefferson's famous opening phrase 'When in the course of human events' to signal that the Women's Rights movement is a historic necessity of the same magnitude as the American Revolution. By changing 'one people' to 'one portion of the family of man,' she frames women's struggle not as a separate war, but as an internal correction to the human family."
+            },
+            'preamble': {
+                title: "Expanding Equality",
+                text: "This is the most famous linguistic shift in the document. By adding 'and women' to Jefferson's 'all men are created equal,' Stanton highlights the literal and legal exclusion of women from the founding promise. She uses the exact same rhythmic structure to make the omission of women in 1776 appear obvious and unjust."
+            },
+            'grievance': {
+                title: "From King to Man",
+                text: "Stanton replaces 'The King of Great Britain' with 'Mankind.' This bold rhetorical move shifts the role of the 'oppressor' from a distant monarch to the very men sitting in the audience. It mimics the legal language used to indict King George III, effectively putting the patriarchy on trial."
+            }
+        };
+
+        const glossary = {
+            'impel': { title: 'Impel', def: 'To drive, force, or urge someone to do something.' },
+            'unalienable': { title: 'Unalienable Rights', def: 'Natural rights that cannot be taken away or given up.' },
+            'inalienable': { title: 'Inalienable Rights', def: 'The same as unalienable. Stanton used the "i" spelling to mirror Enlightenment philosophy popular in her era.' },
+            'usurpations': { title: 'Usurpations', def: 'Taking someone\'s power or property by force or without legal right.' }
+        };
+
+        // UI State
+        let activeKey = null;
+
+        function toggleConnection(key, btn) {
+            if (activeKey === key) {
+                closeAnalysis();
+                return;
+            }
+            
+            activeKey = key;
+            document.querySelectorAll('.connect-btn').forEach(b => b.classList.remove('active-connection'));
+            btn.classList.add('active-connection');
+            
+            const data = connections[key];
+            if (data) {
+                const titleEl = document.getElementById('analysis-title');
+                const textEl = document.getElementById('analysis-text');
+                const overlay = document.getElementById('analysis-overlay');
+                
+                if (titleEl) titleEl.innerText = data.title;
+                if (textEl) textEl.innerText = data.text;
+                if (overlay) overlay.style.display = 'flex';
+                
+                drawConnectionLine(key);
+            }
+        }
+
+        function drawConnectionLine(key) {
+            if (!key) return;
+            
+            const leftEl = document.getElementById(`p1776-${key}`);
+            const rightEl = document.getElementById(`p1848-${key}`);
+            const line = document.getElementById('current-line');
+            const main = document.querySelector('main');
+            
+            if (!leftEl || !rightEl || !line || !main) {
+                if (line) line.style.opacity = "0";
+                return;
+            }
+
+            const leftRect = leftEl.getBoundingClientRect();
+            const rightRect = rightEl.getBoundingClientRect();
+            const mainRect = main.getBoundingClientRect();
+
+            line.setAttribute('x1', leftRect.right - mainRect.left);
+            line.setAttribute('y1', leftRect.top - mainRect.top + 20);
+            line.setAttribute('x2', rightRect.left - mainRect.left);
+            line.setAttribute('y2', rightRect.top - mainRect.top + 20);
+            line.style.opacity = "1";
+        }
+
+        function closeAnalysis() {
+            activeKey = null;
+            const overlay = document.getElementById('analysis-overlay');
+            const line = document.getElementById('current-line');
+            
+            if (overlay) overlay.style.display = 'none';
+            if (line) line.style.opacity = "0";
+            document.querySelectorAll('.connect-btn').forEach(b => b.classList.remove('active-connection'));
+        }
+
+        function openGlossary(term) {
+            const data = glossary[term];
+            const titleEl = document.getElementById('glossary-title');
+            const defEl = document.getElementById('glossary-def');
+            const overlay = document.getElementById('glossary-overlay');
+            
+            if (data && titleEl && defEl && overlay) {
+                titleEl.innerText = data.title;
+                defEl.innerText = data.def;
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function closeGlossary() {
+            const overlay = document.getElementById('glossary-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        // Sync Scrolling
+        const left = document.getElementById('scroll1776');
+        const right = document.getElementById('scroll1848');
+        const syncToggle = document.getElementById('syncScrollToggle');
+        
+        const sync = () => {
+            if (activeKey) {
+                drawConnectionLine(activeKey);
+            }
+        };
+
+        if (left && right) {
+            left.onscroll = function() {
+                if (syncToggle && syncToggle.checked) {
+                    const pct = left.scrollTop / (left.scrollHeight - left.clientHeight);
+                    right.scrollTop = pct * (right.scrollHeight - right.clientHeight);
+                }
+                sync();
+            };
+
+            right.onscroll = function() {
+                if (syncToggle && syncToggle.checked) {
+                    const pct = right.scrollTop / (right.scrollHeight - right.clientHeight);
+                    left.scrollTop = pct * (left.scrollHeight - left.clientHeight);
+                }
+                sync();
+            };
+        }
+
+        window.onclick = (e) => {
+            if (e.target.id === 'analysis-overlay') closeAnalysis();
+            if (e.target.id === 'glossary-overlay') closeGlossary();
+        };
+
+        window.onresize = sync;
+    </script>
+</body>
+</html>
