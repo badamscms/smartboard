@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Declaration Comparison: Complete Unabridged Text</title>
+    <!-- Google Fonts: Instrument Sans for a "Google Sans" aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Instrument Sans"', 'sans-serif'],
+                        serif: ['"Libre Baskerville"', 'serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .parchment {
+            background-color: #fcfaf2;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+        }
+        .highlight-change {
+            background-color: #fef3c7;
+            border-bottom: 2px solid #f59e0b;
+            font-weight: 600;
+        }
+        .term-link {
+            border-bottom: 1px dotted #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .term-link:hover {
+            background-color: #e2e8f0;
+            color: #1e40af;
+        }
+        .full-text-p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+        }
+        #glossary-overlay {
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+        .grievance-list li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .grievance-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #64748b;
+        }
+        /* Custom scrollbar for a cleaner look */
+        .doc-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .doc-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .doc-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-900 overflow-x-hidden">
+
+    <!-- Glossary Overlay -->
+    <div id="glossary-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeGlossary()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            <h3 id="glossary-title" class="text-2xl font-bold text-slate-900 mb-2">Term</h3>
+            <p id="glossary-def" class="text-slate-600 leading-relaxed text-lg">Definition goes here.</p>
+            <div class="mt-6 pt-4 border-t border-slate-100 text-sm text-slate-400 italic font-sans">Click anywhere outside to close.</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 py-8 px-6 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-slate-900">The Language of Liberty</h1>
+        <p class="text-lg text-slate-500 max-w-4xl mx-auto">
+            Unabridged Comparison: 1776 vs 1848
+        </p>
+        <div class="mt-4 flex justify-center gap-4">
+            <label class="flex items-center cursor-pointer">
+                <input type="checkbox" id="syncScrollToggle" class="sr-only peer" checked>
+                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after: Jensen after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span class="ms-3 text-sm font-medium text-slate-600">Synchronized Scrolling</span>
+            </label>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto py-6 px-4">
+        
+        <!-- Mobile Toggle -->
+        <div class="flex justify-center mb-6 lg:hidden">
+            <div class="inline-flex rounded-xl bg-white p-1 shadow-sm border border-slate-200">
+                <button id="show1776" class="px-6 py-2 text-sm font-semibold text-white bg-slate-900 rounded-lg shadow-sm">1776</button>
+                <button id="show1848" class="px-6 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg">1848</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 h-[75vh]">
+            
+            <!-- 1776 Column -->
+            <section id="col1776" class="parchment flex flex-col rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 bg-white/80 border-b border-slate-200 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-blue-900">Declaration of Independence</h2>
+                    <span class="text-xs font-mono text-slate-500 uppercase">July 1776</span>
+                </div>
+                
+                <div id="scroll1776" class="p-8 doc-scroll overflow-y-auto flex-1 font-serif">
+                    <div class="space-y-10">
+                        <div class="doc-section">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-blue-800 mb-4 tracking-[0.2em]">The Preamble</h3>
+                            <p class="full-text-p">When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another, and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which <span class="term-link" onclick="openGlossary('impel')">impel</span> them to the separation.</p>
+                            <p class="full-text-p">We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain <span class="term-link" onclick="openGlossary('unalienable')">unalienable Rights</span>, that among these are Life, Liberty and the pursuit of Happiness.--That to secure these rights, Governments are instituted among Men, deriving their just powers from the <span class="term-link" onclick="openGlossary('consent')">consent of the governed</span>, --That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government...</p>
+                        </div>
+
+                        <div class="doc-section">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-blue-800 mb-4 tracking-[0.2em]">The Grievances</h3>
+                            <p class="text-sm italic mb-6">To prove this, let Facts be submitted to a candid world.</p>
+                            <ul class="grievance-list text-base">
+                                <li><strong>He has</strong> refused his <span class="term-link" onclick="openGlossary('assent')">Assent</span> to Laws...</li>
+                                <li><strong>He has</strong> forbidden his Governors to pass Laws...</li>
+                                <li><strong>He has</strong> refused to pass other Laws for the accommodation of large districts...</li>
+                                <li><strong>He has</strong> called together legislative bodies at places unusual...</li>
+                                <li><strong>He has</strong> dissolved Representative Houses repeatedly...</li>
+                                <li><strong>He has</strong> refused for a long time... to cause others to be elected...</li>
+                                <li><strong>He has</strong> endeavoured to prevent the population of these States...</li>
+                                <li><strong>He has</strong> obstructed the Administration of Justice...</li>
+                                <li><strong>He has</strong> made Judges dependent on his Will alone...</li>
+                                <li><strong>He has</strong> erected a multitude of New Offices...</li>
+                                <li><strong>He has</strong> kept among us, in times of peace, Standing Armies...</li>
+                                <li><strong>He has</strong> affected to render the Military independent of and superior to the Civil power.</li>
+                                <li><strong>He has</strong> combined with others... giving his Assent to their Acts of pretended Legislation:</li>
+                                <li class="ml-4 italic">For <span class="term-link" onclick="openGlossary('quartering')">Quartering</span> large bodies of armed troops...</li>
+                                <li class="ml-4 italic">For protecting them, by a mock Trial...</li>
+                                <li class="ml-4 italic">For cutting off our Trade with all parts of the world...</li>
+                                <li class="ml-4 italic">For imposing Taxes on us without our Consent...</li>
+                                <li class="ml-4 italic">For depriving us in many cases, of the benefits of Trial by Jury...</li>
+                                <li><strong>He has</strong> abdicated Government here...</li>
+                                <li><strong>He has</strong> plundered our seas, ravaged our Coasts, burnt our towns, and destroyed the lives of our people.</li>
+                            </ul>
+                        </div>
+
+                        <div class="doc-section pb-12">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-blue-800 mb-4 tracking-[0.2em]">Formal Declaration</h3>
+                            <p class="full-text-p italic font-bold">And for the support of this Declaration, with a firm reliance on the protection of divine Providence, we mutually pledge to each other our Lives, our Fortunes and our sacred Honor.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1848 Column -->
+            <section id="col1848" class="parchment flex flex-col rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 bg-white/80 border-b border-slate-200 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-rose-900">Declaration of Sentiments</h2>
+                    <span class="text-xs font-mono text-slate-500 uppercase">July 1848</span>
+                </div>
+
+                <div id="scroll1848" class="p-8 doc-scroll overflow-y-auto flex-1 font-serif">
+                    <div class="space-y-10">
+                        <div class="doc-section">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-rose-800 mb-4 tracking-[0.2em]">The Preamble</h3>
+                            <p class="full-text-p">When, in the course of human events, it becomes necessary for <span class="highlight-change">one portion of the family of man</span> to assume among the people of the earth a position different from that which they have hitherto occupied... a decent respect to the opinions of mankind requires that they should declare the causes that impel them to such a course.</p>
+                            <p class="full-text-p">We hold these truths to be self-evident: that <span class="highlight-change">all men and women</span> are created equal; that they are endowed by their Creator with certain <span class="term-link" onclick="openGlossary('inalienable')">inalienable rights</span>; that among these are life, liberty, and the pursuit of happiness; that to secure these rights governments are instituted, deriving their just powers from the <span class="term-link" onclick="openGlossary('consent')">consent of the governed</span>...</p>
+                        </div>
+
+                        <div class="doc-section">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-rose-800 mb-4 tracking-[0.2em]">The Grievances</h3>
+                            <p class="text-sm italic mb-6">To prove this, let facts be submitted to a candid world:</p>
+                            <ul class="grievance-list text-base">
+                                <li><strong>He has</strong> never permitted her to exercise her inalienable right to the <span class="term-link" onclick="openGlossary('elective franchise')">elective franchise</span>.</li>
+                                <li><strong>He has</strong> compelled her to submit to laws, in the formation of which she had no voice.</li>
+                                <li><strong>He has</strong> withheld from her rights which are given to the most ignorant and degraded men...</li>
+                                <li><strong>He has</strong> made her, if married, in the eye of the law, <span class="term-link" onclick="openGlossary('civilly dead')">civilly dead</span>.</li>
+                                <li><strong>He has</strong> taken from her all right in property, even to the wages she earns.</li>
+                                <li><strong>He has</strong> so framed the laws of divorce... going upon a false supposition of the supremacy of man...</li>
+                                <li><strong>He has</strong> <span class="term-link" onclick="openGlossary('monopolized')">monopolized</span> nearly all the profitable employments...</li>
+                                <li><strong>He has</strong> denied her the facilities for obtaining a thorough education...</li>
+                                <li><strong>He has</strong> allowed her in Church, as well as State, but a subordinate position...</li>
+                                <li><strong>He has</strong> created a false public <span class="term-link" onclick="openGlossary('sentiment')">sentiment</span> by giving to the world a different code of morals...</li>
+                                <li><strong>He has</strong> usurped the prerogative of Jehovah himself...</li>
+                                <li><strong>He has</strong> endeavored, in every way that he could, to destroy her confidence in her own powers...</li>
+                            </ul>
+                        </div>
+
+                        <div class="doc-section pb-12">
+                            <h3 class="font-sans font-bold text-[10px] uppercase text-rose-800 mb-4 tracking-[0.2em]">Formal Declaration</h3>
+                            <p class="full-text-p italic font-bold">In entering upon the great work before us, we anticipate no small amount of misconception, misrepresentation, and ridicule; but we shall use every instrumentality within our power to effect our object.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center py-10 text-slate-400 text-sm">
+        <p>A Historical Analysis Tool &bull; Instrument Sans & Libre Baskerville</p>
+    </footer>
+
+    <script>
+        const glossary = {
+            'impel': { title: 'Impel', def: 'To drive, force, or urge someone to do something.' },
+            'unalienable': { title: 'Unalienable Rights', def: 'Natural rights that cannot be taken away or given up.' },
+            'inalienable': { title: 'Inalienable Rights', def: 'Same as unalienable; Stanton used the "i" spelling to mirror the rhetoric of the time.' },
+            'consent': { title: 'Consent of the Governed', def: 'The idea that a government\'s power is only legitimate if the people agree to it.' },
+            'elective franchise': { title: 'Elective Franchise', def: 'The legal right to vote.' },
+            'civilly dead': { title: 'Civilly Dead', def: 'A legal status where a person loses their civil rights (in 1848, this applied to married women).' },
+            'monopolized': { title: 'Monopolized', def: 'To obtain exclusive control over something (like jobs or education).' },
+            'sentiment': { title: 'Sentiment', def: 'A general opinion or attitude held by the majority.' },
+            'disfranchisement': { title: 'Disfranchisement', def: 'Depriving someone of the right to vote.' }
+        };
+
+        const overlay = document.getElementById('glossary-overlay');
+        const gTitle = document.getElementById('glossary-title');
+        const gDef = document.getElementById('glossary-def');
+
+        function openGlossary(term) {
+            const data = glossary[term];
+            if (data) {
+                gTitle.innerText = data.title;
+                gDef.innerText = data.def;
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function closeGlossary() { overlay.style.display = 'none'; }
+        overlay.onclick = (e) => { if (e.target === overlay) closeGlossary(); };
+
+        // Sync Scrolling Logic
+        const left = document.getElementById('scroll1776');
+        const right = document.getElementById('scroll1848');
+        const syncToggle = document.getElementById('syncScrollToggle');
+        
+        let isSyncingLeft = false;
+        let isSyncingRight = false;
+
+        left.onscroll = function() {
+            if (!syncToggle.checked) return;
+            if (!isSyncingLeft) {
+                isSyncingRight = true;
+                const scrollPercentage = left.scrollTop / (left.scrollHeight - left.clientHeight);
+                right.scrollTop = scrollPercentage * (right.scrollHeight - right.clientHeight);
+            }
+            isSyncingLeft = false;
+        };
+
+        right.onscroll = function() {
+            if (!syncToggle.checked) return;
+            if (!isSyncingRight) {
+                isSyncingLeft = true;
+                const scrollPercentage = right.scrollTop / (right.scrollHeight - right.clientHeight);
+                left.scrollTop = scrollPercentage * (left.scrollHeight - left.clientHeight);
+            }
+            isSyncingRight = false;
+        };
+
+        // Mobile toggle
+        const btn1776 = document.getElementById('show1776');
+        const btn1848 = document.getElementById('show1848');
+        const col1776 = document.getElementById('col1776');
+        const col1848 = document.getElementById('col1848');
+
+        btn1776.onclick = () => {
+            col1776.classList.remove('hidden'); col1848.classList.add('hidden');
+            btn1776.className = "px-6 py-2 text-sm font-semibold text-white bg-slate-900 rounded-lg shadow-sm";
+            btn1848.className = "px-6 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg";
+        };
+        btn1848.onclick = () => {
+            col1776.classList.add('hidden'); col1848.classList.remove('hidden');
+            btn1848.className = "px-6 py-2 text-sm font-semibold text-white bg-rose-900 rounded-lg shadow-sm";
+            btn1776.className = "px-6 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg";
+        };
+    </script>
+</body>
+</html>
