@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civics Document Lab: Law & Justice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Lora', serif; }
+        
+        .active-tab { 
+            background-color: #f1f5f9;
+            color: #1e40af;
+            border-left: 4px solid #2563eb;
+        }
+
+        .vocab-term {
+            cursor: pointer;
+            border-bottom: 2px dashed #3b82f6;
+            padding-bottom: 1px;
+            transition: all 0.2s;
+            position: relative;
+            display: inline-block;
+        }
+
+        .vocab-term:hover {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Tooltip style */
+        .tooltip {
+            visibility: hidden;
+            width: 220px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+
+        .vocab-term.active .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .scaffold-card {
+            border-top: 4px solid #3b82f6;
+        }
+
+        /* Fullscreen styles to ensure background stays clean */
+        :fullscreen body {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body id="app-body" class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-12 border-b border-slate-200 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-blue-600 text-white p-2 rounded-lg shadow-lg shadow-blue-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M8 7h6"/><path d="M8 11h8"/></svg>
+                    </div>
+                    <h1 class="text-2xl font-bold tracking-tight">Civics Document Lab</h1>
+                </div>
+                <h2 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">The Limits of Civil Disobedience</h2>
+                <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">
+                    Examine how historical leaders balanced individual rights with the stability of the law. 
+                    <span class="text-blue-600 font-semibold underline decoration-2 underline-offset-4">Click blue dashed words</span> for definitions.
+                </p>
+            </div>
+            
+            <!-- Full Screen Toggle -->
+            <button onclick="toggleFullScreen()" class="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+                <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                <span id="fullscreen-text">Full Screen</span>
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <!-- Sidebar Navigation -->
+            <aside class="lg:col-span-3 space-y-8">
+                <nav class="space-y-1 sticky top-8">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 px-4">Primary Sources</p>
+                    <button onclick="showDoc('thoreau')" id="btn-thoreau" class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-all active-tab">Henry David Thoreau</button>
+                    <button onclick="showDoc('paul')" id="btn-paul" class="w-full text-left px-4 py-3 rounded-xl font-semibold text-slate-500 hover:bg-slate-100 transition-all">Alice Paul</button>
+                    <button onclick="showDoc('king')" id="btn-king" class="w-full text-left px-4 py-3 rounded-xl font-semibold text-slate-500 hover:bg-slate-100 transition-all">Dr. Martin Luther King Jr.</button>
+                    <button onclick="showDoc('lincoln')" id="btn-lincoln" class="w-full text-left px-4 py-3 rounded-xl font-semibold text-slate-500 hover:bg-slate-100 transition-all">Abraham Lincoln</button>
+                    
+                    <!-- HIPP Scaffold -->
+                    <div class="mt-12 p-5 bg-blue-50 rounded-2xl border border-blue-100 shadow-sm">
+                        <h4 class="text-blue-800 font-bold text-sm mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            HIPP Analysis Guide
+                        </h4>
+                        <ul class="text-xs space-y-3 text-blue-900 leading-relaxed">
+                            <li><strong>H: Historical Context</strong> – What was happening in the U.S. at this time?</li>
+                            <li><strong>I: Intended Audience</strong> – Who was the author trying to reach?</li>
+                            <li><strong>P: Purpose</strong> – Why was this document created?</li>
+                            <li><strong>P: Point of View</strong> – What is the author’s background?</li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="lg:col-span-9">
+                <article id="doc-container" class="bg-white rounded-3xl p-10 shadow-sm border border-slate-200 mb-10">
+                    <!-- Dynamic Document Content -->
+                </article>
+
+                <!-- Analysis Questions Footer -->
+                <section id="analysis-footer" class="mt-12 pt-10 border-t border-slate-200">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest">Document Analysis</h3>
+                        <span class="text-xs bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold">Scaffolded Writing Support</span>
+                    </div>
+                    <div id="questions-list" class="grid md:grid-cols-2 gap-8">
+                        <!-- Dynamic Questions -->
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const docs = {
+            thoreau: {
+                name: "Henry David Thoreau",
+                title: "Civil Disobedience (1849)",
+                context: "Thoreau was a philosopher who spent a night in jail for refusing to pay a poll tax that supported the Mexican-American War and slavery.",
+                text: `If the injustice is part of the necessary <span class="vocab-term" onclick="toggleVocab(this)">friction<span class="tooltip"><b>Friction:</b> Resistance or conflict that slows a system down.</span></span> of the machine of government, let it go, let it go... but if it is of such a nature that it requires you to be the <span class="vocab-term" onclick="toggleVocab(this)">agent<span class="tooltip"><b>Agent:</b> Someone who acts on behalf of another; a tool.</span></span> of injustice to another, then, I say, break the law. Let your life be a counter-friction to stop the machine. What I have to do is to see, at any rate, that I do not lend myself to the wrong which I <span class="vocab-term" onclick="toggleVocab(this)">condemn<span class="tooltip"><b>Condemn:</b> To strongly express disapproval of something.</span></span>.`,
+                questions: [
+                    "According to Thoreau, what is a citizen’s duty when the law requires them to treat others unfairly?",
+                    "How does Thoreau argue that individuals are responsible for the actions of their government?"
+                ],
+                starters: [
+                    "In 'Civil Disobedience,' Thoreau argues that when a government machine causes injustice, a citizen should...",
+                    "Thoreau's perspective suggests that an individual's moral responsibility is..."
+                ]
+            },
+            paul: {
+                name: "Alice Paul",
+                title: "Jailed for Freedom (1917)",
+                context: "Alice Paul was a leader in the women’s suffrage movement. She was arrested for picketing the White House during World War I.",
+                text: `We do not consider ourselves <span class="vocab-term" onclick="toggleVocab(this)">subject to<span class="tooltip"><b>Subject to:</b> Under the authority or control of.</span></span> this court, since as a <span class="vocab-term" onclick="toggleVocab(this)">disenfranchised<span class="tooltip"><b>Disenfranchised:</b> Denied the right to vote or have a voice.</span></span> class we have nothing to do with the making of the laws which have put us in this position. We are not here because we <span class="vocab-term" onclick="toggleVocab(this)">obstructed<span class="tooltip"><b>Obstructed:</b> Blocked or stood in the way of.</span></span> traffic, but because we pointed out to the President that he is obstructing the cause of democracy.`,
+                questions: [
+                    "Why does Alice Paul claim she is not bound by the authority of the court?",
+                    "How does Paul reframe her arrest to be about the President's actions rather than her own?"
+                ],
+                starters: [
+                    "Alice Paul explains that as a disenfranchised citizen, she is not subject to the court because...",
+                    "By contrasting her arrest with the 'obstruction of democracy,' Paul argues that..."
+                ]
+            },
+            king: {
+                name: "Dr. Martin Luther King Jr.",
+                title: "Letter from Birmingham Jail (1963)",
+                context: "Dr. King wrote this letter while imprisoned for a nonviolent protest against segregation in Alabama.",
+                text: `One may well ask: 'How can you <span class="vocab-term" onclick="toggleVocab(this)">advocate<span class="tooltip"><b>Advocate:</b> To support or speak in favor of something.</span></span> breaking some laws and obeying others?' The answer lies in the fact that there are two types of laws: just and unjust. I would be the first to advocate obeying just laws... <span class="vocab-term" onclick="toggleVocab(this)">Conversely<span class="tooltip"><b>Conversely:</b> In an opposite way; on the other hand.</span></span>, one has a <span class="vocab-term" onclick="toggleVocab(this)">moral<span class="tooltip"><b>Moral:</b> Related to what is right or wrong behavior.</span></span> responsibility to disobey unjust laws.`,
+                questions: [
+                    "How does Dr. King distinguish between a 'just' and an 'unjust' law?",
+                    "Why does King argue that following an unjust law is a moral failure?"
+                ],
+                starters: [
+                    "Dr. King differentiates between just and unjust laws by stating that...",
+                    "The argument presented in 'Letter from Birmingham Jail' suggests that moral responsibility requires..."
+                ]
+            },
+            lincoln: {
+                name: "Abraham Lincoln",
+                title: "The Lyceum Address (1838)",
+                context: "As a young lawyer, Lincoln gave this speech to warn that 'mob law' and the lack of respect for legal institutions would destroy the republic.",
+                text: `Let every American... swear by the blood of the Revolution, never to <span class="vocab-term" onclick="toggleVocab(this)">violate<span class="tooltip"><b>Violate:</b> To break or ignore a rule or law.</span></span> in the least particular, the laws of the country... Although bad laws, if they exist, should be <span class="vocab-term" onclick="toggleVocab(this)">repealed<span class="tooltip"><b>Repealed:</b> To officially end or cancel a law.</span></span> as soon as possible, still while they continue in force, for the sake of example, they should be <span class="vocab-term" onclick="toggleVocab(this)">religiously observed<span class="tooltip"><b>Religiously Observed:</b> To follow a rule perfectly and with deep respect.</span></span>.`,
+                questions: [
+                    "What is Lincoln’s solution for addressing 'bad laws'?",
+                    "What consequence does Lincoln warn about if citizens stop following the law for 'the sake of example'?"
+                ],
+                starters: [
+                    "In 'The Lyceum Address,' Lincoln claims that bad laws should be...",
+                    "Lincoln warns that if the laws of the country are violated, the result will be..."
+                ]
+            }
+        };
+
+        function showDoc(id) {
+            const doc = docs[id];
+            
+            // Update Sidebar UI
+            document.querySelectorAll('aside button').forEach(b => b.classList.remove('active-tab', 'bg-slate-100', 'text-blue-800'));
+            document.getElementById(`btn-${id}`).classList.add('active-tab');
+
+            // Load Content
+            document.getElementById('doc-container').innerHTML = `
+                <div class="mb-8">
+                    <h3 class="text-4xl font-extrabold text-slate-900 leading-tight mb-4">${doc.title}</h3>
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-md uppercase tracking-wider">${doc.name}</span>
+                        <p class="text-slate-500 text-xs font-semibold max-w-sm leading-snug"><strong>Context:</strong> ${doc.context}</p>
+                    </div>
+                </div>
+                <div class="serif text-2xl leading-relaxed text-slate-800 border-l-8 border-blue-600 pl-8 py-4 bg-blue-50/30 rounded-r-2xl italic">
+                    "${doc.text}"
+                </div>
+            `;
+
+            // Load Questions with Starters
+            document.getElementById('questions-list').innerHTML = doc.questions.map((q, i) => `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm scaffold-card">
+                    <span class="text-blue-600 font-black text-[10px] uppercase tracking-widest mb-2 block">Objective Analysis ${i+1}</span>
+                    <p class="text-slate-900 font-bold leading-snug mb-4">${q}</p>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <p class="text-[11px] font-bold text-slate-400 uppercase mb-2">Academic Sentence Starter:</p>
+                        <p class="text-sm text-slate-600 italic">"${doc.starters[i]}..."</p>
+                    </div>
+                </div>
+            `).join('');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleVocab(el) {
+            document.querySelectorAll('.vocab-term').forEach(item => {
+                if (item !== el) item.classList.remove('active');
+            });
+            el.classList.toggle('active');
+        }
+
+        // Full Screen Toggle Logic
+        function toggleFullScreen() {
+            const doc = document.documentElement;
+            const icon = document.getElementById('fullscreen-icon');
+            const text = document.getElementById('fullscreen-text');
+
+            if (!document.fullscreenElement) {
+                doc.requestFullscreen().then(() => {
+                    text.innerText = "Exit Full Screen";
+                    icon.innerHTML = '<path d="M4 14h3v3"/><path d="M20 10h-3V7"/><path d="M14 4v3h3"/><path d="M10 20v-3H7"/><path d="M14 20v-3h3"/><path d="M10 4v3H7"/><path d="M20 14h-3v3"/><path d="M4 10h3V7"/>';
+                }).catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        text.innerText = "Full Screen";
+                        icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2 2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+                    });
+                }
+            }
+        }
+
+        // Update button UI if user exits via Escape key
+        document.addEventListener('fullscreenchange', () => {
+            const icon = document.getElementById('fullscreen-icon');
+            const text = document.getElementById('fullscreen-text');
+            if (!document.fullscreenElement) {
+                text.innerText = "Full Screen";
+                icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2 2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('vocab-term')) {
+                document.querySelectorAll('.vocab-term').forEach(item => item.classList.remove('active'));
+            }
+        });
+
+        window.onload = () => showDoc('thoreau');
+    </script>
+</body>
+</html>
