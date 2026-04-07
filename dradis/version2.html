@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Galactica DRADIS Console</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bsg-green: #a2f2ff; /* High-viz tactical blue-green */
+            --bsg-red: #ff3c3c;
+            --bsg-dark: #020508;
+            --panel-bg: rgba(10, 25, 40, 0.8);
+        }
+
+        body {
+            background-color: var(--bsg-dark);
+            color: var(--bsg-green);
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #console-frame {
+            position: relative;
+            width: 1000px;
+            height: 650px;
+            border: 4px solid #1a2a3a;
+            background: linear-gradient(180deg, #050810 0%, #020408 100%);
+            padding: 20px;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Tactical UI Panels */
+        .ui-panel {
+            position: absolute;
+            border: 1px solid var(--bsg-green);
+            background: var(--panel-bg);
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .side-bars {
+            top: 20px; right: 20px;
+            width: 150px;
+        }
+
+        .bar-container { margin-bottom: 10px; }
+        .bar-label { display: block; margin-bottom: 3px; }
+        .bar-fill { height: 10px; background: var(--bsg-green); transition: width 0.3s; }
+        .bar-empty { height: 10px; background: #1a2a3a; width: 100%; border: 1px solid var(--bsg-green); }
+
+        .log-window {
+            bottom: 60px; left: 20px;
+            width: 250px; height: 120px;
+            overflow: hidden;
+            border-left: 5px solid var(--bsg-green);
+        }
+
+        .status-header {
+            position: absolute;
+            top: 20px; left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* CRT Effects */
+        #console-frame::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="console-frame">
+    <div class="status-header">DRD STAT: STABLE</div>
+    
+    <div class="ui-panel log-window" id="log">
+        > INITIALIZING SCAN...<br>
+        > NO CONTACTS IN RANGE...<br>
+        > SECTOR CLEAR.
+    </div>
+
+    <div class="ui-panel side-bars">
+        <div class="bar-container">
+            <span class="bar-label">FUEL</span>
+            <div class="bar-empty"><div class="bar-fill" style="width: 82%"></div></div>
+        </div>
+        <div class="bar-container">
+            <span class="bar-label">OXY</span>
+            <div class="bar-empty"><div class="bar-fill" style="width: 95%"></div></div>
+        </div>
+        <div class="bar-container">
+            <span class="bar-label">AMMO</span>
+            <div class="bar-empty"><div class="bar-fill" style="width: 60%"></div></div>
+        </div>
+    </div>
+
+    <canvas id="dradis"></canvas>
+</div>
+
+<script>
+    const canvas = document.getElementById('dradis');
+    const ctx = canvas.getContext('2d');
+    const log = document.getElementById('log');
+
+    canvas.width = 900;
+    canvas.height = 550;
+
+    let sweepAngle = 0;
+    const contacts = [];
+    const MAX_CONTACTS = 12;
+
+    class Contact {
+        constructor() { this.reset(); }
+        reset() {
+            // Distance from center (20 to 350)
+            this.radius = Math.random() * 330 + 20;
+            // Angle in radians (-PI to 0 for upper arc)
+            this.angle = -(Math.random() * Math.PI);
+            this.type = Math.random() > 0.7 ? 'CYLON' : 'VIPER';
+            this.id = Math.floor(Math.random() * 20);
+            this.life = 0;
+            this.detected = false;
+        }
+
+        draw() {
+            if (!this.detected) return;
+
+            const x = canvas.width / 2 + Math.cos(this.angle) * this.radius;
+            const y = canvas.height - 50 + Math.sin(this.angle) * this.radius;
+
+            const color = this.type === 'CYLON' ? `rgba(255, 60, 60, ${this.life})` : `rgba(162, 242, 255, ${this.life})`;
+            
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            
+            // Icon
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Label
+            ctx.font = "10px Share Tech Mono";
+            ctx.fillText(`${this.type} ${this.id}`, x + 8, y + 3);
+
+            this.life -= 0.005;
+            if (this.life <= 0) this.detected = false;
+        }
+    }
+
+    // Populate
+    for(let i=0; i<MAX_CONTACTS; i++) contacts.push(new Contact());
+
+    function drawGrid() {
+        ctx.strokeStyle = "rgba(162, 242, 255, 0.2)";
+        ctx.lineWidth = 1;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height - 50;
+
+        // Draw Arcs
+        for(let i = 1; i <= 6; i++) {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, i * 60, Math.PI, Math.PI * 2);
+            ctx.stroke();
+            // Distance marker
+            ctx.fillStyle = "rgba(162, 242, 255, 0.4)";
+            ctx.fillText(i * 10, centerX + (i * 60) + 5, centerY);
+        }
+
+        // Radial Lines
+        for(let a = 0; a <= 180; a += 30) {
+            let rad = (a * Math.PI / 180) + Math.PI;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + Math.cos(rad) * 360, centerY + Math.sin(rad) * 360);
+            ctx.stroke();
+        }
+    }
+
+    function update() {
+        ctx.fillStyle = "rgba(2, 5, 8, 0.3)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        drawGrid();
+
+        // Sweep logic
+        sweepAngle = (Date.now() / 1500) % (Math.PI);
+        const currentSweep = -sweepAngle;
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height - 50;
+
+        // Draw Sweep Line
+        ctx.strokeStyle = "rgba(162, 242, 255, 0.6)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + Math.cos(currentSweep) * 380, centerY + Math.sin(currentSweep) * 380);
+        ctx.stroke();
+
+        // Contact Detection
+        contacts.forEach(c => {
+            if (Math.abs(c.angle - currentSweep) < 0.05) {
+                if(!c.detected) {
+                    c.detected = true;
+                    c.life = 1.0;
+                    const entry = document.createElement('div');
+                    entry.innerHTML = `> NEW CONTACT: ${c.type} ${c.id}`;
+                    log.prepend(entry);
+                }
+            }
+            c.draw();
+        });
+
+        requestAnimationFrame(update);
+    }
+
+    update();
+</script>
+</body>
+</html>
