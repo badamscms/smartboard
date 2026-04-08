@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Congress: Interactive Mission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
+        .hidden-section { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .flip-card { perspective: 1000px; }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-building-columns"></i> Congress Bootcamp
+            </h1>
+            <div id="progress-text" class="text-sm font-semibold bg-blue-800 px-3 py-1 rounded-full">
+                Step 1 of 5
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto p-4 sm:p-6 mt-4">
+       
+        <!-- Section 1: Welcome -->
+        <section id="sec-1" class="bg-white rounded-xl shadow-lg p-6 sm:p-10 fade-in border-t-8 border-blue-600">
+            <div class="text-center">
+                <i class="fa-solid fa-flag-usa text-6xl text-red-600 mb-4"></i>
+                <h2 class="text-3xl font-bold mb-4">Welcome to Capitol Hill!</h2>
+                <p class="text-lg mb-6 text-slate-600">Congratulations! You have just been elected to the United States Congress. Before you can start voting on important laws, you need to complete your Freshman Orientation.</p>
+                <p class="text-lg mb-8 text-slate-600">Today, you will learn about how Congress is built, what powers you actually have, and how an idea transforms into a law.</p>
+                <button onclick="nextSection(2)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow transition transform hover:scale-105">
+                    Start Orientation <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 2: Structure -->
+        <section id="sec-2" class="hidden-section bg-white rounded-xl shadow-lg p-6 sm:p-10 border-t-8 border-red-600">
+            <h2 class="text-3xl font-bold mb-2 text-center">A "Bicameral" Legislature</h2>
+            <p class="text-center text-slate-600 mb-8">The Legislative Branch is made up of TWO houses. This is called a <strong>bicameral</strong> system. The Founding Fathers set it up this way during the Great Compromise to balance power.</p>
+           
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- House Card -->
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 hover:shadow-md transition">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-4 flex justify-between items-center">
+                        House of Representatives
+                        <i class="fa-solid fa-users text-3xl"></i>
+                    </h3>
+                    <ul class="space-y-3 text-lg">
+                        <li><i class="fa-solid fa-check text-blue-600 mr-2"></i> <strong>Members:</strong> 435</li>
+                        <li><i class="fa-solid fa-check text-blue-600 mr-2"></i> <strong>Representation:</strong> Based on state population (Bigger states = more reps)</li>
+                        <li><i class="fa-solid fa-check text-blue-600 mr-2"></i> <strong>Term Length:</strong> 2 years</li>
+                        <li><i class="fa-solid fa-check text-blue-600 mr-2"></i> <strong>Minimum Age:</strong> 25 years old</li>
+                        <li><i class="fa-solid fa-check text-blue-600 mr-2"></i> <strong>Vibe:</strong> Meant to be closer to the people and their daily needs.</li>
+                    </ul>
+                </div>
+
+                <!-- Senate Card -->
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6 hover:shadow-md transition">
+                    <h3 class="text-2xl font-bold text-red-800 mb-4 flex justify-between items-center">
+                        The Senate
+                        <i class="fa-solid fa-scale-balanced text-3xl"></i>
+                    </h3>
+                    <ul class="space-y-3 text-lg">
+                        <li><i class="fa-solid fa-check text-red-600 mr-2"></i> <strong>Members:</strong> 100</li>
+                        <li><i class="fa-solid fa-check text-red-600 mr-2"></i> <strong>Representation:</strong> Equal! Exactly 2 per state regardless of size.</li>
+                        <li><i class="fa-solid fa-check text-red-600 mr-2"></i> <strong>Term Length:</strong> 6 years</li>
+                        <li><i class="fa-solid fa-check text-red-600 mr-2"></i> <strong>Minimum Age:</strong> 30 years old</li>
+                        <li><i class="fa-solid fa-check text-red-600 mr-2"></i> <strong>Vibe:</strong> Meant to be a more stable, deliberative body.</li>
+                    </ul>
+                </div>
+            </div>
+           
+            <div class="mt-8 flex justify-between">
+                <button onclick="prevSection(1)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-6 rounded shadow transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                <button onclick="nextSection(3)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">Next: Your Powers <i class="fa-solid fa-arrow-right ml-2"></i></button>
+            </div>
+        </section>
+
+        <!-- Section 3: Powers -->
+        <section id="sec-3" class="hidden-section bg-white rounded-xl shadow-lg p-6 sm:p-10 border-t-8 border-blue-600">
+            <h2 class="text-3xl font-bold mb-2 text-center">The Powers of Congress</h2>
+            <p class="text-center text-slate-600 mb-2">Article I, Section 8 of the Constitution gives you your superpowers. These are called <strong>expressed powers</strong>.</p>
+            <p class="text-center text-sm font-bold text-blue-600 mb-8">(Click the cards to reveal the powers!)</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Power 1 -->
+                <div class="flip-card cursor-pointer h-40" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-slate-200 shadow hover:bg-blue-50 transition">
+                            <i class="fa-solid fa-sack-dollar text-4xl text-green-600 mb-2"></i>
+                            <h4 class="font-bold text-lg">Money Power</h4>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-blue-600 text-white rounded-xl flex items-center justify-center p-4 text-center shadow">
+                            <p>Congress can <strong>levy taxes</strong>, borrow money, and coin/print money.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power 2 -->
+                <div class="flip-card cursor-pointer h-40" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-slate-200 shadow hover:bg-red-50 transition">
+                            <i class="fa-solid fa-jet-fighter text-4xl text-slate-800 mb-2"></i>
+                            <h4 class="font-bold text-lg">War Power</h4>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-red-600 text-white rounded-xl flex items-center justify-center p-4 text-center shadow">
+                            <p>Only Congress has the power to <strong>declare war</strong> and raise armies/navies.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power 3 -->
+                <div class="flip-card cursor-pointer h-40" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-slate-200 shadow hover:bg-blue-50 transition">
+                            <i class="fa-solid fa-truck-fast text-4xl text-blue-500 mb-2"></i>
+                            <h4 class="font-bold text-lg">Commerce Power</h4>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-blue-600 text-white rounded-xl flex items-center justify-center p-4 text-center shadow">
+                            <p>Congress regulates <strong>trade</strong> (commerce) between states and with other countries.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power 4 -->
+                <div class="flip-card cursor-pointer h-40" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-slate-200 shadow hover:bg-red-50 transition">
+                            <i class="fa-solid fa-envelope text-4xl text-blue-800 mb-2"></i>
+                            <h4 class="font-bold text-lg">Postal Power</h4>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-red-600 text-white rounded-xl flex items-center justify-center p-4 text-center shadow">
+                            <p>Congress establishes the <strong>Post Office</strong> and postal routes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power 5 -->
+                <div class="flip-card cursor-pointer h-40" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-slate-200 shadow hover:bg-blue-50 transition">
+                            <i class="fa-solid fa-gavel text-4xl text-amber-700 mb-2"></i>
+                            <h4 class="font-bold text-lg">Impeachment</h4>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-blue-600 text-white rounded-xl flex items-center justify-center p-4 text-center shadow">
+                            <p>Congress can charge and remove federal officials (like the President) for bad behavior.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power 6 -->
+                <div class="flip-card cursor-pointer h-40" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-slate-200 shadow hover:bg-red-50 transition">
+                            <i class="fa-solid fa-magic text-4xl text-purple-600 mb-2"></i>
+                            <h4 class="font-bold text-lg">The "Elastic" Clause</h4>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-purple-600 text-white rounded-xl flex items-center justify-center p-4 text-center shadow">
+                            <p>Congress can make any laws that are <strong>"necessary and proper"</strong> to carry out their other powers!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+                <button onclick="prevSection(2)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-6 rounded shadow transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                <button onclick="nextSection(4)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">Next: Bill to Law <i class="fa-solid fa-arrow-right ml-2"></i></button>
+            </div>
+        </section>
+
+        <!-- Section 4: Bill to Law -->
+        <section id="sec-4" class="hidden-section bg-white rounded-xl shadow-lg p-6 sm:p-10 border-t-8 border-red-600">
+            <h2 class="text-3xl font-bold mb-2 text-center">How a Bill Becomes a Law</h2>
+            <p class="text-center text-slate-600 mb-8">It is a long, difficult obstacle course for an idea (a "bill") to actually become a law. Follow the steps below!</p>
+           
+            <div class="space-y-4">
+                <!-- Step 1 -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex items-start gap-4">
+                    <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0">1</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-blue-900">The Idea & Introduction</h4>
+                        <p class="text-slate-600">Anyone can have an idea, but only a member of Congress can <strong>introduce</strong> a bill in the House or Senate.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex items-start gap-4">
+                    <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0">2</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-blue-900">Committee Action</h4>
+                        <p class="text-slate-600">The bill goes to a smaller group of experts (a committee). They debate it, change it, or kill it. Most bills die here!</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex items-start gap-4">
+                    <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0">3</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-blue-900">Floor Vote</h4>
+                        <p class="text-slate-600">If it survives committee, the <em>whole</em> House or Senate debates and votes on it. It needs a majority (over 50%) to pass.</p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex items-start gap-4">
+                    <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0">4</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-blue-900">The Other Chamber</h4>
+                        <p class="text-slate-600">If the House passes it, it goes to the Senate (and vice versa). It must pass BOTH houses in the exact same form.</p>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex items-start gap-4">
+                    <div class="bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0">5</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-red-900">The President's Desk</h4>
+                        <p class="text-slate-600">The President can <strong>sign</strong> it (it becomes law!) or <strong>veto</strong> it (reject it). <br><span class="text-sm italic">Note: Congress can override a veto with a 2/3 vote, but it's very hard!</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+                <button onclick="prevSection(3)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-6 rounded shadow transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                <button onclick="nextSection(5)" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition">Take the Quiz! <i class="fa-solid fa-check-double ml-2"></i></button>
+            </div>
+        </section>
+
+        <!-- Section 5: Quiz -->
+        <section id="sec-5" class="hidden-section bg-white rounded-xl shadow-lg p-6 sm:p-10 border-t-8 border-green-600">
+            <h2 class="text-3xl font-bold mb-4 text-center">Orientation Quiz</h2>
+            <p class="text-center text-slate-600 mb-8">Prove you are ready to take your seat in Congress. Answer the 4 questions below.</p>
+
+            <form id="quiz-form" class="space-y-8" onsubmit="submitQuiz(event)">
+                <!-- Q1 -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p class="font-bold text-lg mb-3">1. Which part of Congress is based on a state's population?</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q1" value="wrong" class="form-radio h-5 w-5 text-blue-600" required>
+                            <span>The Senate</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q1" value="correct" class="form-radio h-5 w-5 text-blue-600">
+                            <span>The House of Representatives</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q1" value="wrong" class="form-radio h-5 w-5 text-blue-600">
+                            <span>The Supreme Court</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p class="font-bold text-lg mb-3">2. If you are 27 years old, can you run for the Senate?</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q2" value="wrong" class="form-radio h-5 w-5 text-blue-600" required>
+                            <span>Yes, anyone over 18 can run.</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q2" value="wrong" class="form-radio h-5 w-5 text-blue-600">
+                            <span>Yes, the minimum age is 25.</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q2" value="correct" class="form-radio h-5 w-5 text-blue-600">
+                            <span>No, you must be at least 30 to run for the Senate.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p class="font-bold text-lg mb-3">3. Which of the following is an "expressed power" of Congress?</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q3" value="wrong" class="form-radio h-5 w-5 text-blue-600" required>
+                            <span>Choosing the speed limit for local roads</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q3" value="correct" class="form-radio h-5 w-5 text-blue-600">
+                            <span>Declaring War and Coining Money</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q3" value="wrong" class="form-radio h-5 w-5 text-blue-600">
+                            <span>Pardoning criminals</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p class="font-bold text-lg mb-3">4. What happens right after a bill is introduced in Congress?</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q4" value="correct" class="form-radio h-5 w-5 text-blue-600" required>
+                            <span>It is sent to a committee for review and debate.</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q4" value="wrong" class="form-radio h-5 w-5 text-blue-600">
+                            <span>It goes straight to the President to be signed.</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 rounded">
+                            <input type="radio" name="q4" value="wrong" class="form-radio h-5 w-5 text-blue-600">
+                            <span>It automatically becomes a law.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="quiz-result" class="hidden p-4 rounded-lg font-bold text-center text-lg"></div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <button type="button" onclick="prevSection(4)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-6 rounded shadow transition"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow transition transform hover:scale-105">Submit Answers</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        function nextSection(num) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('section').forEach(sec => {
+                sec.classList.add('hidden-section');
+                sec.classList.remove('fade-in');
+            });
+            const nextSec = document.getElementById('sec-' + num);
+            nextSec.classList.remove('hidden-section');
+            nextSec.classList.add('fade-in');
+            document.getElementById('progress-text').innerText = 'Step ' + num + ' of 5';
+        }
+
+        function prevSection(num) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('section').forEach(sec => {
+                sec.classList.add('hidden-section');
+                sec.classList.remove('fade-in');
+            });
+            const prevSec = document.getElementById('sec-' + num);
+            prevSec.classList.remove('hidden-section');
+            prevSec.classList.add('fade-in');
+            document.getElementById('progress-text').innerText = 'Step ' + num + ' of 5';
+        }
+
+        function submitQuiz(event) {
+            event.preventDefault();
+            const form = document.getElementById('quiz-form');
+            const data = new FormData(form);
+           
+            let score = 0;
+            if(data.get('q1') === 'correct') score++;
+            if(data.get('q2') === 'correct') score++;
+            if(data.get('q3') === 'correct') score++;
+            if(data.get('q4') === 'correct') score++;
+
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.classList.remove('hidden');
+
+            if (score === 4) {
+                resultDiv.className = 'p-6 mt-6 rounded-lg font-bold text-center text-xl bg-green-100 text-green-800 border-2 border-green-500 fade-in';
+                resultDiv.innerHTML = `<i class="fa-solid fa-award text-3xl mb-2"></i><br>Perfect Score (4/4)!<br>You are officially sworn in as a member of Congress. Great job!`;
+            } else {
+                resultDiv.className = 'p-6 mt-6 rounded-lg font-bold text-center text-xl bg-amber-100 text-amber-800 border-2 border-amber-500 fade-in';
+                resultDiv.innerHTML = `<i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i><br>You scored ${score} out of 4.<br>Review the previous sections and try again to complete your orientation!`;
+            }
+        }
+    </script>
+</body>
+</html>
