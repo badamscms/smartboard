@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hill: A Bill's Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .step-inactive { opacity: 0.5; filter: grayscale(1); }
+        .step-active { border: 2px solid #2563eb; transform: scale(1.02); }
+        .step-completed { background-color: #dcfce7; border-color: #22c55e; }
+
+        .dice {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 60px;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .animate-roll {
+            animation: roll 0.5s ease-in-out;
+        }
+
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div id="game-container" class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-2">The Hill</h1>
+            <p class="text-slate-600 italic">How a Bill Becomes a Law</p>
+            
+            <div class="mt-6 flex justify-center gap-8 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="text-center">
+                    <p class="text-xs uppercase font-bold text-slate-400">Rolls Left</p>
+                    <p id="rolls-left" class="text-2xl font-bold text-blue-600">20</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xs uppercase font-bold text-slate-400">Current House</p>
+                    <p id="current-house" class="text-2xl font-bold text-slate-800">House of Reps</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xs uppercase font-bold text-slate-400">Stage</p>
+                    <p id="stage-counter" class="text-2xl font-bold text-slate-800">1 / 6</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left: Progress Steps -->
+            <div class="md:col-span-1 space-y-4">
+                <div id="step-1" class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 step-active">
+                    <span class="text-xs font-bold text-blue-600">STEP 1</span>
+                    <h3 class="font-bold">The Idea</h3>
+                </div>
+                <div id="step-2" class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 step-inactive">
+                    <span class="text-xs font-bold text-blue-600">STEP 2</span>
+                    <h3 class="font-bold">First Committee</h3>
+                </div>
+                <div id="step-3" class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 step-inactive">
+                    <span class="text-xs font-bold text-blue-600">STEP 3</span>
+                    <h3 class="font-bold">House Floor Vote</h3>
+                </div>
+                <div id="step-4" class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 step-inactive">
+                    <span class="text-xs font-bold text-blue-600">STEP 4</span>
+                    <h3 class="font-bold">Second Committee</h3>
+                </div>
+                <div id="step-5" class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 step-inactive">
+                    <span class="text-xs font-bold text-blue-600">STEP 5</span>
+                    <h3 class="font-bold">Senate Floor Vote</h3>
+                </div>
+                <div id="step-6" class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 step-inactive">
+                    <span class="text-xs font-bold text-blue-600">STEP 6</span>
+                    <h3 class="font-bold">Presidential Action</h3>
+                </div>
+            </div>
+
+            <!-- Right: Game Console -->
+            <div class="md:col-span-2 bg-white rounded-2xl shadow-xl border border-slate-200 p-8 flex flex-col justify-between">
+                <div>
+                    <div id="instruction-title" class="text-2xl font-bold text-slate-800 mb-4 italic">Start Your Journey</div>
+                    <div id="instruction-text" class="text-lg text-slate-600 mb-8 leading-relaxed">
+                        An idea for a law can come from citizens like you. Talk to your Representative! Roll a 3 or higher to get your idea written into a formal Bill.
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div id="dice-container" class="mb-6">
+                        <div id="die-1" class="dice">?</div>
+                    </div>
+                    
+                    <button id="roll-btn" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold text-xl shadow-lg transition-transform active:scale-95">
+                        Roll the Dice
+                    </button>
+                    
+                    <button id="restart-btn" class="mt-4 text-slate-400 hover:text-slate-600 font-medium hidden">
+                        Restart Game
+                    </button>
+                </div>
+
+                <div id="feedback-area" class="mt-8 p-4 rounded-xl text-center hidden">
+                    <p id="feedback-text" class="font-semibold"></p>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Game Over Modal -->
+        <div id="modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
+                <h2 id="modal-title" class="text-3xl font-bold mb-4">Congress Adjourned!</h2>
+                <p id="modal-text" class="text-slate-600 mb-8">Your bill didn't make it to the President's desk in time.</p>
+                <button onclick="location.reload()" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            {
+                title: "Introduction",
+                text: "Citizens have ideas for laws. If the Representatives agree, they write it into a bill. Roll a 3 or higher to draft the bill.",
+                successCondition: (roll) => roll >= 3,
+                failMsg: "The Representative didn't think the idea was ready yet. Try again!"
+            },
+            {
+                title: "Committee Hearing",
+                text: "Experts research and revise the bill. Roll a 4 or higher to get the bill passed out of Committee to the floor.",
+                successCondition: (roll) => roll >= 4,
+                failMsg: "The committee wants more research. Keep trying!"
+            },
+            {
+                title: "House Vote",
+                text: "The whole House of Representatives votes. You need 51% (218 votes). Roll a 3 or higher to pass.",
+                successCondition: (roll) => roll >= 3,
+                failMsg: "Voters are divided. Redebate the bill!"
+            },
+            {
+                title: "Other Body Committee",
+                text: "The bill moves to the other side (Senate). Roll a 4 or higher to get through the Senate committee experts.",
+                successCondition: (roll) => roll >= 4,
+                failMsg: "The Senate committee is focused on other bills. Roll again!"
+            },
+            {
+                title: "Senate Vote",
+                text: "The full Senate votes. You need 51 votes. Roll a 3 or higher to send it to the President.",
+                successCondition: (roll) => roll >= 3,
+                failMsg: "A filibuster occurred! Keep trying to break the deadlock."
+            },
+            {
+                title: "The Oval Office",
+                text: "The President chooses. Roll an ODD number to be signed into law. Roll an EVEN number for a Veto!",
+                successCondition: (roll) => roll % 2 !== 0,
+                isPresident: true
+            }
+        ];
+
+        let currentStage = 0;
+        let rollsLeft = 20;
+        let isVetoOverride = false;
+
+        const rollBtn = document.getElementById('roll-btn');
+        const dieDisplay = document.getElementById('die-1');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackText = document.getElementById('feedback-text');
+        const rollsDisplay = document.getElementById('rolls-left');
+        const stageDisplay = document.getElementById('stage-counter');
+        const houseDisplay = document.getElementById('current-house');
+
+        function updateUI() {
+            const stage = stages[currentStage];
+            document.getElementById('instruction-title').innerText = stage.title;
+            document.getElementById('instruction-text').innerText = stage.text;
+            rollsDisplay.innerText = rollsLeft;
+            stageDisplay.innerText = `${currentStage + 1} / 6`;
+            
+            // House logic
+            houseDisplay.innerText = currentStage < 3 ? "House of Reps" : (currentStage < 5 ? "Senate" : "White House");
+
+            // Sidebar highlight
+            document.querySelectorAll('[id^="step-"]').forEach((el, i) => {
+                el.className = "p-4 bg-white rounded-lg border border-slate-200 shadow-sm transition-all duration-300 " + 
+                    (i < currentStage ? "step-completed" : (i === currentStage ? "step-active" : "step-inactive"));
+            });
+        }
+
+        function showModal(title, text) {
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-text').innerText = text;
+            modal.style.display = 'flex';
+        }
+
+        function rollDice() {
+            if (rollsLeft <= 0) return;
+
+            rollsLeft--;
+            rollsDisplay.innerText = rollsLeft;
+            
+            dieDisplay.classList.add('animate-roll');
+            rollBtn.disabled = true;
+
+            setTimeout(() => {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                dieDisplay.innerText = roll;
+                dieDisplay.classList.remove('animate-roll');
+                rollBtn.disabled = false;
+                processRoll(roll);
+            }, 500);
+        }
+
+        function processRoll(roll) {
+            const stage = stages[currentStage];
+            feedbackArea.classList.remove('hidden');
+
+            // Handling Veto Override Logic
+            if (isVetoOverride) {
+                if (roll % 2 === 0) { // Roll Even = 2/3 Override
+                    feedbackText.innerText = `Rolled ${roll}: OVERRIDE! Congress got 2/3 votes. You are a LAW!`;
+                    feedbackArea.className = "mt-8 p-4 rounded-xl text-center bg-green-100 text-green-800";
+                    showModal("Victory!", "Your bill survived a veto and is now a federal law!");
+                    rollBtn.style.display = 'none';
+                } else {
+                    feedbackText.innerText = `Rolled ${roll}: The override failed. Your bill is dead.`;
+                    feedbackArea.className = "mt-8 p-4 rounded-xl text-center bg-red-100 text-red-800";
+                    showModal("Bill Terminated", "Congress failed to override the President's veto.");
+                    rollBtn.style.display = 'none';
+                }
+                return;
+            }
+
+            // Normal Stages
+            if (stage.isPresident) {
+                if (stage.successCondition(roll)) {
+                    feedbackText.innerText = `Rolled ${roll}: SIGNED! Congratulations, you are a LAW!`;
+                    feedbackArea.className = "mt-8 p-4 rounded-xl text-center bg-green-100 text-green-800";
+                    showModal("Law Signed!", "The President signed your bill. You changed society!");
+                    rollBtn.style.display = 'none';
+                } else {
+                    feedbackText.innerText = `Rolled ${roll}: VETO! The President rejected your bill. You must try to OVERRIDE.`;
+                    feedbackArea.className = "mt-8 p-4 rounded-xl text-center bg-orange-100 text-orange-800";
+                    isVetoOverride = true;
+                    document.getElementById('instruction-text').innerText = "VETO OVERRIDE: To override the President, you need 2/3 vote in both houses. Roll an EVEN number to succeed!";
+                }
+            } else {
+                if (stage.successCondition(roll)) {
+                    feedbackText.innerText = `Rolled ${roll}: Success! Moving to next stage...`;
+                    feedbackArea.className = "mt-8 p-4 rounded-xl text-center bg-green-100 text-green-800";
+                    currentStage++;
+                    setTimeout(updateUI, 1000);
+                } else {
+                    feedbackText.innerText = `Rolled ${roll}: ${stage.failMsg}`;
+                    feedbackArea.className = "mt-8 p-4 rounded-xl text-center bg-red-100 text-red-800";
+                }
+            }
+
+            if (rollsLeft === 0 && !stage.isPresident) {
+                showModal("Time's Up!", "Congress adjourned before your bill could pass.");
+            }
+        }
+
+        rollBtn.addEventListener('click', rollDice);
+        updateUI();
+
+    </script>
+</body>
+</html>
