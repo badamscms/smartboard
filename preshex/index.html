@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Executive Branch: Hexagonal Thinking Workspace</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Prevent elastic bouncing on touch screens */
+        html, body {
+            position: fixed;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Modern Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Standardized Flat-Top Hexagon shape using CSS clip-path */
+        .hexagon-shape {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s;
+            touch-action: none;
+        }
+
+        /* Dragged element styling */
+        .dragging {
+            opacity: 0.95 !important;
+            transform: scale(1.08) rotate(3deg) !important;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6) !important;
+            z-index: 99999 !important;
+        }
+
+        /* Dotted grid canvas pattern */
+        .canvas-bg {
+            background-color: #090d16;
+            background-image: 
+                radial-gradient(circle, rgba(56, 189, 248, 0.15) 1.5px, transparent 1.5px),
+                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px, 120px 120px, 120px 120px;
+        }
+
+        /* Categories Themes */
+        .cat-constitutional { background-color: #1e3a8a; border-color: #3b82f6; color: #eff6ff; }
+        .cat-powers { background-color: #5b21b6; border-color: #8b5cf6; color: #f5f3ff; }
+        .cat-institutions { background-color: #065f46; border-color: #10b981; color: #ecfdf5; }
+        .cat-checks { background-color: #991b1b; border-color: #ef4444; color: #fef2f2; }
+        .cat-informal { background-color: #854d0e; border-color: #eab308; color: #fefce8; }
+        .cat-custom { background-color: #374151; border-color: #9ca3af; color: #f9fafb; }
+
+        /* Ensure smooth dragging behavior without default browser panning interference */
+        .hex-draggable {
+            touch-action: none !important;
+            user-select: none !important;
+            -webkit-user-drag: none !important;
+        }
+
+        .modal-blur {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-hidden select-none">
+
+    <!-- Top Header / Control Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 shrink-0 z-10">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-sky-500/10 rounded-lg text-sky-400">
+                <i data-lucide="shield-alert" class="w-8 h-8"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-100 flex items-center gap-2">
+                    Executive Branch <span class="text-xs bg-sky-500/20 text-sky-400 font-semibold px-2.5 py-1 rounded-full border border-sky-500/30 uppercase tracking-wider">Hexagonal Thinking</span>
+                </h1>
+                <p class="text-xs text-slate-400">Drag terms together to connect checks & balances, presidential powers, and organizational rules.</p>
+            </div>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+            <button onclick="toggleGridSnapping()" id="snap-toggle-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold hover:bg-sky-500/20 transition">
+                <i data-lucide="grid" class="w-4 h-4"></i> Snap to Hex Grid: ON
+            </button>
+            <button onclick="openCustomHexModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition">
+                <i data-lucide="plus" class="w-4 h-4"></i> Add Hexagon
+            </button>
+            <button onclick="openDefensePanel()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold hover:bg-amber-500/20 transition">
+                <i data-lucide="file-signature" class="w-4 h-4"></i> Connection Defense
+            </button>
+            <button onclick="resetBoard()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold hover:bg-rose-500/20 transition">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset Grid
+            </button>
+            <button onclick="openHelpModal()" class="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition" title="Instructions">
+                <i data-lucide="help-circle" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Frame -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Left Sidebar: Vocabulary Deck -->
+        <aside class="w-80 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 z-10">
+            <div class="p-4 border-b border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-bold text-sm tracking-wide text-slate-300 uppercase">Vocabulary Deck</h2>
+                    <span id="deck-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400">0 left</span>
+                </div>
+                <!-- Categories Legend -->
+                <div class="grid grid-cols-2 gap-1.5 text-[10px] bg-slate-950 p-2 rounded-lg border border-slate-800">
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-600 block shrink-0"></span>Constitutional</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-purple-600 block shrink-0"></span>Powers</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-600 block shrink-0"></span>Institutions</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-red-600 block shrink-0"></span>Checks</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-yellow-600 block shrink-0"></span>Informal Roles</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-gray-600 block shrink-0"></span>Student Made</span>
+                </div>
+            </div>
+
+            <!-- Scrollable List of Hexes to Drag -->
+            <div id="deck" class="flex-1 overflow-y-auto p-4 flex flex-col items-center gap-6 bg-slate-900/50">
+                <!-- Initial Hexagons populated by JS -->
+            </div>
+            
+            <div class="p-4 border-t border-slate-800 bg-slate-950 text-[11px] text-slate-400 space-y-1">
+                <p class="flex items-center gap-1 text-slate-300 font-semibold"><i data-lucide="info" class="w-3.5 h-3.5 text-sky-400"></i> Interactions:</p>
+                <p>• Drag hexagons onto the grid space.</p>
+                <p>• Click/Tap any placed hexagon to rotate, write connection arguments, or return it to deck.</p>
+                <p>• Drag the dark background to pan around.</p>
+            </div>
+        </aside>
+
+        <!-- Dynamic Workspace Canvas Container -->
+        <main id="workspace-viewport" class="flex-1 relative overflow-hidden canvas-bg flex items-center justify-center cursor-grab active:cursor-grabbing">
+            
+            <!-- Canvas Instructions -->
+            <div id="drop-hint" class="absolute inset-0 flex items-center justify-center pointer-events-none transition duration-500 z-0">
+                <div class="text-center space-y-3 max-w-md px-6 bg-slate-950/40 p-6 rounded-2xl border border-slate-800/50 backdrop-blur-sm">
+                    <p class="text-slate-400 text-sm font-semibold tracking-wide uppercase">Interactive Canvas</p>
+                    <p class="text-slate-500 text-xs">Drag and place vocabulary tiles adjacent to each other. Align edges where concepts directly relate, then document your justifications!</p>
+                </div>
+            </div>
+
+            <!-- Zoomable, Pannable Workspace Canvas -->
+            <div id="canvas-workspace" class="absolute w-[3000px] h-[3000px] transition-transform duration-75 ease-out" style="transform: translate(0px, 0px) scale(1);">
+                <!-- Hexagons dropped onto the field are appended here -->
+            </div>
+
+            <!-- Floating Navigation Controls -->
+            <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 p-2 rounded-xl flex items-center gap-3 z-20 text-xs backdrop-blur shadow-xl">
+                <button onclick="zoomCanvas(0.1)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded transition text-slate-300 hover:text-white" title="Zoom In"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
+                <button onclick="zoomCanvas(-0.1)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded transition text-slate-300 hover:text-white" title="Zoom Out"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
+                <button onclick="resetZoomAndPan()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded transition text-slate-300 hover:text-white font-semibold">Reset View</button>
+                <span class="text-slate-600">|</span>
+                <span class="text-slate-400 flex items-center gap-1"><i data-lucide="move" class="w-3.5 h-3.5 text-sky-400"></i> Pan Enabled</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Details/Rotation & Argument Card Context Action Menu -->
+    <div id="context-menu" class="hidden absolute bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-4 w-72 z-50 text-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h3 id="context-title" class="font-bold text-slate-200 text-sm">Concept Title</h3>
+            <button onclick="closeContextMenu()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div class="space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <span>Category:</span>
+                <span id="context-category" class="font-semibold text-sky-400">Category Name</span>
+            </div>
+            <div>
+                <label class="block text-slate-400 mb-1 font-medium">Why does this connect here?</label>
+                <textarea id="context-notes" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded p-1.5 text-slate-100 focus:outline-none focus:border-sky-500 text-[11px]" placeholder="Explain the relationship with neighboring tiles..."></textarea>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="rotateSelectedHex()" class="flex-1 py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-semibold flex items-center justify-center gap-1 transition">
+                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Rotate 60°
+                </button>
+                <button onclick="saveHexNotes()" class="flex-1 py-1.5 px-2 bg-sky-600 hover:bg-sky-500 text-white rounded font-semibold flex items-center justify-center gap-1 transition">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i> Save
+                </button>
+            </div>
+            <button onclick="returnHexToDeck()" class="w-full py-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-950/20 rounded transition flex items-center justify-center gap-1">
+                <i data-lucide="corner-up-left" class="w-3.5 h-3.5"></i> Return to Deck
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Add Custom Hexagon -->
+    <div id="custom-hex-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 modal-blur">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-200">Create Custom Term</h3>
+                <button onclick="closeCustomHexModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Term / Concept Name</label>
+                    <input id="custom-name" type="text" maxlength="28" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-sky-500 text-sm" placeholder="e.g., War Powers Act">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Category & Styling</label>
+                    <select id="custom-cat" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-sky-500 text-sm">
+                        <option value="constitutional">Constitutional Base (Blue)</option>
+                        <option value="powers">Powers of the President (Purple)</option>
+                        <option value="institutions">Institutions & Cabinet (Green)</option>
+                        <option value="checks">Checks & Balances (Red)</option>
+                        <option value="informal">Informal Roles & Tools (Yellow)</option>
+                    </select>
+                </div>
+                <button onclick="createCustomHex()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition flex items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> Add to Vocabulary Deck
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Connection Defense Summary Sheet -->
+    <div id="defense-panel" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 modal-blur">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-3xl h-[85vh] shadow-2xl flex flex-col space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-200">Hexagonal Connection Defense</h3>
+                    <p class="text-xs text-slate-400">Review your placements and write down arguments explaining the connections.</p>
+                </div>
+                <button onclick="closeDefensePanel()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <div id="defense-list" class="flex-1 overflow-y-auto space-y-4 pr-1">
+                <!-- Dynamically generated list of arguments -->
+            </div>
+
+            <!-- Export Actions -->
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+                <span class="text-xs text-slate-500">Document ready for export.</span>
+                <div class="flex gap-2">
+                    <button onclick="exportDefenseData()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg text-sm transition flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Save Text Report
+                    </button>
+                    <button onclick="copyToClipboard()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-lg text-sm transition flex items-center gap-2">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copy Summary
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Quick Help Rules -->
+    <div id="help-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 modal-blur">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-sky-400 flex items-center gap-2"><i data-lucide="help-circle" class="w-5 h-5"></i> Workspace Guide</h3>
+                <button onclick="closeHelpModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="space-y-3 text-xs leading-relaxed text-slate-300">
+                <p><strong>What is Hexagonal Thinking?</strong> It is a learning activity where you find connected conceptual pathways. When edges of two hexagons touch, it implies they share a strong conceptual link!</p>
+                <div class="bg-slate-950 p-3 rounded-lg space-y-2 border border-slate-800">
+                    <p class="font-semibold text-slate-200">Basic Controls:</p>
+                    <ul class="list-disc pl-4 space-y-1">
+                        <li><strong>Place Hex:</strong> Grab a tile from the sidebar deck and slide it onto the field.</li>
+                        <li><strong>Grid Snapping:</strong> Automatically tiles hexagons with adjacent flat-edges. Toggle it off in the header for completely free placement.</li>
+                        <li><strong>Rotate & Annotate:</strong> Tap any tile on the field to open options to turn it or write down why you put it there.</li>
+                        <li><strong>Pan and Zoom:</strong> Drag the background grid to move around. Use the scale buttons to zoom in or out.</li>
+                    </ul>
+                </div>
+            </div>
+            <button onclick="closeHelpModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg transition">Get Started</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Core Executive branch content
+        const coreVocabulary = [
+            { id: "v1", text: "Article II", category: "constitutional", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v2", text: "Commander in Chief", category: "powers", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v3", text: "Executive Order", category: "powers", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v4", text: "Executive Agreement", category: "powers", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v5", text: "The Cabinet", category: "institutions", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v6", text: "State of the Union", category: "constitutional", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v7", text: "Veto Power", category: "powers", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v8", text: "Executive Privilege", category: "powers", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v9", text: "Bully Pulpit", category: "informal", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v10", text: "Bureaucratic Discretion", category: "powers", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v11", text: "Advice & Consent", category: "checks", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v12", text: "Impeachment", category: "checks", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v13", text: "State Department", category: "institutions", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v14", text: "War Powers Resolution", category: "checks", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v15", text: "Electoral College", category: "constitutional", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v16", text: "22nd Amendment", category: "constitutional", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v17", text: "Signing Statements", category: "informal", rotation: 0, x: null, y: null, notes: "" },
+            { id: "v18", text: "White House Chief of Staff", category: "institutions", rotation: 0, x: null, y: null, notes: "" }
+        ];
+
+        let currentVocabulary = [...coreVocabulary];
+        
+        // Canvas Translation & Zoom coordinates
+        let currentZoom = 1.0;
+        let panX = 0;
+        let panY = 0;
+        let snapToHexGrid = true;
+        let selectedHexId = null;
+
+        // Grid measurements
+        const hexWidth = 120;
+        const hexHeight = 104; 
+        const gridOffsetCol = hexWidth * 0.75; // 90px
+        const gridOffsetRow = hexHeight; // 104px
+
+        // Drag State Mechanics
+        let activeHexElement = null;
+        let isHexDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let hexInitialClientX = 0;
+        let hexInitialClientY = 0;
+        let deckPlaceholder = null;
+
+        // Background Panning Mechanics
+        let isPanningCanvas = false;
+        let panStartX = 0;
+        let panStartY = 0;
+
+        const deckElement = document.getElementById('deck');
+        const workspaceViewport = document.getElementById('workspace-viewport');
+        const workspaceCanvas = document.getElementById('canvas-workspace');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderDeck();
+            updateStats();
+            setupBackgroundPanning();
+        });
+
+        // Setup smooth background panning
+        function setupBackgroundPanning() {
+            workspaceViewport.addEventListener('pointerdown', (e) => {
+                // If the user clicked directly on a hexagon, skip panning
+                if (e.target.closest('.hex-draggable')) return;
+                if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+                isPanningCanvas = true;
+                workspaceViewport.setPointerCapture(e.pointerId);
+                panStartX = e.clientX - panX;
+                panStartY = e.clientY - panY;
+            });
+
+            workspaceViewport.addEventListener('pointermove', (e) => {
+                if (!isPanningCanvas) return;
+                panX = e.clientX - panStartX;
+                panY = e.clientY - panStartY;
+                updateCanvasTransform();
+            });
+
+            workspaceViewport.addEventListener('pointerup', (e) => {
+                if (isPanningCanvas) {
+                    isPanningCanvas = false;
+                    workspaceViewport.releasePointerCapture(e.pointerId);
+                }
+            });
+        }
+
+        function updateCanvasTransform() {
+            workspaceCanvas.style.transform = `translate(calc(-50% + ${panX}px), calc(-50% + ${panY}px)) scale(${currentZoom})`;
+        }
+
+        // Render Vocabulary Items inside Sidebar
+        function renderDeck() {
+            deckElement.innerHTML = '';
+            const deckTerms = currentVocabulary.filter(term => term.x === null && term.y === null);
+            
+            if (deckTerms.length === 0) {
+                deckElement.innerHTML = `
+                    <div class="text-center py-8 px-4 text-slate-500 text-xs italic">
+                        All hexagons placed on the grid!
+                    </div>
+                `;
+                return;
+            }
+
+            deckTerms.forEach(term => {
+                const hexWrapper = createHexagonDOM(term);
+                deckElement.appendChild(hexWrapper);
+            });
+        }
+
+        // Dynamic Hexagon creator
+        function createHexagonDOM(term) {
+            const wrapper = document.createElement('div');
+            wrapper.id = `hex-${term.id}`;
+            wrapper.classList.add('relative', 'cursor-grab', 'hex-draggable', 'select-none', 'z-20');
+            wrapper.style.width = `${hexWidth}px`;
+            wrapper.style.height = `${hexHeight}px`;
+
+            if (term.x !== null && term.y !== null) {
+                wrapper.style.position = 'absolute';
+                wrapper.style.left = `${term.x}px`;
+                wrapper.style.top = `${term.y}px`;
+                wrapper.style.transform = `rotate(${term.rotation}deg)`;
+            }
+
+            const hexOuter = document.createElement('div');
+            hexOuter.classList.add('absolute', 'inset-0', 'hexagon-shape', 'flex', 'items-center', 'justify-center', 'p-1', 'transition-transform');
+            
+            // Themes mapping
+            if (term.category === 'constitutional') hexOuter.classList.add('cat-constitutional');
+            else if (term.category === 'powers') hexOuter.classList.add('cat-powers');
+            else if (term.category === 'institutions') hexOuter.classList.add('cat-institutions');
+            else if (term.category === 'checks') hexOuter.classList.add('cat-checks');
+            else if (term.category === 'informal') hexOuter.classList.add('cat-informal');
+            else hexOuter.classList.add('cat-custom');
+
+            const hexInner = document.createElement('div');
+            hexInner.classList.add('absolute', 'inset-[2px]', 'hexagon-shape', 'bg-slate-900/90', 'flex', 'flex-col', 'items-center', 'justify-center', 'px-3', 'text-center', 'pointer-events-none');
+
+            const textElement = document.createElement('span');
+            textElement.classList.add('text-[10px]', 'font-bold', 'leading-tight', 'tracking-wide');
+            textElement.innerText = term.text;
+            hexInner.appendChild(textElement);
+
+            // Active visual helper representing if user wrote arguments
+            if (term.notes) {
+                const noteIndicator = document.createElement('div');
+                noteIndicator.classList.add('absolute', 'bottom-2.5', 'w-1.5', 'h-1.5', 'rounded-full', 'bg-amber-400', 'animate-pulse');
+                hexInner.appendChild(noteIndicator);
+            }
+
+            // Rotation label helper
+            if (term.rotation > 0) {
+                const rotIndicator = document.createElement('div');
+                rotIndicator.classList.add('absolute', 'top-1.5', 'text-[8px]', 'text-slate-500', 'font-mono');
+                rotIndicator.innerText = `${term.rotation}°`;
+                hexInner.appendChild(rotIndicator);
+            }
+
+            hexOuter.appendChild(hexInner);
+            wrapper.appendChild(hexOuter);
+
+            // Register drag pointer events
+            wrapper.addEventListener('pointerdown', (e) => onHexPointerDown(e, term.id));
+
+            return wrapper;
+        }
+
+        // Fixed Body Drag Engine
+        function onHexPointerDown(e, termId) {
+            e.preventDefault();
+            if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+            const hexObj = currentVocabulary.find(v => v.id === termId);
+            activeHexElement = document.getElementById(`hex-${termId}`);
+            if (!activeHexElement) return;
+
+            isHexDragging = true;
+            activeHexElement.setPointerCapture(e.pointerId);
+
+            const rect = activeHexElement.getBoundingClientRect();
+            dragStartX = e.clientX - rect.left;
+            dragStartY = e.clientY - rect.top;
+            hexInitialClientX = e.clientX;
+            hexInitialClientY = e.clientY;
+
+            const isCurrentlyInDeck = (hexObj.x === null && hexObj.y === null);
+
+            if (isCurrentlyInDeck) {
+                // Spawn a placeholder to prevent sidebar layout jump
+                deckPlaceholder = document.createElement('div');
+                deckPlaceholder.style.width = `${hexWidth}px`;
+                deckPlaceholder.style.height = `${hexHeight}px`;
+                deckPlaceholder.classList.add('bg-slate-950/20', 'rounded-full', 'border', 'border-dashed', 'border-slate-800');
+                activeHexElement.parentNode.insertBefore(deckPlaceholder, activeHexElement);
+
+                // Move target temporarily into floating body level
+                activeHexElement.style.position = 'fixed';
+                activeHexElement.style.left = `${rect.left}px`;
+                activeHexElement.style.top = `${rect.top}px`;
+                document.body.appendChild(activeHexElement);
+            }
+
+            activeHexElement.classList.add('dragging');
+
+            activeHexElement.onpointermove = (moveEv) => onHexPointerMove(moveEv, hexObj);
+            activeHexElement.onpointerup = (upEv) => onHexPointerUp(upEv, hexObj);
+        }
+
+        function onHexPointerMove(e, hexObj) {
+            if (!isHexDragging || !activeHexElement) return;
+
+            const targetX = e.clientX - dragStartX;
+            const targetY = e.clientY - dragStartY;
+
+            activeHexElement.style.position = 'fixed';
+            activeHexElement.style.left = `${targetX}px`;
+            activeHexElement.style.top = `${targetY}px`;
+        }
+
+        function onHexPointerUp(e, hexObj) {
+            if (!isHexDragging || !activeHexElement) return;
+
+            isHexDragging = false;
+            activeHexElement.releasePointerCapture(e.pointerId);
+            activeHexElement.classList.remove('dragging');
+
+            activeHexElement.onpointermove = null;
+            activeHexElement.onpointerup = null;
+
+            // Check drag delta -- small tap/click opens dialog
+            const travelDistance = Math.hypot(e.clientX - hexInitialClientX, e.clientY - hexInitialClientY);
+            
+            const viewportRect = workspaceViewport.getBoundingClientRect();
+            const droppedInWorkspace = (
+                e.clientX >= viewportRect.left &&
+                e.clientX <= viewportRect.right &&
+                e.clientY >= viewportRect.top &&
+                e.clientY <= viewportRect.bottom
+            );
+
+            if (droppedInWorkspace) {
+                // Calculate correct canvas coordinate offsets taking zoom & pan translations into account
+                const canvasRect = workspaceCanvas.getBoundingClientRect();
+                const unscaledX = (e.clientX - dragStartX - canvasRect.left) / currentZoom;
+                const unscaledY = (e.clientY - dragStartY - canvasRect.top) / currentZoom;
+
+                let finalX = unscaledX;
+                let finalY = unscaledY;
+
+                if (snapToHexGrid) {
+                    const snapped = getHexSnappedCoordinates(unscaledX, unscaledY);
+                    finalX = snapped.x;
+                    finalY = snapped.y;
+                }
+
+                // Append the tile directly onto the workspace canvas
+                hexObj.x = finalX;
+                hexObj.y = finalY;
+
+                activeHexElement.style.position = 'absolute';
+                activeHexElement.style.left = `${finalX}px`;
+                activeHexElement.style.top = `${finalY}px`;
+                workspaceCanvas.appendChild(activeHexElement);
+
+                // Clear placeholder
+                if (deckPlaceholder) {
+                    deckPlaceholder.remove();
+                    deckPlaceholder = null;
+                }
+
+                if (travelDistance < 4) {
+                    openContextMenu(hexObj.id, e.clientX, e.clientY);
+                } else {
+                    closeContextMenu();
+                }
+            } else {
+                // Revert to deck
+                hexObj.x = null;
+                hexObj.y = null;
+                hexObj.rotation = 0;
+
+                if (deckPlaceholder) {
+                    deckPlaceholder.remove();
+                    deckPlaceholder = null;
+                }
+                renderDeck();
+                closeContextMenu();
+            }
+
+            activeHexElement = null;
+            updateStats();
+        }
+
+        // Tiling snap geometry calculations
+        function getHexSnappedCoordinates(currentX, currentY) {
+            const col = Math.round(currentX / gridOffsetCol);
+            const isOdd = col % 2 !== 0;
+            const verticalShift = isOdd ? gridOffsetRow / 2 : 0;
+            const row = Math.round((currentY - verticalShift) / gridOffsetRow);
+            
+            const snappedX = col * gridOffsetCol;
+            const snappedY = row * gridOffsetRow + verticalShift;
+
+            return { x: snappedX, y: snappedY };
+        }
+
+        // Scale zoom controller
+        function zoomCanvas(amount) {
+            currentZoom = Math.max(0.3, Math.min(2.0, currentZoom + amount));
+            updateCanvasTransform();
+        }
+
+        function resetZoomAndPan() {
+            currentZoom = 1.0;
+            panX = 0;
+            panY = 0;
+            updateCanvasTransform();
+        }
+
+        function updateStats() {
+            const placedCount = currentVocabulary.filter(v => v.x !== null).length;
+            const totalCount = currentVocabulary.length;
+            const deckCount = totalCount - placedCount;
+
+            document.getElementById('deck-count').innerText = `${deckCount} left`;
+
+            const hint = document.getElementById('drop-hint');
+            if (placedCount > 0) {
+                hint.classList.add('opacity-0');
+            } else {
+                hint.classList.remove('opacity-0');
+            }
+        }
+
+        function toggleGridSnapping() {
+            snapToHexGrid = !snapToHexGrid;
+            const btn = document.getElementById('snap-toggle-btn');
+            if (snapToHexGrid) {
+                btn.classList.remove('bg-rose-500/10', 'border-rose-500/30', 'text-rose-400');
+                btn.classList.add('bg-sky-500/10', 'border-sky-500/30', 'text-sky-400');
+                btn.innerHTML = `<i data-lucide="grid" class="w-4 h-4"></i> Snap to Hex Grid: ON`;
+            } else {
+                btn.classList.add('bg-rose-500/10', 'border-rose-500/30', 'text-rose-400');
+                btn.classList.remove('bg-sky-500/10', 'border-sky-500/30', 'text-sky-400');
+                btn.innerHTML = `<i data-lucide="grid" class="w-4 h-4"></i> Snap to Hex Grid: OFF`;
+            }
+            lucide.createIcons();
+        }
+
+        // Context dialog menu controls
+        function openContextMenu(termId, clientX, clientY) {
+            selectedHexId = termId;
+            const hexObj = currentVocabulary.find(v => v.id === termId);
+            const menu = document.getElementById('context-menu');
+
+            document.getElementById('context-title').innerText = hexObj.text;
+            document.getElementById('context-category').innerText = hexObj.category.toUpperCase();
+            document.getElementById('context-notes').value = hexObj.notes || '';
+
+            // Guard boundary of overlay menu relative to window boundaries
+            const menuWidth = 288; // w-72 matches 288px
+            const menuHeight = 220;
+            let displayX = clientX + 15;
+            let displayY = clientY + 15;
+
+            if (displayX + menuWidth > window.innerWidth) {
+                displayX = clientX - menuWidth - 15;
+            }
+            if (displayY + menuHeight > window.innerHeight) {
+                displayY = clientY - menuHeight - 15;
+            }
+
+            menu.style.left = `${displayX}px`;
+            menu.style.top = `${displayY}px`;
+            menu.classList.remove('hidden');
+        }
+
+        function closeContextMenu() {
+            document.getElementById('context-menu').classList.add('hidden');
+            selectedHexId = null;
+        }
+
+        function rotateSelectedHex() {
+            if (!selectedHexId) return;
+            const hexObj = currentVocabulary.find(v => v.id === selectedHexId);
+            
+            hexObj.rotation = (hexObj.rotation + 60) % 360;
+
+            const element = document.getElementById(`hex-${selectedHexId}`);
+            if (element) {
+                element.style.transform = `rotate(${hexObj.rotation}deg)`;
+                
+                let indicator = element.querySelector('.font-mono');
+                if (hexObj.rotation > 0) {
+                    if (!indicator) {
+                        indicator = document.createElement('div');
+                        indicator.classList.add('absolute', 'top-1.5', 'text-[8px]', 'text-slate-500', 'font-mono');
+                        element.querySelector('.hexagon-shape > div').appendChild(indicator);
+                    }
+                    indicator.innerText = `${hexObj.rotation}°`;
+                } else if (indicator) {
+                    indicator.remove();
+                }
+            }
+        }
+
+        function saveHexNotes() {
+            if (!selectedHexId) return;
+            const hexObj = currentVocabulary.find(v => v.id === selectedHexId);
+            const noteText = document.getElementById('context-notes').value.trim();
+
+            hexObj.notes = noteText;
+
+            const element = document.getElementById(`hex-${selectedHexId}`);
+            if (element) {
+                const innerContainer = element.querySelector('.hexagon-shape > div');
+                let indicator = innerContainer.querySelector('.bg-amber-400');
+                if (noteText) {
+                    if (!indicator) {
+                        indicator = document.createElement('div');
+                        indicator.classList.add('absolute', 'bottom-2.5', 'w-1.5', 'h-1.5', 'rounded-full', 'bg-amber-400', 'animate-pulse');
+                        innerContainer.appendChild(indicator);
+                    }
+                } else if (indicator) {
+                    indicator.remove();
+                }
+            }
+            closeContextMenu();
+        }
+
+        function returnHexToDeck() {
+            if (!selectedHexId) return;
+            const hexObj = currentVocabulary.find(v => v.id === selectedHexId);
+            
+            hexObj.x = null;
+            hexObj.y = null;
+            hexObj.rotation = 0;
+
+            const element = document.getElementById(`hex-${selectedHexId}`);
+            if (element) {
+                element.remove();
+            }
+
+            closeContextMenu();
+            renderDeck();
+            updateStats();
+        }
+
+        // Custom Add Term Controls
+        function openCustomHexModal() {
+            document.getElementById('custom-hex-modal').classList.remove('hidden');
+        }
+
+        function closeCustomHexModal() {
+            document.getElementById('custom-hex-modal').classList.add('hidden');
+            document.getElementById('custom-name').value = '';
+        }
+
+        function createCustomHex() {
+            const name = document.getElementById('custom-name').value.trim();
+            const category = document.getElementById('custom-cat').value;
+
+            if (!name) return;
+
+            const newHex = {
+                id: `v-custom-${Date.now()}`,
+                text: name,
+                category: category,
+                rotation: 0,
+                x: null,
+                y: null,
+                notes: ""
+            };
+
+            currentVocabulary.push(newHex);
+            renderDeck();
+            updateStats();
+            closeCustomHexModal();
+        }
+
+        // Defense workspace logic
+        function openDefensePanel() {
+            const listContainer = document.getElementById('defense-list');
+            listContainer.innerHTML = '';
+
+            const placedHexes = currentVocabulary.filter(v => v.x !== null);
+
+            if (placedHexes.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-12 text-slate-500 text-sm italic">
+                        No vocabulary terms have been dragged to the workspace yet. Drop terms onto the field to start!
+                    </div>
+                `;
+            } else {
+                placedHexes.forEach(hex => {
+                    const row = document.createElement('div');
+                    row.classList.add('bg-slate-950', 'border', 'border-slate-800', 'p-4', 'rounded-xl', 'space-y-2');
+                    
+                    row.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm text-slate-200">${hex.text}</span>
+                            <span class="text-[10px] px-2.5 py-0.5 rounded-full border bg-slate-900 border-slate-700 text-slate-400 uppercase font-mono tracking-wider">${hex.category}</span>
+                        </div>
+                        <div>
+                            <textarea id="defense-textarea-${hex.id}" onchange="updateDefenseNote('${hex.id}', this.value)" rows="2" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:outline-none focus:border-sky-500" placeholder="Describe how this executive concept relates to adjacent touching tiles...">${hex.notes || ''}</textarea>
+                        </div>
+                    `;
+                    listContainer.appendChild(row);
+                });
+            }
+
+            document.getElementById('defense-panel').classList.remove('hidden');
+        }
+
+        function updateDefenseNote(id, val) {
+            const hex = currentVocabulary.find(v => v.id === id);
+            if (hex) {
+                hex.notes = val;
+                
+                const element = document.getElementById(`hex-${id}`);
+                if (element) {
+                    const innerContainer = element.querySelector('.hexagon-shape > div');
+                    let indicator = innerContainer.querySelector('.bg-amber-400');
+                    if (val.trim()) {
+                        if (!indicator) {
+                            indicator = document.createElement('div');
+                            indicator.classList.add('absolute', 'bottom-2.5', 'w-1.5', 'h-1.5', 'rounded-full', 'bg-amber-400', 'animate-pulse');
+                            innerContainer.appendChild(indicator);
+                        }
+                    } else if (indicator) {
+                        indicator.remove();
+                    }
+                }
+            }
+        }
+
+        function closeDefensePanel() {
+            document.getElementById('defense-panel').classList.add('hidden');
+        }
+
+        function generateSummaryText() {
+            let summary = `EXECUTIVE BRANCH - HEXAGONAL THINKING SUMMARY REPORT\n`;
+            summary += `========================================================\n\n`;
+
+            const placedHexes = currentVocabulary.filter(v => v.x !== null);
+
+            if (placedHexes.length === 0) {
+                summary += `No hexagonal terms placed yet.`;
+            } else {
+                placedHexes.forEach((hex, index) => {
+                    summary += `${index + 1}. TERM: ${hex.text} (${hex.category.toUpperCase()})\n`;
+                    summary += `   POSITION: X=${Math.round(hex.x)}, Y=${Math.round(hex.y)}, Orientation Rotation=${hex.rotation}°\n`;
+                    summary += `   DEFENSE RATIONALE: ${hex.notes || 'No connection arguments written yet.'}\n`;
+                    summary += `--------------------------------------------------------\n`;
+                });
+            }
+            return summary;
+        }
+
+        function copyToClipboard() {
+            const summaryText = generateSummaryText();
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = summaryText;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextarea);
+
+            const statusMsg = document.createElement('div');
+            statusMsg.className = "fixed bottom-8 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-2xl z-50 flex items-center gap-2";
+            statusMsg.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Copy Completed!`;
+            document.body.appendChild(statusMsg);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                statusMsg.remove();
+            }, 2500);
+        }
+
+        function exportDefenseData() {
+            const data = generateSummaryText();
+            const blob = new Blob([data], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Executive_Branch_Hexagonal_Thinking_Defense.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetBoard() {
+            if (confirm("Are you sure you want to reset the grid? This will clear all layouts and written connection arguments.")) {
+                currentVocabulary = coreVocabulary.map(v => ({...v, x: null, y: null, rotation: 0, notes: ""}));
+                workspaceCanvas.innerHTML = '';
+                closeContextMenu();
+                renderDeck();
+                updateStats();
+                resetZoomAndPan();
+            }
+        }
+
+        function openHelpModal() {
+            document.getElementById('help-modal').classList.remove('hidden');
+        }
+
+        function closeHelpModal() {
+            document.getElementById('help-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
