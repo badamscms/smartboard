@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Trial Script: State of New Jersey v. Maria Smith</title>
+    
+    <!-- Google Fonts import of Plus Jakarta Sans (Google Sans alternative) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS for modern, clean styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Highlight styles for interactive role selection */
+        .dimmed {
+            opacity: 0.20;
+            transition: opacity 0.3s ease;
+        }
+        .highlighted {
+            opacity: 1;
+            transform: scale(1.01);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        /* Custom print styling to ensure color-coding works on paper */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .dimmed {
+                opacity: 1 !important;
+            }
+            .role-block {
+                break-inside: avoid;
+                border-left-width: 4px !important;
+            }
+        }
+        /* Smooth transitions for zoom and fullscreen elements */
+        #script-container {
+            transition: font-size 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans min-h-screen pb-12 transition-colors duration-300">
+
+    <!-- Header Section -->
+    <header class="bg-slate-950 text-white py-6 px-4 shadow-md sticky top-0 z-50 no-print border-b border-slate-800">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <span class="bg-amber-500 text-slate-950 text-xs font-bold uppercase px-2.5 py-1 rounded-full tracking-wider">8th Grade Civics • Criminal Trial</span>
+                <h1 class="text-2xl font-extrabold mt-1 tracking-tight">State of New Jersey v. Maria Smith</h1>
+                <p class="text-slate-400 text-sm font-medium">Interactive Classroom Script • ~25 Minute Performance</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Font Decrease Button -->
+                <button onclick="adjustFont(-1)" title="Decrease Font Size" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-lg border border-slate-700 transition flex items-center justify-center font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                    </svg>
+                    <span class="text-xs ml-1">A-</span>
+                </button>
+                
+                <!-- Font Increase Button -->
+                <button onclick="adjustFont(1)" title="Increase Font Size" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-lg border border-slate-700 transition flex items-center justify-center font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="text-xs ml-1">A+</span>
+                </button>
+
+                <!-- Fullscreen Toggle Button -->
+                <button id="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-lg border border-slate-700 transition flex items-center justify-center">
+                    <!-- Maximize Icon -->
+                    <svg id="fullscreen-icon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4m12 4V4h-4M4 16v4h4m12-4v4h-4"></path>
+                    </svg>
+                    <!-- Minimize Icon (Hidden by default) -->
+                    <svg id="exit-fullscreen-icon" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h4v4m12-4h-4v4M4 20h4v-4m12 4h-4v-4"></path>
+                    </svg>
+                </button>
+
+                <!-- Print Button -->
+                <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm0 0V9a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H9a2 2 0 01-2-2z" />
+                    </svg>
+                    Print
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Role Selection Bar (Interactive Feature) -->
+    <section class="bg-white border-b border-gray-200 py-4 px-4 sticky top-[89px] z-40 shadow-sm no-print">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Highlight Your Character's Lines:</p>
+                <span id="zoom-indicator" class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Font Size: 100%</span>
+            </div>
+            <div class="flex flex-wrap gap-2" id="role-filters">
+                <button onclick="filterRole('all')" id="btn-all" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-gray-300 bg-slate-800 text-white">
+                    Show All
+                </button>
+                <button onclick="filterRole('judge')" id="btn-judge" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-purple-300 bg-purple-50 text-purple-800 hover:bg-purple-100">
+                    🧑‍⚖️ Judge Vance (Purple)
+                </button>
+                <button onclick="filterRole('prosecutor')" id="btn-prosecutor" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100">
+                    👔 Prosecutor Arthur (Blue)
+                </button>
+                <button onclick="filterRole('defense')" id="btn-defense" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100">
+                    💼 Danielle Defensor (Green)
+                </button>
+                <button onclick="filterRole('brown')" id="btn-brown" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-teal-300 bg-teal-50 text-teal-800 hover:bg-teal-100">
+                    👮 Officer Brown (Teal)
+                </button>
+                <button onclick="filterRole('williams')" id="btn-williams" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100">
+                    👵 Jennifer Williams (Amber)
+                </button>
+                <button onclick="filterRole('smith')" id="btn-smith" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-rose-300 bg-rose-50 text-rose-800 hover:bg-rose-100">
+                    👩 Maria Smith (Red)
+                </button>
+                <button onclick="filterRole('johnson')" id="btn-johnson" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-slate-300 bg-slate-100 text-slate-800 hover:bg-slate-200">
+                    🎯 David Johnson (Slate)
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 mt-8">
+
+        <!-- Case Overview Banner -->
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
+            <h2 class="text-xl font-extrabold border-b pb-3 mb-4 text-slate-800 flex items-center gap-2 tracking-tight">
+                ⚖️ Case Information & Legal Issue
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                <div class="space-y-2">
+                    <p><strong>Case Name:</strong> State of New Jersey v. Maria Smith (Goodman Township)</p>
+                    <p><strong>Charge:</strong> Unlawful Possession of a Handgun (N.J.S.A. 2C:39-5b)</p>
+                    <p><strong>Date of Incident:</strong> March 4, 2026 (Approximately 2:00 AM)</p>
+                </div>
+                <div class="space-y-2">
+                    <p><strong>Burden of Proof:</strong> Beyond a Reasonable Doubt (Criminal Standard)</p>
+                    <p><strong>Key Legal Defense:</strong> The Defense of Necessity / Justification (Protecting human life against an active home intruder)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dramatic Script Starts Here -->
+        <div class="space-y-6" id="script-container">
+
+            <div class="text-center py-6 border-b-2 border-dashed border-gray-300">
+                <h2 class="text-2xl font-black tracking-wider text-slate-700 uppercase">THE COURTROOM SCRIPT</h2>
+                <p class="text-gray-500 italic text-sm mt-1">Stage directions are noted in grey, italic text brackets.</p>
+            </div>
+
+            <!-- Scene 1 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold text-sm text-slate-700 uppercase tracking-widest my-4">
+                Scene 1: Court is in Session & Opening Statements
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE (Judge Sylvia Vance)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Bangs the gavel three times)*</p>
+                <p class="text-base font-semibold leading-relaxed">
+                    Order in the court! All rise for the Honorable Judge Sylvia Vance. This court is now in session. Today, we hear the criminal matter of <span class="italic">The State of New Jersey versus Maria Smith</span>. The Defendant stands charged with Unlawful Possession of a Handgun under New Jersey Statute 2C:39-5b, a third-degree crime. 
+                </p>
+                <p class="text-base font-semibold leading-relaxed mt-2">
+                    The State alleges that Ms. Smith knowingly possessed and discharged a firearm without a valid permit issued in her name. The defense argues that her possession was temporary, completely justified by an immediate threat of death or serious bodily harm to herself and her sleeping children. 
+                </p>
+                <p class="text-gray-500 italic text-xs mt-2 mb-2">*(The Judge addresses the student jury)*</p>
+                <p class="text-base font-semibold leading-relaxed">
+                    Members of the jury—our students who represent the citizens of Goodman Township—it is your solemn duty to evaluate the evidence. Because this is a criminal trial, the burden rests entirely on the State. To convict, the prosecution must prove every element of the crime <span class="underline">beyond a reasonable doubt</span>. If they fail, you must acquit. Counselor Arthur, please present the State’s opening statement.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Stands up, steps to the podium, and addresses the jury)*</p>
+                <p class="text-base leading-relaxed">
+                    Thank you, Your Honor. Ladies and gentlemen of the jury, New Jersey has some of the safest and strictest firearm laws in the nation. These laws exist to keep firearms out of the hands of unlicensed individuals. We are not here to question Ms. Smith’s fears on the night of March 4, 2026. We are here because she made a sequence of highly reckless, unlawful choices that endangered an entire neighborhood.
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    The facts are undisputed: Ms. Smith did not possess a license to carry or own a firearm. In the middle of the night, she unlocked her husband’s closet, took a registered weapon, and deliberately loaded it. She didn't stop there. She fired two live rounds into her ceiling, rushed out onto her front porch, and waved that handgun in the air, shouting threats into the dark, public street. In doing so, she became a threat to the community. We will show that her possession of the firearm went far beyond self-defense, and we ask that you uphold the law. Thank you.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Counselor. Ms. Defensor, your opening statement.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Stands up, approaches the jury with a warm but firm tone)*</p>
+                <p class="text-base leading-relaxed">
+                    Thank you, Your Honor, and thank you, jurors. Imagine waking up at two o'clock in the morning. Your husband is miles away on a business trip. Your two young children are asleep in the next room. Suddenly, downstairs, you hear a door slam shut, and heavy footsteps begin to march up your stairs. You have seconds to act. What do you do?
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    Ms. Smith did what any loving mother would do to protect her children from a predator. She accessed a securely locked, legally registered firearm belonging to her husband. She didn't seek out a weapon; she sought out a shield. She fired warning shots to scare off a criminal, and she successfully defended her family. 
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    The law recognizes a powerful defense called **"necessity."** It states that a person is justified in breaking a technical law if it is the only way to avoid an immediate, life-threatening catastrophe. Ms. Smith's actions were necessary, safe, and fully justified. We ask you to find her not guilty. Thank you.
+                </p>
+            </div>
+
+            <!-- Scene 2 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold text-sm text-slate-700 uppercase tracking-widest my-4">
+                Scene 2: The Prosecution's Case
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Counselor Arthur, call your first witness.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    The State calls Officer Robert Brown to the stand.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(As Officer Brown walks to the stand and raises his right hand)*</p>
+                <p class="text-base leading-relaxed">
+                    Do you swear to tell the truth, the whole truth, and nothing but the truth, so help you God?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    I do. <span class="text-gray-500 italic text-xs">*(Sits down in the witness stand)*</span>
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Officer Brown, please state your name, profession, and take us to the early hours of March 4, 2026.
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    My name is Officer Robert Brown, and I have been with the Goodman Township Police Department for eight years. Just past 2:00 a.m. on March 4th, dispatch received an emergency call from a resident, Jennifer Williams, who reported hearing two loud gunshots. She stated that her neighbor across the street was outside, waving a handgun in an extremely erratic manner.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    What did you find when you arrived at the scene?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    My partner and I arrived at the residential neighborhood. My partner secured Ms. Williams' house, while I went to Mrs. Smith's residence. Mrs. Smith opened the door and let me in. She was visibly shaken. I questioned her about the shots fired. She stated that she heard a burglar inside her home and retrieved a gun to defend her family. 
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Did you ask to see her firearms permit?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, I did. Under New Jersey law, anyone possessing or carrying a handgun must have a valid state-issued purchaser identification card and a carry permit in their name. When I requested these documents, Mrs. Smith admitted that she did not have a license. She told me the gun belonged strictly to her husband, who was away on a business trip.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Based on that admission, what action did you take?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    I took the firearm into evidence and placed Ms. Smith under arrest for unlawful possession of a handgun. The law is clear: a firearms permit is personal and non-transferable. You cannot inherit or borrow a permit just because you are married. 
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Officer. Your witness, Counselor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Counselor Defensor, you may cross-examine.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Stands and walks toward Officer Brown)*</p>
+                <p class="text-base leading-relaxed">
+                    Officer Brown, did you inspect Mrs. Smith's home for signs of a break-in?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    We did a sweep. We found a kitchen door in the rear of the house that was unlocked and slightly open, consistent with her account of a forced entry.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    And you have no reason to doubt that an actual burglar entered her home while her children slept upstairs, correct?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    The entry was consistent with a burglary attempt, yes.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    If Ms. Smith had not fired those warning shots, is it possible the burglar would have reached her children's bedroom?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    I cannot speculate on what might have occurred, counselor. My job was to address the unlicensed weapon.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    But when you arrived, Ms. Smith did not point the gun at you, did she? She was cooperative and let you into her home immediately, correct?
+                </p>
+            </div>
+
+            <!-- Officer Brown Line -->
+            <div data-role="brown" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">👮 OFFICER ROBERT BROWN (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, she was cooperative inside the home.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Thank you. No further questions, Your Honor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Officer Brown. You may step down. Counselor Arthur, call your next witness.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    The State calls Jennifer Karen Williams.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(As Ms. Williams is sworn in)*</p>
+                <p class="text-base leading-relaxed">
+                    Please state your name and occupation for the court.
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    My name is Jennifer Williams. I am retired, and I have lived in Goodman Township for 42 years.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Ms. Williams, take us to the night of March 4th. What woke you up?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    I was fast asleep when two incredibly loud gunshots startled me out of bed. I was terrified! I got up, ran to my front window, and looked across the street at the Smiths' house. I saw a dark figure run out their door. A few seconds later, Ms. Smith came stumbling out onto her porch. She had a gun in her hand.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    How was she handling the gun when she was outside?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    Carelessly! Incredibly carelessly! She was waving it around, pointing it down the street, screaming threats. She seemed completely erratic, highly excited, and ready to shoot again. If that gun had gone off on the street, the bullets could have gone straight through my bedroom window or hit another neighbor's house! There was absolutely no safety discipline whatsoever. 
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    What did you do next?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    I backed away from the window and dialed 911. We live in a quiet, safe community. No one should be allowed to run out into a public street waving a deadly weapon without a license. It was extremely dangerous.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Ms. Williams. Your witness.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Counselor Defensor, you may cross-examine.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Approaches the witness stand)*</p>
+                <p class="text-base leading-relaxed">
+                    Ms. Williams, you mentioned in your statement that you have "always avoided the Smiths" because you "thought they were strange people." Is that correct?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    Well... yes. They keep to themselves. They are a bit odd.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    So, you had a pre-existing bias against Ms. Smith before this incident even happened, didn't you?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    Certainly not! A gun is a gun. My feelings about them have nothing to do with her waving a firearm in my face at 2 a.m.!
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Let’s discuss that porch. It was pitch black outside, was it not?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, it was night.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    You were looking through a glass window pane, across a wide two-lane street, in the dark, without your glasses?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    I could see quite clearly! The streetlights were on.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Is it possible Ms. Smith was simply pointing the firearm toward the floor of her porch to keep her distance from the escaping burglar, rather than "carelessly waving it at your house"?
+                </p>
+            </div>
+
+            <!-- Williams Line -->
+            <div data-role="williams" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">👵 JENNIFER KAREN WILLIAMS (Witness for Prosecution)</span>
+                <p class="text-base leading-relaxed">
+                    She looked very dangerous to me. I felt threatened.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Thank you. No further questions.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Ms. Williams, you may step down. Counselor Arthur, does the State rest?
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    The State rests, Your Honor.
+                </p>
+            </div>
+
+            <!-- Scene 3 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold text-sm text-slate-700 uppercase tracking-widest my-4">
+                Scene 3: The Defense's Case
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Counselor Defensor, you may call your first witness.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    The defense calls Maria Smith to the stand.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(As Maria Smith walks to the stand and places her hand on the book)*</p>
+                <p class="text-base leading-relaxed">
+                    Do you swear to tell the truth, the whole truth, and nothing but the truth, so help you God?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I do. <span class="text-gray-500 italic text-xs">*(Sits down)*</span>
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Mrs. Smith, please describe what happened in your home on March 4, 2026.
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I woke up around 2:00 a.m. to use the bathroom. As I stepped back into the hallway, I heard the heavy wood of our back kitchen door opening, slamming shut, and then footsteps down in our kitchen. My husband, John, was hours away in Philadelphia on a business trip. My two small kids were fast asleep in the bedroom right next to mine. I was completely alone with an intruder in the dark.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    What did you do?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I panicked, but then I heard footsteps climbing our wooden stairs. They were coming up to where my kids were sleeping! I ran into our bedroom closet, opened my husband’s gun safe, and grabbed his registered pistol. I loaded the weapon, opened the door, and stood in the hallway. I yelled multiple times: <span class="italic">"I have a gun! Get out of my house!"</span> But the footsteps kept coming.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    How did you make the decision to fire?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I knew I couldn't shoot a person unless my life was in absolute, immediate danger, and I didn't want to hurt anyone. So, as a final warning, I pointed the barrel straight up at the ceiling and fired two shots. The noise was deafening. Thankfully, it worked. I heard the intruder scramble back down the stairs and run out the front door.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Why did you follow the intruder outside?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I wanted to make sure they were completely gone and weren't waiting on the porch. I was still terrified, checking the dark yard. I held the gun securely because I didn't know if he was still hiding. I never waved it around recklessly! I kept my finger off the trigger and held it pointed down. I went back inside after five minutes and called the police. 
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Do you feel your arrest is just?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed font-bold text-red-600">
+                    Absolutely not! It is a travesty. I didn't ask to be terrorized in my own home. I used my husband's firearm as a last resort to protect my innocent children. What was I supposed to do? Wait for an intruder to enter my children's bedroom? 
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Mrs. Smith. Your witness, Counselor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Counselor Arthur, you may cross-examine the witness.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Stands up confidently)*</p>
+                <p class="text-base leading-relaxed">
+                    Mrs. Smith, you knew that New Jersey law strictly prohibits carrying or possessing a firearm without an individual license, correct?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, I know the general rules. But this was an emergency.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    But you and your husband had active discussions about getting you a license over several years, didn't you?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, we did.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    And you decided against it because of the "complexity and paperwork"?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, the process is extremely long and difficult in New Jersey.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    So, you knowingly chose to bypass the legal background checks and licensing procedures that every other lawful citizen must complete?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I didn't think I would need to defend myself from a burglar in the middle of the night!
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Once the intruder fled the house and ran down the street, the immediate threat to your life inside your home was gone, correct?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    I didn't know if he was gone or waiting on the porch.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    But you still stepped out of your safe, locked home and stood on a public street with an unlicensed firearm in your hand. You did not call the police first; you took the weapon outside first. Is that correct?
+                </p>
+            </div>
+
+            <!-- Smith Line -->
+            <div data-role="smith" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 MARIA SMITH (Defendant)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, to make sure the threat was gone.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    No further questions, Your Honor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Mrs. Smith. You may step down. Counselor Defensor, call your next witness.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    The defense calls David Johnson to the stand.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(As David Johnson is sworn in)*</p>
+                <p class="text-base leading-relaxed">
+                    Please state your name and occupation for the record.
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    My name is David Johnson. I have worked as a firearms instructor at the Goodman Township Shooting Range for 21 years.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Do you know the defendant, Maria Smith?
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, I do. Both Maria and her husband John have been regular clients at my range for several years. I’ve personally given Maria dozens of hours of instruction on handling firearms, loading, operating safety switches, and understanding gun safety laws.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Based on your professional instruction, how would you evaluate Ms. Smith's capability with a handgun?
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    Maria is an incredibly safe, careful, and competent shooter. She is actually better trained than many people who hold standard firearm licenses. She understands mechanical safeties, recoil control, and bullet trajectory. She knows that firing into a ceiling is a way to scare off an intruder without causing physical harm to neighbors, as the structure absorbs the impact.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Do you see any danger in her utilizing her husband's firearm in this emergency?
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    None at all. In an emergency of life or death, a tool is a tool. She was trained, she knew how to use it safely, and her actions saved her life. Punishing her for using the only tool available to save her kids is nonsensical. 
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Mr. Johnson. Your witness.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Counselor Arthur, cross-examination.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    Mr. Johnson, you are a certified instructor. Does any part of New Jersey's state guidelines recommend that an unlicensed civilian fire "warning shots" into a ceiling inside a densely populated residential zone?
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    In a standard scenario, no. But this wasn't a standard scenario. This was a home invasion.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    A warning shot is a discharge of a weapon. Once a bullet is fired, even into a ceiling, there is a risk of ricochet, structural penetration, or injury to someone upstairs. Correct?
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    There's a microscopic risk. But that is vastly lower than the risk of letting a burglar climb into her children's bedroom.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    But as an expert, you would agree that New Jersey law does not allow one spouse to "share" a gun license under any normal circumstance. Correct?
+                </p>
+            </div>
+
+            <!-- Johnson Line -->
+            <div data-role="johnson" class="role-block bg-white p-5 rounded-xl border-l-8 border-slate-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block mb-1">🎯 DAVID JOHNSON (Witness for Defense)</span>
+                <p class="text-base leading-relaxed">
+                    Yes, that is the technical law.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-base leading-relaxed">
+                    No further questions.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Mr. Johnson. You may step down. Counselor Defensor, does the defense rest?
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-base leading-relaxed">
+                    The defense rests, Your Honor.
+                </p>
+            </div>
+
+            <!-- Scene 4 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold text-sm text-slate-700 uppercase tracking-widest my-4">
+                Scene 4: Closing Arguments & Jury Charge
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    We will now hear closing arguments. Counselor Arthur, you may proceed.
+                </p>
+            </div>
+
+            <!-- Prosecutor Line -->
+            <div data-role="prosecutor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 STATE PROSECUTOR (Arthur Vance)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Addresses the jury)*</p>
+                <p class="text-base leading-relaxed">
+                    Members of the jury, this case is not about whether Mrs. Smith is a good person. It is about whether she broke a vital safety law. She knowingly avoided getting a permit for years because she found the paperwork "too complex." On March 4th, she chose to load and possess a firearm she had no legal right to handle. 
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    Even if you believe she was initially justified in grabbing the gun inside, her actions afterward are completely inexcusable. Once the burglar fled, she stepped out onto a public porch in a residential area, waving a handgun in the air, yelling into the night. She didn't call the police from the safety of her home; she brought a dangerous weapon into a public space. Firearm regulations exist to prevent exactly this kind of chaotic, reckless behavior. To protect our community, you must hold her accountable. Find the defendant guilty. Thank you.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-base leading-relaxed">
+                    Thank you, Counselor. Ms. Defensor, your closing argument.
+                </p>
+            </div>
+
+            <!-- Defense Line -->
+            <div data-role="defense" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Danielle Defensor)</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Addresses the jury)*</p>
+                <p class="text-base leading-relaxed">
+                    Members of the jury, the prosecution wants you to think this is a technicality about paperwork. They want to punish a mother for choosing her children’s lives over a gun permit. The law is not a suicide pact. The New Jersey defense of **necessity** is clear: you are allowed to break a minor law if doing so is the *only* way to prevent a much more devastating tragedy.
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    An intruder was climbing her stairs. If she had not grabbed that gun and fired those warning shots, what would have happened to her children? She handled the firearm safely, scared the predator away, and stood on her porch for a few short minutes to make sure her children were secure. She was not reckless; she was brave. Find her not guilty, and send a message that a mother has the right to defend her family. Thank you.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-gray-500 italic text-xs mb-2">*(Bangs gavel once)*</p>
+                <p class="text-base font-semibold leading-relaxed">
+                    Thank you, counsel. Members of the Jury, you have heard all the testimony. Under New Jersey Criminal Law, to find the defendant guilty, the State must prove <strong class="underline">beyond a reasonable doubt</strong> that Maria Smith knowingly possessed a handgun without a permit. 
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    However, you must also evaluate the defense of **Necessity (Justification)**. If you find that Ms. Smith faced an imminent, life-threatening situation, that her choice to possess the gun was the only reasonable way to prevent a greater harm, and that she did not create the danger herself, then you must find her **Not Guilty**.
+                </p>
+                <p class="text-base leading-relaxed mt-2">
+                    Please retire to your classroom, discuss the evidence, elect a Jury Foreperson, and return with a unanimous verdict of either **Guilty** or **Not Guilty**. This court is now in recess. <span class="text-gray-500 italic text-xs">*(Bangs gavel)*</span>
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Deliberation Phase block for students -->
+        <div class="mt-12 bg-slate-900 text-white p-6 rounded-xl shadow-md no-print border border-slate-800">
+            <h3 class="text-lg font-bold border-b border-slate-800 pb-2 mb-4 flex items-center gap-2">
+                🗣️ Juror Instructions & Deliberation Prompts
+            </h3>
+            <p class="text-sm text-slate-300 mb-4">
+                Now, the class acts as the jury. To find Maria Smith guilty, the prosecution must prove the charge beyond a reasonable doubt, and you must reject the "necessity" defense. Discuss these five critical sub-issues:
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-sm text-slate-200">
+                <li><strong>The Danger:</strong> Were Ms. Smith's actions fully justified by the imminent, threatening presence of an active home intruder?</li>
+                <li><strong>The Warning Shots:</strong> Was firing two warning shots into her ceiling a safe and necessary defense tactic, or did it recklessly endanger her sleeping children and neighborhood?</li>
+                <li><strong>The Front Porch:</strong> Once the burglar fled, did Ms. Smith's choice to stand on her porch and wave the gun cross the line from "necessity" into "unlawful possession"?</li>
+                <li><strong>The Permit Laws:</strong> Does a spouse have an implied right to access a legally registered firearm in a crisis, or must gun laws be applied absolute and strictly?</li>
+                <li><strong>The "What If":</strong> What other realistic choices did Ms. Smith have on March 4th, and did she choose the least harmful option?</li>
+            </ol>
+        </div>
+
+    </main>
+
+    <!-- Interactive script filtering and scaling logic -->
+    <script>
+        // Track visual zoom scale
+        let currentZoom = 100;
+
+        function adjustFont(direction) {
+            currentZoom += direction * 10;
+            if (currentZoom < 70) currentZoom = 70;
+            if (currentZoom > 160) currentZoom = 160;
+            
+            // Adjust only the script container to preserve toolbar metrics
+            document.getElementById('script-container').style.fontSize = currentZoom + '%';
+            document.getElementById('zoom-indicator').innerText = `Font Size: ${currentZoom}%`;
+        }
+
+        // Fullscreen API implementation with cross-browser compatibility
+        function toggleFullscreen() {
+            const doc = document.documentElement;
+            const fsIcon = document.getElementById('fullscreen-icon');
+            const exitFsIcon = document.getElementById('exit-fullscreen-icon');
+
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                // Enter fullscreen
+                if (doc.requestFullscreen) {
+                    doc.requestFullscreen();
+                } else if (doc.webkitRequestFullscreen) {
+                    doc.webkitRequestFullscreen();
+                } else if (doc.msRequestFullscreen) {
+                    doc.msRequestFullscreen();
+                }
+                fsIcon.classList.add('hidden');
+                exitFsIcon.classList.remove('hidden');
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                fsIcon.classList.remove('hidden');
+                exitFsIcon.classList.add('hidden');
+            }
+        }
+
+        // Keep fullscreen icon indicator accurately synchronized even if exited via ESC key
+        document.addEventListener('fullscreenchange', syncFullscreenIcons);
+        document.addEventListener('webkitfullscreenchange', syncFullscreenIcons);
+        document.addEventListener('msfullscreenchange', syncFullscreenIcons);
+
+        function syncFullscreenIcons() {
+            const fsIcon = document.getElementById('fullscreen-icon');
+            const exitFsIcon = document.getElementById('exit-fullscreen-icon');
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                fsIcon.classList.add('hidden');
+                exitFsIcon.classList.remove('hidden');
+            } else {
+                fsIcon.classList.remove('hidden');
+                exitFsIcon.classList.add('hidden');
+            }
+        }
+
+        // Highlight/dim logic for role filter buttons
+        function filterRole(role) {
+            const blocks = document.querySelectorAll('.role-block');
+            const buttons = document.querySelectorAll('#role-filters button');
+
+            // Reset all buttons to inactive styling
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white');
+                if (btn.id === 'btn-all') {
+                    btn.classList.add('bg-white', 'text-slate-800');
+                }
+            });
+
+            // Set active styling on clicked button
+            const activeBtn = document.getElementById(`btn-${role}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-800', 'text-white');
+            }
+
+            // Highlight/Dim script elements
+            blocks.forEach(block => {
+                if (role === 'all') {
+                    block.classList.remove('dimmed', 'highlighted');
+                } else {
+                    if (block.getAttribute('data-role') === role) {
+                        block.classList.add('highlighted');
+                        block.classList.remove('dimmed');
+                    } else {
+                        block.classList.add('dimmed');
+                        block.classList.remove('highlighted');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
