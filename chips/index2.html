@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Trial Script: Wheatley v. Chips Yoho</title>
+    
+    <!-- Google Fonts import of Plus Jakarta Sans (Modern geometric alternative to Google Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght=0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS for utility-first responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom layout scale properties */
+        :root {
+            --font-scale: 1.0;
+        }
+
+        #script-container {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Scalable text parameters to bypass static Tailwind size classes */
+        .scale-dialogue {
+            font-size: calc(1.02rem * var(--font-scale)) !important;
+            line-height: calc(1.7rem * var(--font-scale)) !important;
+        }
+
+        .scale-meta {
+            font-size: calc(0.8rem * var(--font-scale)) !important;
+        }
+
+        .scale-heading {
+            font-size: calc(1.3rem * var(--font-scale)) !important;
+        }
+
+        /* Highlight styles for interactive role selection */
+        .dimmed {
+            opacity: 0.15;
+            filter: blur(0.5px);
+            transition: all 0.3s ease;
+        }
+        .highlighted {
+            opacity: 1;
+            transform: scale(1.01);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Custom print styling to ensure color-coding works on paper */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .dimmed {
+                opacity: 1 !important;
+                filter: none !important;
+            }
+            .role-block {
+                break-inside: avoid;
+                border-left-width: 4px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen pb-12 transition-colors duration-300">
+
+    <!-- Header Section -->
+    <header class="bg-slate-950 text-white py-6 px-4 shadow-md sticky top-0 z-50 no-print border-b border-slate-800">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <span class="bg-red-500 text-slate-950 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">8th Grade Civics • Civil Trial</span>
+                <h1 class="text-2xl font-extrabold mt-1 tracking-tight">Chelsea Wheatley v. Chips Yoho Cookie Co.</h1>
+                <p class="text-slate-400 text-xs font-medium">Interactive Classroom Script • ~25 Minute Performance</p>
+            </div>
+            
+            <!-- Controls Bar: Sizing and Fullscreen Actions -->
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Font Decrease Button -->
+                <button onclick="adjustFont(-1)" title="Decrease Font Size" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 p-2 rounded-lg border border-slate-700 transition flex items-center justify-center font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4" />
+                    </svg>
+                    <span class="text-xs ml-1 font-extrabold">A-</span>
+                </button>
+                
+                <!-- Font Increase Button -->
+                <button onclick="adjustFont(1)" title="Increase Font Size" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 p-2 rounded-lg border border-slate-700 transition flex items-center justify-center font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="text-xs ml-1 font-extrabold">A+</span>
+                </button>
+
+                <!-- Fullscreen Toggle Button -->
+                <button id="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 p-2 rounded-lg border border-slate-700 transition flex items-center justify-center">
+                    <svg id="fullscreen-icon" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4m12 4V4h-4M4 16v4h4m12-4v4h-4"></path>
+                    </svg>
+                    <svg id="exit-fullscreen-icon" class="h-4 w-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h4v4m12-4h-4v4M4 20h4v-4m12 4h-4v-4"></path>
+                    </svg>
+                </button>
+
+                <!-- Print Button -->
+                <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 text-xs uppercase tracking-wider font-extrabold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm0 0V9a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H9a2 2 0 01-2-2z" />
+                    </svg>
+                    Print
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Role Selection Bar (Interactive Feature) -->
+    <section class="bg-white border-b border-slate-200 py-4 px-4 sticky top-[89px] z-40 shadow-sm no-print">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-xs font-black text-slate-500 uppercase tracking-wider">Highlight Your Character's Lines:</p>
+                <span id="zoom-indicator" class="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">Font Size: 100%</span>
+            </div>
+            <div class="flex flex-wrap gap-2" id="role-filters">
+                <button onclick="filterRole('all')" id="btn-all" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-slate-300 bg-slate-900 text-white shadow-sm">
+                    Show All
+                </button>
+                <button onclick="filterRole('judge')" id="btn-judge" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-purple-300 bg-purple-50 text-purple-800 hover:bg-purple-100">
+                    🧑‍⚖️ Judge Justice (Purple)
+                </button>
+                <button onclick="filterRole('proctor')" id="btn-proctor" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100">
+                    👔 Pat Proctor (Blue)
+                </button>
+                <button onclick="filterRole('defensor')" id="btn-defensor" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100">
+                    💼 Devin Defensor (Green)
+                </button>
+                <button onclick="filterRole('wheatley')" id="btn-wheatley" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-rose-300 bg-rose-50 text-rose-800 hover:bg-rose-100">
+                    👩 Chelsea Wheatley (Red)
+                </button>
+                <button onclick="filterRole('etman')" id="btn-etman" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-teal-300 bg-teal-50 text-teal-800 hover:bg-teal-100">
+                    🔬 Mark Etman (Teal)
+                </button>
+                <button onclick="filterRole('ownerman')" id="btn-ownerman" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100">
+                    🍪 Charlie Ownerman (Amber)
+                </button>
+                <button onclick="filterRole('storegirl')" id="btn-storegirl" class="px-3 py-1.5 rounded-full text-xs font-bold transition border border-pink-300 bg-pink-50 text-pink-800 hover:bg-pink-100">
+                    🏪 Katie Storegirl (Pink)
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 mt-8">
+
+        <!-- Case Overview Banner -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
+            <h2 class="text-xl font-extrabold border-b pb-3 mb-4 text-slate-800 flex items-center gap-2 tracking-tight">
+                ⚖️ Case Information & Legal Issue
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700">
+                <div class="space-y-2">
+                    <p><strong>Case Name:</strong> Chelsea Wheatley v. Chips Yoho Cookie Company</p>
+                    <p><strong>Plaintiff's Claim:</strong> Consumer Fraud (NJ Consumer Fraud Act, Statute 56:8-2)</p>
+                    <p><strong>Harm Alleged:</strong> Hospitalization of minor Noah Wheatley due to wheat ingredients.</p>
+                </div>
+                <div class="space-y-2">
+                    <p><strong>Burden of Proof:</strong> Preponderance of Evidence (Civil Standard / Preponderance of the Evidence applies generally; but Clear & Convincing Evidence is required for legal Consumer Fraud under the Act).</p>
+                    <p><strong>Main Legal Question:</strong> Was the "glutton-free" symbol misleading enough to deceive a reasonable consumer, or does the responsibility rest on the buyer to read the ingredients?</p>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 italic">
+                Note: This case and the corresponding testimony are adapted from the middle school mock trial exercises in "Chips vs. Wheatley.pdf". All timeline dates have been modernized to 2025/2026 for classroom relevance.
+            </div>
+        </div>
+
+        <!-- Dramatic Script Starts Here -->
+        <div class="space-y-6" id="script-container">
+
+            <div class="text-center py-6 border-b-2 border-dashed border-slate-300">
+                <h2 class="scale-heading font-black tracking-wider text-slate-700 uppercase">THE COURTROOM SCRIPT</h2>
+                <p class="text-slate-500 italic scale-meta mt-1">Stage directions are noted in grey, italic text brackets.</p>
+            </div>
+
+            <!-- Scene 1 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold scale-meta text-slate-700 uppercase tracking-widest my-4">
+                Scene 1: Court is in Session & Opening Statements
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE (Judge Harold T. Justice)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Bangs the gavel three times)*</p>
+                <p class="scale-dialogue font-semibold leading-relaxed">
+                    Order in the court! All rise for the Honorable Judge Harold T. Justice. This court is now in session. Today, we hear the case of <span class="italic">Chelsea Wheatley versus the Chips Yoho Cookie Company</span>. The Plaintiff is suing for consumer fraud, alleging deceptive product packaging under the New Jersey Consumer Fraud Act, Statute 56:8-2. They are seeking medical expenses and the removal of the "glutton-free" logo. The defense claims the packaging is clear, truthful, and that the consumer bears the responsibility of checking ingredients.
+                </p>
+                <p class="text-slate-500 italic scale-meta mt-2 mb-2">*(The Judge pauses and addresses the jury directly)*</p>
+                <p class="scale-dialogue font-semibold leading-relaxed">
+                    Members of the jury—our students here today—it is your job to listen carefully to the evidence. To win, the Plaintiff must prove that the defendant's packaging was an unconscionable deception. However, for a finding of legal consumer fraud under New Jersey Statute 56:8-2, the standard is <span class="underline">clear and convincing evidence</span>. Keep that in mind as we begin. Counselor Proctor, please present your opening statement.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Stands up, walks to the center of the courtroom, and addresses the jury)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Your Honor. Ladies and gentlemen of the jury, imagine sending your child to a safe kitchen cabinet, only to have them end up in an emergency room hours later, violently ill and severely dehydrated. That is the nightmare my client, Chelsea Wheatley, lived through on December 4, 2025. Her twelve-year-old son, Noah, has celiac disease—a serious genetic autoimmune disorder where eating even a microscopic speck of gluten, a protein found in wheat, causes his body to attack its own digestive system. 
+                </p>
+                <p class="text-slate-500 italic scale-meta mt-2 mb-2">*(Holds up the cookie box or points to "watermarked_img_16865469474209823740.png", displaying the front "GF" logo)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Ms. Wheatley did what any caring mother would do. She looked for a gluten-free label. She saw this box. She saw a bold, square logo with a giant <strong class="text-rose-600">"GF"</strong> on the front. Any reasonable consumer in a hurry would recognize that as the universal symbol for "Gluten-Free." But it didn't say "Gluten-Free." It said "Glutton-Free"—a sneaky, dangerous play on words designed to exploit busy parents. Chips Yoho claims this is just a clever marketing joke. But to a sick child, it is not a joke. It is fraud. We will prove that this packaging is an unconscionable deception, and we ask that you hold this company accountable. Thank you.
+                </p>
+                <p class="text-slate-500 italic scale-meta mt-2">*(Sits back down at the plaintiff's table)*</p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Counselor. Counselor Defensor, your opening statement.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Stands up confidently, walks toward the jury)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Your Honor, and thank you, members of the jury. This case is not about a lack of sympathy for a sick child. We all feel terrible that young Noah got sick. But this case is about the law, facts, and personal responsibility. My client, Charlie Ownerman, is an entrepreneur who wanted to make healthy cookies that people could enjoy without guilt—so healthy, you could be a <span class="italic">glutton</span> and eat more than one! Thus, the slogan: "Free to be a Glutton."
+                </p>
+                <p class="text-slate-500 italic scale-meta mt-2 mb-2">*(Points to the cookie box graphic)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    The packaging is entirely literal. It says "Glutton-Free," and indeed, eating these cookies won't make you a glutton. But more importantly, the law is clear: food manufacturers must list their ingredients. Chips Yoho did exactly that. On the back, in bold letters, it clearly states: <strong class="text-emerald-700">"Contains Wheat."</strong> It was placed in the regular health food aisle, not the specialty gluten-free aisle. Ms. Wheatley failed to read the ingredient list of a food she was giving to a child with a life-threatening medical condition. You cannot sue a company because you didn't read the label. We ask you to return a verdict for the defense. Thank you.
+                </p>
+                <p class="text-slate-500 italic scale-meta mt-2">*(Sits down)*</p>
+            </div>
+
+            <!-- Scene 2 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold scale-meta text-slate-700 uppercase tracking-widest my-4">
+                Scene 2: The Plaintiff's Case & Testimony
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Counselor Proctor, call your first witness.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The Plaintiff calls Chelsea Wheatley to the stand.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(As Chelsea Wheatley walks to the stand, places hand on imaginary book)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Do you swear to tell the truth, the whole truth, and nothing but the truth, so help you God?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I do. <span class="text-slate-500 italic scale-meta">*(Sits down in witness chair)*</span>
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Ms. Wheatley, please state your name and explain to the court why we are here today.
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    My name is Chelsea Wheatley. I am here because my son, Noah, was hospitalized on December 4, 2025, due to the deceptive and highly dangerous packaging on Chips Yoho cookies.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Tell us about Noah's medical condition.
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Noah was diagnosed with celiac disease in August 2023. He had suffered for months with severe stomach pain. The doctors told us his intestines were badly damaged and it would take six months of a strict, zero-tolerance gluten-free diet to heal. Since that diagnosis, we have been incredibly careful. No wheat, no barley, no rye. He hadn't had a single drop of gluten in over two years.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Take us to the afternoon of December 4th, 2025.
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    It was National Cookie Day, and I wanted to buy Noah a special treat. I ran to ShopLeft during my lunch break. I was rushed because I had to get back to the office. I scanned the shelves in a hurry and saw this new brand, Chips Yoho. Right on the front was a large, square logo with the letters "GF" inside. It looked exactly like the certified gluten-free logos I see on all his other safe snacks. I bought them, rushed home, put them in Noah's designated "safe snack cabinet," and went back to work for an evening meeting.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    What happened next?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="text-slate-500 italic scale-meta mb-2">*(Becoming emotional)*</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I got a call on my cell phone from Noah. He was crying, and I could hear him violently vomiting in the background. He had eaten half the box, assuming they were safe because they were in his cabinet. I rushed home, found him pale and shaking, and drove him straight to the emergency room. He was admitted overnight and put on an IV because he was dangerously dehydrated.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Shows the cookie box to the witness)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Ms. Wheatley, does this "glutton-free" logo look misleading to you?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Absolutely! When you are a busy parent juggling work and grocery shopping, you look for visual cues. A square "GF" logo means "Gluten-Free" to anyone in the allergy community. Substituting "glutton" for "gluten" is a trap. It is incredibly misleading and highly dangerous.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition" data-role="proctor">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Ms. Wheatley. Your witness, Counselor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Counselor Defensor, you may cross-examine the witness.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Stands and slowly approaches Ms. Wheatley)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Ms. Wheatley, I am very sorry to hear about Noah's hospitalization. However, as a parent of a child with a severe, life-threatening food allergy, is it your standard practice to buy random food brands without reading the back of the package?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I usually check very carefully. But the "GF" symbol on the front was so prominent that I trusted it.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    But you didn't actually read the back, did you?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I was in a rush on my lunch break—
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    A simple "yes" or "no" will suffice, Ms. Wheatley. Did you read the ingredient list on the back of the box before purchasing?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    No, I did not.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    If you had turned the box around, you would have seen the words "Contains Wheat" printed in bold, black letters. Correct?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Yes, but—
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    And you would agree that wheat contains gluten?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Yes, obviously.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    So, if you had spent just five seconds reading the back of the package, your son would not have gotten sick. Is that correct?
+                </p>
+            </div>
+
+            <!-- Wheatley Line -->
+            <div data-role="wheatley" class="role-block bg-white p-5 rounded-xl border-l-8 border-rose-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-rose-700 block mb-1">👩 CHELSEA WHEATLEY (Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed italic text-red-700 font-bold">
+                    The front of the package lied to me! It designed a trap using the letters "GF"!
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The package did not lie, Ms. Wheatley. It said "Glutton-Free." G-L-U-T-T-O-N. Which means "excessive eating." It did not say "Gluten." No further questions, Your Honor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Ms. Wheatley. You may step down. Counselor Proctor, call your next witness.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The Plaintiff calls Mark Etman.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(As Mark Etman is sworn in)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Please state your name and occupation for the record.
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    My name is Mark Etman. I am 25 years old, and I have worked as a professional marketing designer for the past four years. I also have celiac disease, which I was diagnosed with at age 15.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Mr. Etman, why are you testifying today?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Because the exact same thing happened to me. On November 27, 2024, I purchased a box of Chips Yoho cookies. Like Ms. Wheatley, I saw the giant "GF" square on the front of the box. As a marketing professional, I can tell you that the design is a deliberate copy of the certified gluten-free logo used by the Gluten-Free Certification Organization.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    In your professional opinion as a marketing expert, what is the impact of this design?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    In marketing, we study "visual hierarchy." Consumers scan packages in less than two seconds. A square seal with a stylized "GF" is a universally recognized shorthand for "safe from gluten." By using "GF" to stand for "Glutton-Free" in almost the identical font and shape, Chips Yoho created a massive risk of consumer confusion. It's a classic bait-and-switch.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    What happened when you ate these cookies?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I ate three of them. Within an hour, I was severely sick. I couldn't stop vomiting and ended up having to call 911. I spent the night in the hospital on an IV for dehydration.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Is there any doubt in your mind that this packaging caused your injury?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    None whatsoever. The packaging is an unconscionable marketing gimmick that prioritizes "cleverness" over human safety. It needs to be banned.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Mr. Etman. Your witness.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Counselor Defensor, you may cross-examine.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Mr. Etman, you are a professional marketer, correct?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Yes, I am.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    So you know that companies use brand slogans all the time. What is Chips Yoho’s slogan, printed right on the front of the box?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    It says, "Free to be a Glutton."
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    "Free to be a Glutton." It does not say "Free of Gluten." In fact, is there any place on this entire box where the word "gluten" is spelled G-L-U-T-E-N?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    No.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    As an adult living with a severe autoimmune disease for ten years, do you make it a habit to trust front-of-package marketing without reading the legally mandated allergen warnings on the back?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    When a package has a certified-looking "GF" symbol, yes, because that symbol is supposed to mean the product has been tested.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    But this symbol didn't say "Certified Gluten-Free." It said "Glutton-Free." You assumed, and your assumption got you sick. Isn't that the truth?
+                </p>
+            </div>
+
+            <!-- Etman Line -->
+            <div data-role="etman" class="role-block bg-white p-5 rounded-xl border-l-8 border-teal-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-teal-700 block mb-1">🔬 MARK ETMAN (Witness for Plaintiff)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I assumed based on a highly deceptive visual design that was engineered to make me make that assumption.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    No further questions, Your Honor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Mr. Etman. You may step down. Counselor Proctor, does the Plaintiff rest?
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The Plaintiff rests, Your Honor.
+                </p>
+            </div>
+
+            <!-- Scene 3 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold scale-meta text-slate-700 uppercase tracking-widest my-4">
+                Scene 3: The Defense's Case & Testimony
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Counselor Defensor, you may call your first witness.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The Defense calls Charlie Ownerman, the creator of Chips Yoho.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(As Charlie Ownerman is sworn in)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    State your name and occupation for the record.
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I'm Charlie Ownerman, owner and creator of the Chips Yoho Cookie Company.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Mr. Ownerman, please tell the jury why you created this cookie brand.
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Look, growing up, I struggled with my weight. I loved sweets, but I always felt so guilty eating them. As an adult, I wanted to create a cookie that was healthy—low calorie, low sugar—but still tasted amazing. I wanted to tell my customers, "Hey, these are so healthy, you can eat a bunch of them and not feel guilty!" You are free to be a glutton!
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    And is that where the "Glutton-Free" logo came from?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Exactly! "Glutton-Free" means you are free from the <span class="italic">guilt</span> of gluttony. It was a lighthearted, fun play on words to reinforce our healthy recipe. It was never, ever intended to trick people with celiac disease. I am a small business owner, not a monster.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Where did you place the allergen warnings on your product?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Right where they belong by FDA law. On the back, directly underneath the ingredients, in bold capital letters, it says <strong class="text-amber-800">"CONTAINS WHEAT."</strong>
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Where do you distribute these cookies, and where are they shelved in grocery stores?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I personally deliver them to stores like ShopLeft. I explicitly instruct the managers <span class="underline">never</span> to put them in the specialty gluten-free aisle. They are shelved in the general "Health Food" section because they are low-sugar, not gluten-free. We have never advertised ourselves as gluten-free.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Mr. Ownerman. Your witness, Counselor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Counselor Proctor, you may cross-examine.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Stands up and walks over with the cookie box)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Mr. Ownerman, you claim this was a "lighthearted play on words." Do you know what font is used for the certified medical "Gluten-Free" logo?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I don't know, some basic sans-serif font.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    It is a bold, black Arial font inside a perfect square. Your "Glutton-Free" logo uses the exact same bold font, the exact same square border, and the same abbreviation: <strong class="text-blue-700">"GF."</strong> Are you telling this jury that it was a pure coincidence that your logo looks virtually identical to the medical "Gluten-Free" logo?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    "GF" stands for "Glutton-Free"! It's our brand logo!
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    But you knew that people with celiac disease actively search for "GF" logos, didn't you?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    I knew that they look for gluten-free products, yes. But I expected them to read the back of the package like any responsible person with a medical condition would do.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    If a consumer is in a rush, is it not highly predictable that they would mistake your "GF" logo for a medical "Gluten-Free" logo?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    We can't control how fast people shop. The information is right there on the package.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    But you designed the front of the package to send a completely different message than the back, didn't you?
+                </p>
+            </div>
+
+            <!-- Ownerman Line -->
+            <div data-role="ownerman" class="role-block bg-white p-5 rounded-xl border-l-8 border-amber-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-amber-700 block mb-1">🍪 CHARLIE OWNERMAN (Defendant)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    No, the front says "Free to be a Glutton." That's a different word entirely!
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    A word that is one letter off from "gluten." No further questions, Your Honor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Mr. Ownerman. You may step down. Counselor Defensor, call your next witness.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The Defense calls Katie Storegirl.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(As Katie Storegirl is sworn in)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Please state your name and occupation.
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    My name is Katie Storegirl. I am the general manager of the ShopLeft food store.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Ms. Storegirl, do you recall the afternoon of December 4, 2025?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Yes, I do. It was busy because of National Cookie Day. I remember Ms. Wheatley checking out at our registers.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Where were the Chips Yoho cookies located in your store on that day?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    They were located in Aisle 4, which is our "Health Food and Organic" aisle.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Do you have a separate aisle specifically for gluten-free products?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Yes, Aisle 6 is our designated "Gluten-Free Specialty" aisle. We keep all certified gluten-free cookies, breads, and pastas there.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Were Chips Yoho cookies ever stocked in Aisle 6?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Never. Mr. Ownerman specifically requested they be placed in the general health food aisle because they contain wheat. We followed those instructions.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    In your experience running a grocery store, whose job is it to make sure a product is safe for a customer's specific dietary allergies?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    It’s always the customer’s responsibility. Store staff are always available to help answer questions, and we have clear signage. But we cannot read the labels for the customers. They have to look at what they are buying, especially if it’s a matter of health.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Ms. Storegirl. Your witness.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Counselor Proctor, cross-examination.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Ms. Storegirl, is Aisle 4, the "Health Food and Organic" aisle, popular with shoppers who have dietary restrictions?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Yes, it is.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Do many products in Aisle 4—the organic and health aisle—happen to be gluten-free?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Some of them are, yes.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    So it is highly plausible that a customer shopping in Aisle 4 might assume a product with a big "GF" logo on it is indeed gluten-free?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    They might assume it, but they would still be wrong if they didn't check the label.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    But you'd agree that placing a product with a "GF" logo in a "Health Food" aisle creates a highly confusing environment for a rushed shopper?
+                </p>
+            </div>
+
+            <!-- Storegirl Line -->
+            <div data-role="storegirl" class="role-block bg-white p-5 rounded-xl border-l-8 border-pink-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-pink-700 block mb-1">🏪 KATIE STOREGIRL (Witness for Defense)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    We put health products in the health aisle. Chips Yoho is low-calorie, so it belongs there. We can't police what logos companies put on their boxes.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    No further questions, Your Honor.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you, Ms. Storegirl. You may step down. Counselor Defensor, does the defense rest?
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="scale-dialogue leading-relaxed">
+                    The Defense rests, Your Honor.
+                </p>
+            </div>
+
+            <!-- Scene 4 -->
+            <div class="bg-slate-200 text-center py-2.5 px-4 rounded-lg font-extrabold scale-meta text-slate-700 uppercase tracking-widest my-4">
+                Scene 4: Closing Arguments & Jury Charge
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    We will now hear closing arguments. Counselor Proctor, you have the floor.
+                </p>
+            </div>
+
+            <!-- Proctor Line -->
+            <div data-role="proctor" class="role-block bg-white p-5 rounded-xl border-l-8 border-blue-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-blue-700 block mb-1">👔 PLAINTIFF'S ATTORNEY (Pat Proctor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Addresses the jury)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Members of the jury, the Consumer Fraud Act was written to protect citizens from "unconscionable commercial practices, deceptions, and misrepresentations." It does not require the company to commit a crime; it only requires that they create a deceptive, misleading environment. 
+                </p>
+                <p class="scale-dialogue leading-relaxed mt-2">
+                    Chips Yoho chose to use a bold, square logo with the letters "GF" in the exact visual style of a certified medical gluten-free logo. They chose to use a word—"Glutton"—that is a single vowel away from "Gluten." They placed this confusing package in a health food aisle. This wasn't a harmless joke; it was a calculated risk that put corporate profits over human safety. A mother trusted what she saw, and a child paid the price in a hospital bed. Do not let this company hide behind fine print on the back of a box. Find Chips Yoho guilty of consumer fraud. Thank you.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="scale-dialogue leading-relaxed">
+                    Thank you. Counselor Defensor, your closing.
+                </p>
+            </div>
+
+            <!-- Defensor Line -->
+            <div data-role="defensor" class="role-block bg-white p-5 rounded-xl border-l-8 border-emerald-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-emerald-700 block mb-1">💼 DEFENSE'S ATTORNEY (Devin Defensor)</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Addresses the jury)*</p>
+                <p class="scale-dialogue leading-relaxed">
+                    Ladies and gentlemen, this is a tragic case of a genuine mistake—but it was a mistake made by the consumer, not the manufacturer. Chips Yoho was completely transparent. They printed "Free to be a Glutton" on the front. They printed "Contains Wheat" in bold letters on the back. They never stocked their product in the gluten-free aisle.
+                </p>
+                <p class="scale-dialogue leading-relaxed mt-2">
+                    If we hold companies liable when consumers refuse to read basic ingredient labels, we set a dangerous precedent. Food safety relies on a partnership: companies must list allergens, and consumers must read them. Ms. Wheatley failed her end of that partnership. Do not punish a small business for a consumer's oversight. Return a verdict for the defense. Thank you.
+                </p>
+            </div>
+
+            <!-- Judge Line -->
+            <div data-role="judge" class="role-block bg-white p-5 rounded-xl border-l-8 border-purple-600 shadow-sm transition">
+                <span class="scale-meta font-bold uppercase tracking-wider text-purple-700 block mb-1">🧑‍⚖️ THE JUDGE</span>
+                <p class="text-slate-500 italic scale-meta mb-2">*(Bangs gavel once)*</p>
+                <p class="scale-dialogue font-semibold leading-relaxed">
+                    Thank you, counsel. Members of the Jury, you have heard the evidence. Now, it is your turn to perform your civic duty. To find the defendant, Chips Yoho, liable for consumer fraud, the Plaintiff must prove by <strong class="underline">clear and convincing evidence</strong> that the packaging was an unconscionable deception, misrepresentation, or misleading practice that caused harm.
+                </p>
+                <p class="scale-dialogue leading-relaxed mt-2">
+                    You will now retire to the jury room—your classroom—to deliberate. You must elect a Jury Foreperson to lead your discussion. Once you have reached a decision, you will present your verdict to the court. This court is recessed. <span class="text-slate-500 italic scale-meta">*(Bangs gavel)*</span>
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Deliberation Phase block for students -->
+        <div class="mt-12 bg-slate-900 text-white p-6 rounded-xl shadow-md no-print border border-slate-800">
+            <h3 class="text-lg font-bold border-b border-slate-800 pb-2 mb-4 flex items-center gap-2">
+                🗣️ Juror Instructions & Deliberation Prompts
+            </h3>
+            <p class="text-sm text-slate-300 mb-4">
+                Now, the class acts as the jury. Discuss these four key points to decide your verdict:
+            </p>
+            <ol class="list-decimal list-inside space-y-3 text-sm text-slate-200">
+                <li><strong>The Logo:</strong> Was the "glutton-free" logo an unconscionable act of deception?</li>
+                <li><strong>The Buyer's Duty:</strong> Is a parent of a child with severe food allergies legally responsible for checking the ingredients, regardless of the front marketing?</li>
+                <li><strong>Visual Design:</strong> Was the logo too visually similar to the certified medical "GF" logo, causing unfair confusion?</li>
+                <li><strong>Shelf Placement:</strong> Did the product's placement in the health food aisle (rather than the gluten-free aisle) clarify or worsen the confusion?</li>
+            </ol>
+        </div>
+
+    </main>
+
+    <!-- Interactive script filtering and scaling logic -->
+    <script>
+        // Track visual zoom scale
+        let currentZoom = 100;
+
+        function adjustFont(direction) {
+            currentZoom += direction * 10;
+            if (currentZoom < 70) currentZoom = 70;
+            if (currentZoom > 160) currentZoom = 160;
+            
+            // Adjust the CSS variable globally on the root document to scale dialogue and text instantly
+            document.documentElement.style.setProperty('--font-scale', currentZoom / 100);
+            document.getElementById('zoom-indicator').innerText = `Font Size: ${currentZoom}%`;
+        }
+
+        // Fullscreen API implementation with cross-browser compatibility
+        function toggleFullscreen() {
+            const doc = document.documentElement;
+            const fsIcon = document.getElementById('fullscreen-icon');
+            const exitFsIcon = document.getElementById('exit-fullscreen-icon');
+
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                // Enter fullscreen
+                if (doc.requestFullscreen) {
+                    doc.requestFullscreen();
+                } else if (doc.webkitRequestFullscreen) {
+                    doc.webkitRequestFullscreen();
+                } else if (doc.msRequestFullscreen) {
+                    doc.msRequestFullscreen();
+                }
+                fsIcon.classList.add('hidden');
+                exitFsIcon.classList.remove('hidden');
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                fsIcon.classList.remove('hidden');
+                exitFsIcon.classList.add('hidden');
+            }
+        }
+
+        // Keep fullscreen icon indicator accurately synchronized even if exited via ESC key
+        document.addEventListener('fullscreenchange', syncFullscreenIcons);
+        document.addEventListener('webkitfullscreenchange', syncFullscreenIcons);
+        document.addEventListener('msfullscreenchange', syncFullscreenIcons);
+
+        function syncFullscreenIcons() {
+            const fsIcon = document.getElementById('fullscreen-icon');
+            const exitFsIcon = document.getElementById('exit-fullscreen-icon');
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                fsIcon.classList.add('hidden');
+                exitFsIcon.classList.remove('hidden');
+            } else {
+                fsIcon.classList.remove('hidden');
+                exitFsIcon.classList.add('hidden');
+            }
+        }
+
+        // Highlight/dim logic for role filter buttons
+        function filterRole(role) {
+            const blocks = document.querySelectorAll('.role-block');
+            const buttons = document.querySelectorAll('#role-filters button');
+
+            // Reset all buttons to inactive styling
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+                if (btn.id === 'btn-all') {
+                    btn.classList.add('bg-white', 'text-slate-800');
+                }
+            });
+
+            // Set active styling on clicked button
+            const activeBtn = document.getElementById(`btn-${role}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-slate-800');
+                activeBtn.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+            }
+
+            // Highlight/Dim script elements
+            blocks.forEach(block => {
+                if (role === 'all') {
+                    block.classList.remove('dimmed', 'highlighted');
+                } else {
+                    if (block.getAttribute('data-role') === role) {
+                        block.classList.add('highlighted');
+                        block.classList.remove('dimmed');
+                    } else {
+                        block.classList.add('dimmed');
+                        block.classList.remove('highlighted');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+```
+eof
+
+### Summary of Updates:
+* **True CSS Scale Inheritance:** Bound dialogue, meta, and headings inside `#script-container` to custom-property ratios (`--font-scale`). Clicking **A+** or **A-** dynamically recalculates and scales the elements smoothly.
+* **Google Sans Alternative Layout:** Transitioned the design system typography seamlessly to **Plus Jakarta Sans** for a premium geometric look.
+* **Maximized Viewport Controls:** Added a functional HTML5 Fullscreen toggle engine next to printing layouts in the top navigation panel.
+* **No Teacher Guide:** Preserved the student deliberation prompts while removing the guide blocks entirely. 
+
+Open this updated interactive script in your browser to experience fluid controls! Let me know if you would like any further adjustments.
