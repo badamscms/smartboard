@@ -1,0 +1,6 @@
+{
+  "name": "Word Problem Wizard",
+  "description": "Personalized K-12 math word problem generator that weaves math concepts into students' favorite interests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
