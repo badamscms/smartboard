@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civics & Social Studies - Google Classroom Header Generator</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            civic: {
+              navy: '#0b192c',
+              blue: '#1e3e62',
+              gold: '#d4af37',
+              amber: '#f59e0b',
+              crimson: '#8b0000',
+              slate: '#1f293d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .font-montserrat { font-family: 'Montserrat', sans-serif; }
+    .font-inter { font-family: 'Inter', sans-serif; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20 font-black text-xl">
+          ⚖️
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-100 leading-tight">Civics Banner Studio</h1>
+          <p class="text-xs text-amber-400 font-medium">8th Grade Social Studies & Civics Header Generator</p>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="flex items-center space-x-3">
+        <button id="toggleGcOverlayBtn" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center space-x-2">
+          <i data-lucide="eye" class="w-4 h-4"></i>
+          <span id="gcOverlayStatusText">Hide Google Classroom UI Overlay</span>
+        </button>
+        <button id="downloadPngBtn" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/25 transition flex items-center space-x-2">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>Download Header (HD PNG)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- LEFT COLUMN: Canvas Preview Stage (8 Cols) -->
+    <section class="lg:col-span-12 xl:col-span-7 flex flex-col space-y-6">
+      
+      <!-- Preview Container -->
+      <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-4 shadow-2xl relative overflow-hidden">
+        
+        <!-- Canvas Bar Header -->
+        <div class="flex items-center justify-between mb-3 px-1">
+          <div class="flex items-center space-x-2 text-xs text-slate-400 font-semibold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Live Header Canvas (Aspect Ratio 4:1 — 1200x300 px)</span>
+          </div>
+          <span class="text-xs bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded-full font-mono border border-slate-700">Export: 2400×600 Ultra-HD</span>
+        </div>
+
+        <!-- Banner Preview Wrapper with Realistic GC Overlay -->
+        <div class="relative w-full rounded-xl overflow-hidden shadow-inner bg-slate-950 border border-slate-800 group">
+          
+          <!-- The Hidden High-Res Canvas -->
+          <canvas id="headerCanvas" width="2400" height="600" class="w-full h-auto block rounded-xl shadow-2xl"></canvas>
+
+          <!-- Simulated Google Classroom Interface Overlay -->
+          <div id="googleClassroomOverlay" class="absolute inset-0 pointer-events-none transition-opacity duration-300 flex flex-col justify-between p-6 bg-gradient-to-t from-black/80 via-transparent to-black/30">
+            <!-- Simulated GC Top Navigation -->
+            <div class="flex justify-between items-center text-white/90">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xs">
+                  <i data-lucide="menu" class="w-4 h-4"></i>
+                </div>
+                <span class="text-xs font-semibold tracking-wide text-white/80 bg-black/30 px-2 py-0.5 rounded backdrop-blur-sm">Simulated Classroom Interface</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">⚙️</div>
+              </div>
+            </div>
+
+            <!-- Simulated GC Bottom Left Text Overlay -->
+            <div class="text-white space-y-1 drop-shadow-md">
+              <h2 id="gcSimTitle" class="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-none">8th Grade Civics & Government</h2>
+              <p id="gcSimSubtitle" class="text-xs sm:text-sm text-slate-200 font-medium">Mr. D'Antuono & Mr. Fuchs • 2025-2026 Academic Year</p>
+              <div class="flex items-center space-x-3 pt-1">
+                <span class="text-[11px] bg-white/20 backdrop-blur-md border border-white/20 text-white px-2 py-0.5 rounded font-mono">Class Code: c1v1cs8</span>
+                <span class="text-[11px] bg-emerald-500/80 backdrop-blur-md text-white px-2 py-0.5 rounded font-medium flex items-center gap-1">
+                  <i data-lucide="video" class="w-3 h-3"></i> Meet link
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-400 mt-2.5 text-center italic">
+          💡 <span class="text-slate-300 font-semibold">Teacher Tip:</span> Google Classroom naturally places class title text in the bottom-left corner with a dark vignette. Keep critical graphic elements centered or toward the right side!
+        </p>
+      </div>
+
+      <!-- Quick Preset Selector for 25-26 Lesson Plan Units -->
+      <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-5 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+            <span>Lesson Plan Curriculum Unit Presets</span>
+          </h3>
+          <span class="text-xs text-slate-400">Click to apply full unit theme</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          
+          <!-- Preset 1: Master Civics -->
+          <button data-preset="master" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition">
+              🏛️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-amber-400 transition">Master Class Header</div>
+              <div class="text-[11px] text-slate-400 leading-tight">8th Grade Civics & American Government</div>
+            </div>
+          </button>
+
+          <!-- Preset 2: 12 Angry Men / Mock Trial -->
+          <button data-preset="trial" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-slate-950 transition">
+              ⚖️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-indigo-300 transition">12 Angry Men & Mock Trials</div>
+              <div class="text-[11px] text-slate-400 leading-tight">Burden of Proof & 6th Amendment Jury</div>
+            </div>
+          </button>
+
+          <!-- Preset 3: Presidential Powers -->
+          <button data-preset="executive" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-red-500/10 text-red-400 group-hover:bg-red-500 group-hover:text-slate-950 transition">
+              🦅
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-red-300 transition">Executive Branch & 270 to Win</div>
+              <div class="text-[11px] text-slate-400 leading-tight">Article II Powers & Electoral College</div>
+            </div>
+          </button>
+
+          <!-- Preset 4: Legislative & Congress -->
+          <button data-preset="legislative" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-sky-500/10 text-sky-400 group-hover:bg-sky-500 group-hover:text-slate-950 transition">
+              📜
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-sky-300 transition">Congress & How a Bill Passes</div>
+              <div class="text-[11px] text-slate-400 leading-tight">Legislative Branch & Mock Congress</div>
+            </div>
+          </button>
+
+          <!-- Preset 5: Women's Suffrage & Rights -->
+          <button data-preset="suffrage" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-slate-950 transition">
+              🗳️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-purple-300 transition">Women's Suffrage & 19th Amendment</div>
+              <div class="text-[11px] text-slate-400 leading-tight">Seneca Falls to Voting Rights Activism</div>
+            </div>
+          </button>
+
+          <!-- Preset 6: Civil Disobedience -->
+          <button data-preset="disobedience" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition">
+              ✊
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-emerald-300 transition">Civil Disobedience & Protest</div>
+              <div class="text-[11px] text-slate-400 leading-tight">MLK, Thoreau, Children's March & Vietnam</div>
+            </div>
+          </button>
+
+          <!-- Preset 7: Supreme Court & Landmarks -->
+          <button data-preset="scotus" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-amber-500/10 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition">
+              🏛️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-amber-300 transition">Supreme Court Landmark Cases</div>
+              <div class="text-[11px] text-slate-400 leading-tight">Equal Protection & Brown v. Board</div>
+            </div>
+          </button>
+
+          <!-- Preset 8: Vietnam War & Foreign Policy -->
+          <button data-preset="vietnam" class="preset-btn group p-3 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-800/80 hover:border-amber-500/50 text-left transition flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-yellow-600/10 text-yellow-500 group-hover:bg-yellow-500 group-hover:text-slate-950 transition">
+              🕊️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-200 group-hover:text-yellow-300 transition">Vietnam War & Civic Duty</div>
+              <div class="text-[11px] text-slate-400 leading-tight">The Moral Compass & Wall Memorial</div>
+            </div>
+          </button>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: Customization Controls (5 Cols) -->
+    <section class="lg:col-span-12 xl:col-span-5 flex flex-col space-y-6">
+      
+      <!-- Control Tabs -->
+      <div class="bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+        
+        <!-- Tab Navigation Bar -->
+        <div class="flex border-b border-slate-800 bg-slate-950/60 p-1.5 space-x-1">
+          <button data-tab="tab-text" class="tab-btn flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center space-x-1.5 bg-slate-800 text-amber-400 border border-slate-700">
+            <i data-lucide="type" class="w-3.5 h-3.5"></i>
+            <span>Text</span>
+          </button>
+          <button data-tab="tab-style" class="tab-btn flex-1 py-2 text-xs font-bold text-slate-400 hover:text-slate-200 rounded-xl transition flex items-center justify-center space-x-1.5">
+            <i data-lucide="palette" class="w-3.5 h-3.5"></i>
+            <span>Colors & Theme</span>
+          </button>
+          <button data-tab="tab-graphics" class="tab-btn flex-1 py-2 text-xs font-bold text-slate-400 hover:text-slate-200 rounded-xl transition flex items-center justify-center space-x-1.5">
+            <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+            <span>Icons & Art</span>
+          </button>
+        </div>
+
+        <!-- TAB 1: TEXT CONTROLS -->
+        <div id="tab-text" class="tab-content p-5 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Main Class Title</label>
+            <input type="text" id="inputMainTitle" value="8th Grade Civics & Government" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Subtitle / Teacher Name</label>
+            <input type="text" id="inputSubtitle" value="Mr. D'Antuono & Mr. Fuchs • 2025-2026" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Unit Badge / Tagline</label>
+            <input type="text" id="inputUnitBadge" value="⚖️ Unit 1: Legal Principles & Mock Trials" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Font Family</label>
+              <select id="selectFont" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-500">
+                <option value="Cinzel">Cinzel (Classical/Legal)</option>
+                <option value="Playfair Display">Playfair (Serif Editorial)</option>
+                <option value="Montserrat" selected>Montserrat (Bold Modern)</option>
+                <option value="Inter">Inter (Clean Sans)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Text Alignment</label>
+              <select id="selectAlign" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-500">
+                <option value="left" selected>Left Aligned</option>
+                <option value="center">Center Aligned</option>
+                <option value="right">Right Aligned</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Title Font Size</label>
+              <span id="fontSizeVal" class="text-xs text-amber-400 font-mono">68px</span>
+            </div>
+            <input type="range" id="inputFontSize" min="40" max="90" value="68" class="w-full accent-amber-500 bg-slate-950 rounded-lg cursor-pointer h-2" />
+          </div>
+        </div>
+
+        <!-- TAB 2: COLORS & THEMES -->
+        <div id="tab-style" class="tab-content p-5 space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Background Gradient Preset</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button data-grad="navy-gold" class="grad-btn h-10 rounded-xl bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 border border-slate-700 hover:scale-105 transition" title="Navy & Gold"></button>
+              <button data-grad="crimson-navy" class="grad-btn h-10 rounded-xl bg-gradient-to-r from-red-950 via-slate-950 to-blue-950 border border-slate-700 hover:scale-105 transition" title="Patriotic Red & Navy"></button>
+              <button data-grad="emerald-gold" class="grad-btn h-10 rounded-xl bg-gradient-to-r from-emerald-950 via-slate-950 to-amber-950 border border-slate-700 hover:scale-105 transition" title="Freedom Emerald"></button>
+              <button data-grad="purple-indigo" class="grad-btn h-10 rounded-xl bg-gradient-to-r from-purple-950 via-slate-950 to-indigo-950 border border-slate-700 hover:scale-105 transition" title="Suffrage Purple"></button>
+              <button data-grad="slate-scotus" class="grad-btn h-10 rounded-xl bg-gradient-to-r from-slate-900 via-stone-900 to-amber-950 border border-slate-700 hover:scale-105 transition" title="SCOTUS Marble"></button>
+              <button data-grad="midnight-cyan" class="grad-btn h-10 rounded-xl bg-gradient-to-r from-slate-950 via-sky-950 to-indigo-950 border border-slate-700 hover:scale-105 transition" title="Midnight Civics"></button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Primary Color 1</label>
+              <input type="color" id="colorGradient1" value="#0b192c" class="w-full h-9 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer p-0.5" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Primary Color 2</label>
+              <input type="color" id="colorGradient2" value="#1e3e62" class="w-full h-9 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer p-0.5" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Title Text Color</label>
+              <input type="color" id="colorTitle" value="#ffffff" class="w-full h-9 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer p-0.5" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Accent / Badge Color</label>
+              <input type="color" id="colorAccent" value="#f59e0b" class="w-full h-9 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer p-0.5" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Dark Vignette (Google Readability)</span>
+            <input type="checkbox" id="chkVignette" checked class="w-4 h-4 accent-amber-500 cursor-pointer rounded" />
+          </div>
+        </div>
+
+        <!-- TAB 3: ICONS & GRAPHICS -->
+        <div id="tab-graphics" class="tab-content p-5 space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Civic Emblem / Illustration</label>
+            <select id="selectIconGraphic" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-500">
+              <option value="scales">Scales of Justice & Legal Gavel</option>
+              <option value="capitol">U.S. Capitol Dome (Legislative Branch)</option>
+              <option value="whitehouse">White House & Presidential Eagle</option>
+              <option value="scotus">Supreme Court Columns & Pediment</option>
+              <option value="suffrage">19th Amendment Suffrage Ribbon & Stars</option>
+              <option value="constitution">We the People Quill & Constitution</option>
+              <option value="none">No Large Emblem (Text Only)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Background Pattern Overlay</label>
+            <select id="selectPattern" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-500">
+              <option value="preamble">Constitutional Preamble Watermark</option>
+              <option value="stars">50 Stars Constellation Pattern</option>
+              <option value="grid">Civic Blueprint Line Grid</option>
+              <option value="dots">Subtle Geometric Dots</option>
+              <option value="none">Clean Gradient (No Pattern)</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Emblem Opacity</label>
+              <span id="emblemOpacityVal" class="text-xs text-amber-400 font-mono">85%</span>
+            </div>
+            <input type="range" id="inputEmblemOpacity" min="10" max="100" value="85" class="w-full accent-amber-500 bg-slate-950 rounded-lg cursor-pointer h-2" />
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Emblem Horizontal Position</label>
+              <span id="emblemPosXVal" class="text-xs text-amber-400 font-mono">1950px</span>
+            </div>
+            <input type="range" id="inputEmblemPosX" min="1200" max="2200" value="1950" class="w-full accent-amber-500 bg-slate-950 rounded-lg cursor-pointer h-2" />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Tips Card -->
+      <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 space-y-2">
+        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+          <span>How to Upload to Google Classroom</span>
+        </h4>
+        <ol class="text-xs text-slate-400 space-y-1 list-decimal list-inside leading-relaxed">
+          <li>Click <strong class="text-slate-200">Download Header (HD PNG)</strong> to save the image.</li>
+          <li>Go to your Google Classroom class page.</li>
+          <li>Click <strong class="text-slate-200">Customize</strong> in the bottom right of the current banner.</li>
+          <li>Select <strong class="text-slate-200">Upload photo</strong>, choose your PNG, drag crop to full size, and click save!</li>
+        </ol>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JavaScript Rendering Engine -->
+  <script>
+    // Lucide Icons initialization
+    lucide.createIcons();
+
+    // Elements
+    const canvas = document.getElementById('headerCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Control Inputs
+    const inputMainTitle = document.getElementById('inputMainTitle');
+    const inputSubtitle = document.getElementById('inputSubtitle');
+    const inputUnitBadge = document.getElementById('inputUnitBadge');
+    const selectFont = document.getElementById('selectFont');
+    const selectAlign = document.getElementById('selectAlign');
+    const inputFontSize = document.getElementById('inputFontSize');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+
+    const colorGradient1 = document.getElementById('colorGradient1');
+    const colorGradient2 = document.getElementById('colorGradient2');
+    const colorTitle = document.getElementById('colorTitle');
+    const colorAccent = document.getElementById('colorAccent');
+    const chkVignette = document.getElementById('chkVignette');
+
+    const selectIconGraphic = document.getElementById('selectIconGraphic');
+    const selectPattern = document.getElementById('selectPattern');
+    const inputEmblemOpacity = document.getElementById('inputEmblemOpacity');
+    const emblemOpacityVal = document.getElementById('emblemOpacityVal');
+    const inputEmblemPosX = document.getElementById('inputEmblemPosX');
+    const emblemPosXVal = document.getElementById('emblemPosXVal');
+
+    // UI Overlay elements
+    const gcOverlay = document.getElementById('googleClassroomOverlay');
+    const toggleGcOverlayBtn = document.getElementById('toggleGcOverlayBtn');
+    const gcOverlayStatusText = document.getElementById('gcOverlayStatusText');
+    const gcSimTitle = document.getElementById('gcSimTitle');
+    const gcSimSubtitle = document.getElementById('gcSimSubtitle');
+    const downloadPngBtn = document.getElementById('downloadPngBtn');
+
+    let showGcOverlay = true;
+
+    // Toggle GC UI Simulator
+    toggleGcOverlayBtn.addEventListener('click', () => {
+      showGcOverlay = !showGcOverlay;
+      if (showGcOverlay) {
+        gcOverlay.classList.remove('opacity-0');
+        gcOverlayStatusText.textContent = "Hide Google Classroom UI Overlay";
+      } else {
+        gcOverlay.classList.add('opacity-0');
+        gcOverlayStatusText.textContent = "Show Google Classroom UI Overlay";
+      }
+    });
+
+    // Update Text Sliders & Sync GC Overlay text
+    inputFontSize.addEventListener('input', (e) => {
+      fontSizeVal.textContent = e.target.value + 'px';
+      renderHeader();
+    });
+
+    inputEmblemOpacity.addEventListener('input', (e) => {
+      emblemOpacityVal.textContent = e.target.value + '%';
+      renderHeader();
+    });
+
+    inputEmblemPosX.addEventListener('input', (e) => {
+      emblemPosXVal.textContent = e.target.value + 'px';
+      renderHeader();
+    });
+
+    // Event listeners for re-render
+    [
+      inputMainTitle, inputSubtitle, inputUnitBadge, selectFont, selectAlign,
+      colorGradient1, colorGradient2, colorTitle, colorAccent, chkVignette,
+      selectIconGraphic, selectPattern
+    ].forEach(el => {
+      el.addEventListener('input', renderHeader);
+      el.addEventListener('change', renderHeader);
+    });
+
+    // Tab Switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('bg-slate-800', 'text-amber-400', 'border', 'border-slate-700');
+          b.classList.add('text-slate-400');
+        });
+        btn.classList.add('bg-slate-800', 'text-amber-400', 'border', 'border-slate-700');
+        btn.classList.remove('text-slate-400');
+
+        const targetTab = btn.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(targetTab).classList.remove('hidden');
+      });
+    });
+
+    // Gradient Quick Presets
+    document.querySelectorAll('.grad-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-grad');
+        switch (type) {
+          case 'navy-gold':
+            colorGradient1.value = '#0b192c';
+            colorGradient2.value = '#1e3e62';
+            colorTitle.value = '#ffffff';
+            colorAccent.value = '#f59e0b';
+            break;
+          case 'crimson-navy':
+            colorGradient1.value = '#500707';
+            colorGradient2.value = '#0b192c';
+            colorTitle.value = '#ffffff';
+            colorAccent.value = '#ef4444';
+            break;
+          case 'emerald-gold':
+            colorGradient1.value = '#022c22';
+            colorGradient2.value = '#064e3b';
+            colorTitle.value = '#ffffff';
+            colorAccent.value = '#10b981';
+            break;
+          case 'purple-indigo':
+            colorGradient1.value = '#3b0764';
+            colorGradient2.value = '#1e1b4b';
+            colorTitle.value = '#ffffff';
+            colorAccent.value = '#c084fc';
+            break;
+          case 'slate-scotus':
+            colorGradient1.value = '#18181b';
+            colorGradient2.value = '#27272a';
+            colorTitle.value = '#fef08a';
+            colorAccent.value = '#eab308';
+            break;
+          case 'midnight-cyan':
+            colorGradient1.value = '#030712';
+            colorGradient2.value = '#0c4a6e';
+            colorTitle.value = '#ffffff';
+            colorAccent.value = '#38bdf8';
+            break;
+        }
+        renderHeader();
+      });
+    });
+
+    // Curriculum Presets
+    const PRESETS = {
+      master: {
+        title: "8th Grade Civics & Government",
+        subtitle: "Mr. D'Antuono & Mr. Fuchs • 2025-2026",
+        badge: "🏛️ American Democracy & Civic Responsibility",
+        font: "Montserrat",
+        align: "left",
+        fontSize: 68,
+        grad1: "#0b192c",
+        grad2: "#1e3e62",
+        titleColor: "#ffffff",
+        accentColor: "#f59e0b",
+        icon: "capitol",
+        pattern: "preamble",
+        opacity: 85,
+        posX: 1950
+      },
+      trial: {
+        title: "12 Angry Men & Mock Trials",
+        subtitle: "Unit 1 • Legal Standards, Jury Duty & Evidence",
+        badge: "⚖️ 6th Amendment & Burden of Proof",
+        font: "Cinzel",
+        align: "left",
+        fontSize: 66,
+        grad1: "#1e1b4b",
+        grad2: "#0f172a",
+        titleColor: "#ffffff",
+        accentColor: "#818cf8",
+        icon: "scales",
+        pattern: "preamble",
+        opacity: 90,
+        posX: 1920
+      },
+      executive: {
+        title: "The Executive Branch & 270",
+        subtitle: "Unit 2 • Presidential Powers & Electoral Strategy",
+        badge: "🦅 Article II Powers & Presidential Roles",
+        font: "Montserrat",
+        align: "left",
+        fontSize: 64,
+        grad1: "#450a0a",
+        grad2: "#0f172a",
+        titleColor: "#ffffff",
+        accentColor: "#f87171",
+        icon: "whitehouse",
+        pattern: "stars",
+        opacity: 85,
+        posX: 1900
+      },
+      legislative: {
+        title: "Congress & Legislative Action",
+        subtitle: "Unit 3 • Mock Congress & How a Bill Passes",
+        badge: "📜 Article I • House & Senate Committees",
+        font: "Cinzel",
+        align: "left",
+        fontSize: 64,
+        grad1: "#0c4a6e",
+        grad2: "#0b192c",
+        titleColor: "#ffffff",
+        accentColor: "#38bdf8",
+        icon: "capitol",
+        pattern: "grid",
+        opacity: 85,
+        posX: 1950
+      },
+      suffrage: {
+        title: "Women's Suffrage & Activism",
+        subtitle: "Unit 4 • Declaration of Sentiments to 19th Amendment",
+        badge: "🗳️ Votes for Women • Seneca Falls 1848",
+        font: "Playfair Display",
+        align: "left",
+        fontSize: 64,
+        grad1: "#3b0764",
+        grad2: "#1e1b4b",
+        titleColor: "#ffffff",
+        accentColor: "#c084fc",
+        icon: "suffrage",
+        pattern: "stars",
+        opacity: 90,
+        posX: 1900
+      },
+      disobedience: {
+        title: "Civil Disobedience & Rights",
+        subtitle: "Unit 5 • MLK, Thoreau, Children's March & Protest",
+        badge: "✊ Moral Compass & Citizen Responsibility",
+        font: "Montserrat",
+        align: "left",
+        fontSize: 64,
+        grad1: "#022c22",
+        grad2: "#0f172a",
+        titleColor: "#ffffff",
+        accentColor: "#34d399",
+        icon: "constitution",
+        pattern: "preamble",
+        opacity: 85,
+        posX: 1920
+      },
+      scotus: {
+        title: "Supreme Court Landmark Cases",
+        subtitle: "Unit 6 • Judicial Review & Student Constitutional Rights",
+        badge: "🏛️ Equal Protection Under the Law • 14th Amendment",
+        font: "Cinzel",
+        align: "left",
+        fontSize: 62,
+        grad1: "#18181b",
+        grad2: "#27272a",
+        titleColor: "#fef08a",
+        accentColor: "#eab308",
+        icon: "scotus",
+        pattern: "preamble",
+        opacity: 90,
+        posX: 1950
+      },
+      vietnam: {
+        title: "Vietnam War & Civic Duty",
+        subtitle: "Unit 7 • Executive Decision-Making & The Cost of Courage",
+        badge: "🕊️ The Draft, Protests & National Memorials",
+        font: "Playfair Display",
+        align: "left",
+        fontSize: 62,
+        grad1: "#2e1065",
+        grad2: "#0f172a",
+        titleColor: "#ffffff",
+        accentColor: "#a78bfa",
+        icon: "constitution",
+        pattern: "dots",
+        opacity: 80,
+        posX: 1920
+      }
+    };
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pKey = btn.getAttribute('data-preset');
+        const p = PRESETS[pKey];
+        if (!p) return;
+
+        inputMainTitle.value = p.title;
+        inputSubtitle.value = p.subtitle;
+        inputUnitBadge.value = p.badge;
+        selectFont.value = p.font;
+        selectAlign.value = p.align;
+        inputFontSize.value = p.fontSize;
+        fontSizeVal.textContent = p.fontSize + 'px';
+
+        colorGradient1.value = p.grad1;
+        colorGradient2.value = p.grad2;
+        colorTitle.value = p.titleColor;
+        colorAccent.value = p.accentColor;
+
+        selectIconGraphic.value = p.icon;
+        selectPattern.value = p.pattern;
+        inputEmblemOpacity.value = p.opacity;
+        emblemOpacityVal.textContent = p.opacity + '%';
+        inputEmblemPosX.value = p.posX;
+        emblemPosXVal.textContent = p.posX + 'px';
+
+        renderHeader();
+      });
+    });
+
+    // Drawing Helpers on Canvas
+    function renderHeader() {
+      const width = canvas.width;   // 2400
+      const height = canvas.height; // 600
+
+      // Sync simulator overlay text
+      gcSimTitle.textContent = inputMainTitle.value || "8th Grade Civics";
+      gcSimSubtitle.textContent = inputSubtitle.value || "2025-2026 Academic Year";
+
+      // 1. Draw Background Gradient
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0, colorGradient1.value);
+      grad.addColorStop(1, colorGradient2.value);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      // 2. Background Pattern Overlay
+      drawBackgroundPattern(width, height, selectPattern.value);
+
+      // 3. Draw Selected Emblem Graphic
+      const posX = parseInt(inputEmblemPosX.value);
+      const opacity = parseInt(inputEmblemOpacity.value) / 100;
+      drawCivicEmblem(posX, height / 2, selectIconGraphic.value, opacity, colorAccent.value);
+
+      // 4. Draw Google Readability Vignette Overlay
+      if (chkVignette.checked) {
+        const darkGrad = ctx.createLinearGradient(0, height, 0, 0);
+        darkGrad.addColorStop(0, 'rgba(0, 0, 0, 0.75)');
+        darkGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.25)');
+        darkGrad.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+        ctx.fillStyle = darkGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Left-side text shadow vignette
+        const leftGrad = ctx.createLinearGradient(0, 0, width * 0.6, 0);
+        leftGrad.addColorStop(0, 'rgba(0,0,0,0.4)');
+        leftGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = leftGrad;
+        ctx.fillRect(0, 0, width * 0.6, height);
+      }
+
+      // 5. Render Text Content
+      renderCanvasText(width, height);
+    }
+
+    // Pattern Drawer
+    function drawBackgroundPattern(w, h, type) {
+      ctx.save();
+      if (type === 'preamble') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx.font = 'italic 700 28px "Playfair Display", serif';
+        const preambleText = "We the People of the United States, in Order to form a more perfect Union, establish Justice, insure domestic Tranquility...";
+        for (let y = 40; y < h; y += 45) {
+          ctx.fillText(preambleText, (y % 90 === 0 ? 0 : -200), y);
+        }
+      } else if (type === 'stars') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+        const rows = 6;
+        const cols = 20;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const x = c * 120 + (r % 2 === 0 ? 0 : 60);
+            const y = r * 100 + 40;
+            drawStar(x, y, 5, 8, 4);
+          }
+        }
+      } else if (type === 'grid') {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+        ctx.lineWidth = 2;
+        for (let x = 0; x < w; x += 60) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 60) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+      } else if (type === 'dots') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+        for (let x = 30; x < w; x += 50) {
+          for (let y = 30; y < h; y += 50) {
+            ctx.beginPath();
+            ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      let step = Math.PI / spikes;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Civic Emblems Vector Drawing Engine
+    function drawCivicEmblem(cx, cy, iconType, opacity, accentColor) {
+      if (iconType === 'none') return;
+
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.translate(cx, cy);
+
+      // Radial glow effect behind emblem
+      const glow = ctx.createRadialGradient(0, 0, 20, 0, 0, 320);
+      glow.addColorStop(0, accentColor + '33');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(0, 0, 320, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = accentColor;
+      ctx.fillStyle = accentColor;
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (iconType === 'scales') {
+        // SCALES OF JUSTICE & GAVEL
+        // Central Pillar
+        ctx.beginPath();
+        ctx.moveTo(0, -180);
+        ctx.lineTo(0, 160);
+        ctx.stroke();
+
+        // Top Beam
+        ctx.beginPath();
+        ctx.moveTo(-160, -120);
+        ctx.lineTo(160, -120);
+        ctx.stroke();
+
+        // Left Bowl
+        ctx.beginPath();
+        ctx.moveTo(-160, -120);
+        ctx.lineTo(-210, -20);
+        ctx.lineTo(-110, -20);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(-160, -10, 55, 0, Math.PI);
+        ctx.stroke();
+
+        // Right Bowl
+        ctx.beginPath();
+        ctx.moveTo(160, -120);
+        ctx.lineTo(110, -20);
+        ctx.lineTo(210, -20);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(160, -10, 55, 0, Math.PI);
+        ctx.stroke();
+
+        // Base Pedestal
+        ctx.fillRect(-80, 160, 160, 20);
+
+      } else if (iconType === 'capitol') {
+        // US CAPITOL DOME
+        // Base columns
+        for (let i = -140; i <= 140; i += 35) {
+          ctx.fillRect(i, 40, 18, 120);
+        }
+        ctx.fillRect(-160, 20, 320, 20);
+        ctx.fillRect(-170, 160, 340, 25);
+
+        // Lower Drum Dome
+        ctx.fillRect(-110, -40, 220, 60);
+
+        // Main Arc Dome
+        ctx.beginPath();
+        ctx.arc(0, -40, 100, Math.PI, 0);
+        ctx.stroke();
+
+        // Statue of Freedom Top
+        ctx.fillRect(-6, -180, 12, 40);
+        ctx.beginPath();
+        ctx.arc(0, -185, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (iconType === 'whitehouse') {
+        // WHITE HOUSE COLUMNS & PEDIMENT
+        // Triangular Pediment
+        ctx.beginPath();
+        ctx.moveTo(-180, -30);
+        ctx.lineTo(0, -130);
+        ctx.lineTo(180, -30);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Pillars
+        for (let x = -140; x <= 140; x += 56) {
+          ctx.fillRect(x, -20, 24, 150);
+        }
+        ctx.fillRect(-170, 130, 340, 20);
+
+        // Center Eagle Star
+        drawStar(0, -170, 5, 25, 12);
+
+      } else if (iconType === 'scotus') {
+        // SUPREME COURT TEMPLE
+        ctx.beginPath();
+        ctx.moveTo(-200, -50);
+        ctx.lineTo(0, -150);
+        ctx.lineTo(200, -50);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.font = 'bold 18px "Cinzel", serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("EQUAL JUSTICE UNDER LAW", 0, -25);
+
+        for (let x = -160; x <= 160; x += 40) {
+          ctx.fillRect(x, -10, 20, 150);
+        }
+        ctx.fillRect(-180, 140, 360, 20);
+
+      } else if (iconType === 'suffrage') {
+        // 19TH AMENDMENT SUFFRAGE RIBBON & STARS
+        ctx.beginPath();
+        ctx.arc(0, 0, 140, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.font = 'bold 24px "Montserrat", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("VOTES FOR WOMEN", 0, -10);
+        ctx.fillText("1920 • 19th AMENDMENT", 0, 30);
+
+        for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+          const sx = Math.cos(a) * 170;
+          const sy = Math.sin(a) * 170;
+          drawStar(sx, sy, 5, 12, 6);
+        }
+
+      } else if (iconType === 'constitution') {
+        // WE THE PEOPLE & QUILL
+        ctx.font = 'bold italic 48px "Playfair Display", serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("We the People", 0, -30);
+
+        // Feather Quill Pen
+        ctx.beginPath();
+        ctx.moveTo(-120, 80);
+        ctx.quadraticCurveTo(20, 0, 140, -140);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    // Canvas Main Text Rendering
+    function renderCanvasText(w, h) {
+      ctx.save();
+
+      const align = selectAlign.value;
+      const font = selectFont.value;
+      const titleSize = parseInt(inputFontSize.value);
+
+      let xPos = 120;
+      if (align === 'center') xPos = w / 2;
+      if (align === 'right') xPos = w - 120;
+
+      ctx.textAlign = align;
+
+      // 1. Draw Unit Badge / Tagline Box
+      const badgeText = inputUnitBadge.value.trim();
+      if (badgeText) {
+        ctx.font = `700 26px "Montserrat", sans-serif`;
+        const badgeWidth = ctx.measureText(badgeText).width + 48;
+
+        let badgeX = xPos;
+        if (align === 'left') badgeX = 120;
+        if (align === 'center') badgeX = (w / 2) - (badgeWidth / 2);
+        if (align === 'right') badgeX = w - 120 - badgeWidth;
+
+        // Badge Pill Background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.strokeStyle = colorAccent.value;
+        ctx.lineWidth = 3;
+        roundRect(ctx, badgeX, 90, badgeWidth, 54, 27, true, true);
+
+        // Badge Text
+        ctx.fillStyle = colorAccent.value;
+        ctx.fillText(badgeText, badgeX + (align === 'right' ? badgeWidth - 24 : 24), 126);
+      }
+
+      // 2. Draw Main Class Title
+      ctx.font = `800 ${titleSize}px "${font}", sans-serif`;
+      ctx.fillStyle = colorTitle.value;
+
+      // Glow Shadow behind title
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 4;
+
+      const mainTitleText = inputMainTitle.value.trim() || "8th Grade Civics";
+      ctx.fillText(mainTitleText, xPos, 230 + (titleSize > 70 ? 10 : 0));
+
+      // Reset Shadow
+      ctx.shadowColor = 'transparent';
+
+      // 3. Draw Subtitle / Teacher Name
+      const subtitleText = inputSubtitle.value.trim();
+      if (subtitleText) {
+        ctx.font = `600 32px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+        ctx.fillText(subtitleText, xPos, 310 + (titleSize > 70 ? 15 : 0));
+      }
+
+      ctx.restore();
+    }
+
+    // Helper for rounded rectangle
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+
+    // Download PNG Action
+    downloadPngBtn.addEventListener('click', () => {
+      // Ensure canvas renders cleanly without overlay before export
+      renderHeader();
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      const fileName = (inputMainTitle.value || 'civics-header').toLowerCase().replace(/[^a-z0-9]/g, '-') + '-header.png';
+      link.download = fileName;
+      link.href = dataUrl;
+      link.click();
+    });
+
+    // Initial First Render
+    window.addEventListener('load', () => {
+      renderHeader();
+    });
+  </script>
+</body>
+</html>
