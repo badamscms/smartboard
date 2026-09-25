@@ -1,0 +1,2902 @@
+
+political_philosophers_tier_list.html
+
+100%
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Political Philosophers Tier-List & Research Profiles</title>
+<style>
+  :root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: #eff6ff;
+    --accent-dark: #1e3a8a;
+    
+    --s-color: #ef4444;
+    --a-color: #f97316;
+    --b-color: #f59e0b;
+    --c-color: #10b981;
+    --d-color: #3b82f6;
+    --f-color: #8b5cf6;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header & Navigation */
+  header {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4.25rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .brand-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: white;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+
+  .brand-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    list-style: none;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+  }
+
+  .nav-link {
+    padding: 0.45rem 0.8rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--accent);
+    background-color: var(--accent-light);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+    background-color: var(--accent-light);
+    font-weight: 600;
+    border-color: #bfdbfe;
+  }
+
+  .nav-tier-btn {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white !important;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.45rem 1rem;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  }
+
+  .nav-tier-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    color: white !important;
+  }
+
+  .nav-tier-btn.active {
+    background: #1e3a8a;
+    border-color: #60a5fa;
+  }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1.25rem;
+  }
+
+  /* Page Sections (SPA mechanism) */
+  .page-view {
+    display: none;
+    animation: fadeIn 0.25s ease-in-out;
+  }
+
+  .page-view.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Home / Overview Page */
+  .hero-card {
+    background: linear-gradient(135deg, #1e3a8a, #0f172a);
+    color: white;
+    padding: 3rem 2.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #93c5fd;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .hero-desc {
+    font-size: 1.15rem;
+    color: #cbd5e1;
+    max-width: 800px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: none;
+  }
+
+  .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: white;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Grid of Philosophers on Home */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .philosopher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .grid-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.875rem;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .grid-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
+  }
+
+  .grid-card-media {
+    height: 180px;
+    background-color: #1e293b;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.3s ease;
+  }
+
+  .grid-card:hover .grid-card-img {
+    transform: scale(1.03);
+  }
+
+  .grid-card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .card-dates {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+  }
+
+  .card-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .card-work {
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: 500;
+    font-style: italic;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-snippet {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background-color: #f1f5f9;
+    color: #475569;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .view-profile-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  /* Single Philosopher Page Template */
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .profile-sidebar {
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .portrait-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+  }
+
+  .portrait-frame {
+    height: 420px;
+    background-color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .portrait-caption {
+    padding: 1rem 1.25rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    background-color: #fafafa;
+  }
+
+  .portrait-caption a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .sidebar-meta-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .meta-item {
+    margin-bottom: 1rem;
+  }
+
+  .meta-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .meta-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .meta-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* Profile Content Area */
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .profile-header-banner {
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .profile-header-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+  }
+
+  .profile-header-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .profile-header-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .content-block {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .block-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .block-heading svg {
+    color: var(--accent);
+  }
+
+  .quote-box {
+    background: linear-gradient(135deg, #eff6ff, #f8fafc);
+    border-left: 4px solid var(--accent);
+    padding: 1.5rem 1.75rem;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .quote-text {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: #1e293b;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .quote-author {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    text-align: right;
+  }
+
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .vocab-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .vocab-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 0.35rem;
+  }
+
+  .vocab-def {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .evaluation-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 650px) {
+    .evaluation-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .eval-column {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+
+  .eval-strength {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  .eval-drawback {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .eval-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .eval-strength .eval-title { color: #166534; }
+  .eval-drawback .eval-title { color: #991b1b; }
+
+  .eval-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .eval-strength .eval-text { color: #14532d; }
+  .eval-drawback .eval-text { color: #7f1d1d; }
+
+  /* Navigation Footer on Philosopher Page */
+  .profile-nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* ======================================================== */
+  /* Final Page: S-Tier Ranking Scale                         */
+  /* ======================================================== */
+  .tier-page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .tier-page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .tier-page-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 750px;
+    margin: 0 auto 1.5rem auto;
+  }
+
+  .tier-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .tier-board {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background-color: #0f172a;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2.5rem;
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    min-height: 110px;
+    background-color: #1e293b;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .tier-row.drag-over {
+    border-color: #60a5fa;
+    background-color: #334155;
+  }
+
+  .tier-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    user-select: none;
+  }
+
+  .tier-label-s { background-color: var(--s-color); }
+  .tier-label-a { background-color: var(--a-color); }
+  .tier-label-b { background-color: var(--b-color); }
+  .tier-label-c { background-color: var(--c-color); }
+  .tier-label-d { background-color: var(--d-color); }
+  .tier-label-f { background-color: var(--f-color); }
+
+  .tier-dropzone {
+    padding: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 100%;
+  }
+
+  .tier-dropzone:empty::before {
+    content: "Drop philosopher cards here";
+    color: #64748b;
+    font-size: 0.85rem;
+    font-style: italic;
+    padding-left: 0.5rem;
+  }
+
+  /* Draggable Cards */
+  .unranked-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2.5rem;
+  }
+
+  .unranked-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .unranked-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .unranked-count {
+    background-color: #e2e8f0;
+    color: var(--text-secondary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .card-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    min-height: 120px;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 0.75rem;
+    align-items: center;
+  }
+
+  .card-pool:empty::before {
+    content: "All philosophers have been placed in the tier scale! Drag them back here to unrank.";
+    color: #64748b;
+    font-size: 0.9rem;
+    font-style: italic;
+    width: 100%;
+    text-align: center;
+  }
+
+  .philosopher-card {
+    width: 160px;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.625rem;
+    padding: 0.6rem;
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+    user-select: none;
+    transition: all 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+
+  .philosopher-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #94a3b8;
+  }
+
+  .philosopher-card:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+  }
+
+  .philosopher-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  .philosopher-card.selected {
+    outline: 3px solid #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
+  }
+
+  .card-thumb {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.4rem;
+    border: 2px solid #e2e8f0;
+    background-color: #0f172a;
+  }
+
+  .card-name-mini {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 0.2rem;
+  }
+
+  .card-dates-mini {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .card-concept-mini {
+    font-size: 0.68rem;
+    background-color: #f1f5f9;
+    color: #334155;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-info-link {
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 0.3rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .card-info-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Justification Notes */
+  .notes-section {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .notes-textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    margin-top: 0.75rem;
+  }
+
+  .notes-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  /* Footer */
+  footer {
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: auto;
+  }
+
+  .footer-links {
+    margin-top: 0.5rem;
+  }
+
+  .footer-links a {
+    color: var(--accent);
+    text-decoration: none;
+    margin: 0 0.5rem;
+  }
+
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <a class="brand" onclick="navigateTo('home')">
+      <div class="brand-icon">🏛️</div>
+      <div>
+        <div class="brand-title">Political Philosophers</div>
+        <div class="brand-subtitle">Student Research &amp; Tier-List Guide</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a class="nav-link active" id="nav-home" onclick="navigateTo('home')">Overview</a></li>
+      <li><a class="nav-link" id="nav-plato" onclick="navigateTo('plato')">Plato</a></li>
+      <li><a class="nav-link" id="nav-aristotle" onclick="navigateTo('aristotle')">Aristotle</a></li>
+      <li><a class="nav-link" id="nav-machiavelli" onclick="navigateTo('machiavelli')">Niccolò Machiavelli</a></li>
+      <li><a class="nav-link" id="nav-hobbes" onclick="navigateTo('hobbes')">Thomas Hobbes</a></li>
+      <li><a class="nav-link" id="nav-locke" onclick="navigateTo('locke')">John Locke</a></li>
+      <li><a class="nav-link" id="nav-montesquieu" onclick="navigateTo('montesquieu')">Baron de Montesquieu</a></li>
+      <li><a class="nav-link" id="nav-rousseau" onclick="navigateTo('rousseau')">Jean-Jacques Rousseau</a></li>
+      <li><a class="nav-link" id="nav-voltaire" onclick="navigateTo('voltaire')">Voltaire</a></li>
+      <li><a class="nav-link" id="nav-blackstone" onclick="navigateTo('blackstone')">William Blackstone</a></li>
+      <li><a class="nav-link nav-tier-btn" id="nav-tier-list" onclick="navigateTo('tier-list')">⭐ S-Tier Scale</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <!-- ==================== HOME VIEW ==================== -->
+  <section class="page-view active" id="view-home">
+    <div class="hero-card">
+      <span class="hero-badge">Civics &amp; Political Philosophy Module</span>
+      <h1 class="hero-title">Analyzing &amp; Ranking History’s Greatest Political Thinkers</h1>
+      <p class="hero-desc">
+        Explore the foundational minds behind modern democracy, the social contract, constitutionalism, and civil liberties.
+        Examine how each philosopher's view of human nature shaped their model of government, then test your analytical skills on the interactive S-Tier ranking scale.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Open S-Tier Sorting Scale</button>
+        <button class="btn btn-secondary" onclick="navigateTo('plato')">Start Reading (Plato) →</button>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2 class="section-title">Nine Foundational Thinkers</h2>
+      <span style="font-size: 0.9rem; color: var(--text-muted);">Select any philosopher to explore their dedicated profile page</span>
+    </div>
+
+    <div class="philosopher-grid">
+      <div class="grid-card" onclick="navigateTo('plato')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg" alt="Plato" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">c. 427–347 BCE • Athens, Greece</div>
+          <h3 class="card-name">Plato</h3>
+          <div class="card-work">The Republic</div>
+          <p class="card-snippet">Plato was an ancient Greek philosopher who argued that governing a country requires specialized knowledge and intensive training. He compare...</p>
+          <div class="card-footer">
+            <span class="tag">Philosopher Kings & The Ship of State</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('aristotle')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Aristoteles_Louvre.jpg" alt="Aristotle" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">384–322 BCE • Greece / Macedonia</div>
+          <h3 class="card-name">Aristotle</h3>
+          <div class="card-work">Politics</div>
+          <p class="card-snippet">Aristotle, a student of Plato, argued that human beings achieve fulfillment only by participating in a structured political community. Howev...</p>
+          <div class="card-footer">
+            <span class="tag">Polity, Rule of Law & Middle Class Balance</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('machiavelli')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Portrait_of_Niccol%C3%B2_Machiavelli_by_Santi_di_Tito.jpg" alt="Niccolò Machiavelli" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1469–1527 • Florence, Italy</div>
+          <h3 class="card-name">Niccolò Machiavelli</h3>
+          <div class="card-work">The Prince & Discourses on Livy</div>
+          <p class="card-snippet">Niccolò Machiavelli was an Italian political diplomat who shifted the study of politics away from moral ideals toward political realism—the ...</p>
+          <div class="card-footer">
+            <span class="tag">Political Realism & Civic Virtue</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('hobbes')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Thomas_Hobbes_%28portrait%29.jpg" alt="Thomas Hobbes" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1588–1679 • England</div>
+          <h3 class="card-name">Thomas Hobbes</h3>
+          <div class="card-work">Leviathan</div>
+          <p class="card-snippet">Thomas Hobbes wrote Leviathan during the English Civil War, a period of severe political conflict and bloodshed. Hobbes theorized that witho...</p>
+          <div class="card-footer">
+            <span class="tag">State of Nature & Absolute Sovereignty</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('locke')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/John_Locke.jpg" alt="John Locke" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1632–1704 • England</div>
+          <h3 class="card-name">John Locke</h3>
+          <div class="card-work">Two Treatises of Government</div>
+          <p class="card-snippet">John Locke rejected the notion that humans are naturally evil or that kings rule by divine right. He proposed that human minds begin as a Ta...</p>
+          <div class="card-footer">
+            <span class="tag">Natural Rights, Consent & Right to Revolution</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('montesquieu')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Montesquieu_1.png" alt="Baron de Montesquieu" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1689–1755 • France</div>
+          <h3 class="card-name">Baron de Montesquieu</h3>
+          <div class="card-work">The Spirit of the Laws</div>
+          <p class="card-snippet">Baron de Montesquieu examined political history to determine how governments could maintain political liberty without devolving into despoti...</p>
+          <div class="card-footer">
+            <span class="tag">Separation of Powers & Checks and Balances</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('rousseau')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Jean-Jacques_Rousseau_%28painted_portrait%29.jpg" alt="Jean-Jacques Rousseau" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1712–1778 • Switzerland / France</div>
+          <h3 class="card-name">Jean-Jacques Rousseau</h3>
+          <div class="card-work">The Social Contract</div>
+          <p class="card-snippet">Jean-Jacques Rousseau argued that human beings in the state of nature were inherently peaceful and free, but were gradually corrupted by the...</p>
+          <div class="card-footer">
+            <span class="tag">Popular Sovereignty & The General Will</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('voltaire')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/6/66/Nicolas_de_Largilli%C3%A8re_-_Portrait_de_Voltaire_%281694-1778%29_en_1718_-_P208_-_Mus%C3%A9e_Carnavalet_-_2.jpg" alt="Voltaire" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1694–1778 • France</div>
+          <h3 class="card-name">Voltaire</h3>
+          <div class="card-work">Candide & Treatise on Tolerance</div>
+          <p class="card-snippet">Voltaire was an influential French writer and philosopher who targeted political tyranny, state censorship, and religious intolerance. Throu...</p>
+          <div class="card-footer">
+            <span class="tag">Civil Liberties & Separation of Church and State</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-card" onclick="navigateTo('blackstone')">
+        <div class="grid-card-media">
+          <img class="grid-card-img" src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Sir_William_Blackstone_from_NPG.jpg" alt="William Blackstone" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+        </div>
+        <div class="grid-card-body">
+          <div class="card-dates">1723–1780 • England</div>
+          <h3 class="card-name">William Blackstone</h3>
+          <div class="card-work">Commentaries on the Laws of England</div>
+          <p class="card-snippet">Sir William Blackstone was an English judge and legal scholar who systematically organized centuries of unwritten customs, court decisions, ...</p>
+          <div class="card-footer">
+            <span class="tag">Common Law, Precedent & Due Process</span>
+            <span class="view-profile-link">Read Profile →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PLATO VIEW ==================== -->
+  <section class="page-view" id="view-plato">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg" alt="Plato" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Roman marble copy of Silanion's portrait bust (Capitoline Museums)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">c. 427–347 BCE</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">Athens, Greece</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>The Republic</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Philosopher Kings & The Ship of State</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('plato')">
+              ⭐ Rank Plato on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #01</span>
+          <h1 class="profile-header-title">Plato</h1>
+          <div class="profile-header-subtitle">Philosopher Kings & The Ship of State</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Born into an aristocratic Athenian family during the Peloponnesian War, Plato became a devoted student of Socrates. The traumatic execution of Socrates by Athenian democratic jurors in 399 BCE permanently shaped Plato's distrust of popular democracy and mob psychology. He founded the Academy in Athens around 387 BCE—widely considered the Western world's first institution of higher learning—where he taught philosophy, mathematics, and political theory.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Driven primarily by desires, appetites, and fluctuating emotions; easily misled by persuasive, dishonest, and demagogic political leaders who manipulate public passions rather than truth.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Aristocracy by Philosopher Kings — rule by an educated, virtuous, and rigorously trained intellectual elite dedicated purely to truth, justice, and societal harmony.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"There will be no end to the troubles of states, or indeed of humanity itself, until philosophers become kings in this world, or till those we now call kings and rulers really and truly become philosophers."</div>
+          <div class="quote-author">— Plato, The Republic, Book V</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Philosopher King</div>
+            <div class="vocab-def">An educated, wise ruler trained specifically in philosophy, ethics, and political leadership, governing without personal wealth or private interests.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Mob Rule</div>
+            <div class="vocab-def">Control of a state by a reckless, uneducated, and easily swayed majority of citizens, leading to emotional decisions and chaos.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Aristocracy</div>
+            <div class="vocab-def">A form of government in which political power is held by a small, highly educated, and virtuous elite class rather than inherited nobility or the general public.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Ideal State</div>
+            <div class="vocab-def">Plato's concept of a perfectly ordered society governed purely by justice, reason, civic duty, and wisdom.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Plato was an ancient Greek philosopher who argued that governing a country requires specialized knowledge and intensive training. He compared ruling a state to navigating a ship: just as a ship should be steered by a trained captain rather than an untrained, quarreling crew, a government should be led by educated experts rather than an uneducated general public. Plato was deeply critical of Athenian direct democracy, which he viewed as a popularity contest that invited emotional decision-making, bribery, and demagoguery—a condition he termed mob rule. In The Republic, Plato proposed that society should be ruled by Philosopher Kings—specially selected individuals who spend their lives studying truth, justice, and leadership without the distractions of private wealth or personal power.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Decisions are made by trained leaders prioritizing wisdom, justice, and long-term public welfare over personal popularity or partisan factionalism.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Citizens surrender their right to vote or participate in governance, relying entirely on the fragile assumption that an elite ruling class will remain unselfish, benevolent, and just.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Laid the foundational bedrock for Western political philosophy, epistemological inquiry, and initiated enduring debates regarding meritocratic expert governance versus democratic self-determination.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('home')">← Overview</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('aristotle')">Aristotle →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== ARISTOTLE VIEW ==================== -->
+  <section class="page-view" id="view-aristotle">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Aristoteles_Louvre.jpg" alt="Aristotle" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Roman marble copy of Lysippos bronze bust (Louvre Museum)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/a/a4/Aristoteles_Louvre.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">384–322 BCE</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">Greece / Macedonia</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>Politics</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Polity, Rule of Law & Middle Class Balance</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('aristotle')">
+              ⭐ Rank Aristotle on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #02</span>
+          <h1 class="profile-header-title">Aristotle</h1>
+          <div class="profile-header-subtitle">Polity, Rule of Law & Middle Class Balance</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Born in Stagira in northern Greece, Aristotle studied under Plato at the Academy for twenty years before tutoring the young Alexander the Great in Macedonia. He later returned to Athens to establish his own school, the Lyceum, pioneering empirical scientific observation and analyzing 158 Greek city-state constitutions.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Naturally social 'political animals' (zoon politikon) who require structured communities, civic engagement, and laws to achieve moral, ethical, and intellectual fulfillment.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Polity — a constitutional government balanced and guided by a strong, stable middle class that prevents societal polarization.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"Man is by nature a political animal... The rule of law is preferred to that of any individual."</div>
+          <div class="quote-author">— Aristotle, Politics, Book III</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Rule of Law</div>
+            <div class="vocab-def">The principle that all people, rulers, and institutions are subject to clear, publicly known laws fairly enforced, rather than the personal whims of a monarch.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Polity</div>
+            <div class="vocab-def">A constitutional system of government where power is balanced and guided by a large middle class for the common good.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Political Animal</div>
+            <div class="vocab-def">Aristotle's term describing humans as naturally inclined to live together in organized political communities to achieve their highest potential.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Tyranny</div>
+            <div class="vocab-def">Cruel, unreasonable, or arbitrary rule by a single leader or faction acting solely in self-interest outside the bounds of law.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Aristotle, a student of Plato, argued that human beings achieve fulfillment only by participating in a structured political community. However, he observed that any form of government—whether led by a monarch, an elite group, or a majority of citizens—is vulnerable to corruption if leaders place self-interest above the public good. To prevent tyranny and instability, Aristotle advocated for the Rule of Law, asserting that written laws must remain superior to the personal desires or whims of any leader. Furthermore, he emphasized the necessity of a large, stable middle class. He reasoned that wealthy elites often fear losing power, while impoverished citizens may harbor resentment toward the rich; a strong middle class serves as a stabilizing balance between these two extremes.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Protects fairness and social stability by ensuring no ruler is above the law and by preventing dangerous political and economic extremes.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Aristotle defined active citizenship very narrowly, explicitly excluding women, enslaved individuals, manual laborers, and resident non-citizens from political life.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Provided the theoretical foundation for constitutional government, citizenship rights, and modern legal standards where impersonal law governs rather than individual rulers.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('plato')">← Plato</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('machiavelli')">Niccolò Machiavelli →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== NICCOLÒ MACHIAVELLI VIEW ==================== -->
+  <section class="page-view" id="view-machiavelli">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Portrait_of_Niccol%C3%B2_Machiavelli_by_Santi_di_Tito.jpg" alt="Niccolò Machiavelli" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Oil portrait by Santi di Tito (Palazzo Vecchio)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/e/e2/Portrait_of_Niccol%C3%B2_Machiavelli_by_Santi_di_Tito.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1469–1527</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">Florence, Italy</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>The Prince & Discourses on Livy</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Political Realism & Civic Virtue</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('machiavelli')">
+              ⭐ Rank Niccolò Machiavelli on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #03</span>
+          <h1 class="profile-header-title">Niccolò Machiavelli</h1>
+          <div class="profile-header-subtitle">Political Realism & Civic Virtue</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Machiavelli served as senior diplomat and secretary to the Second Chancery of the Republic of Florence from 1498 to 1512. When the Medici family overthrew the republic with papal support, Machiavelli was imprisoned, tortured, and exiled to his farm outside Florence, where he composed his timeless treatises on power and republicanism.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Selfish, fickle, ungrateful, deceitful, and driven primarily by fear, self-preservation, and personal ambition.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">A Strong Republic (supported by a decisive, ruthless executive ruler during times of existential crisis).</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"Upon this a question arises: whether it be better to be loved than feared or feared than loved? It may be answered that one should wish to be both... but it is much safer to be feared than loved, if you cannot be both."</div>
+          <div class="quote-author">— Niccolò Machiavelli, The Prince, Chapter XVII</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Political Realism</div>
+            <div class="vocab-def">The study and practice of statecraft centered on practical power dynamics and actual human behavior rather than moral or religious ideals.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Civic Virtue</div>
+            <div class="vocab-def">The dedication and active sacrifice of citizens toward the defense, welfare, and political health of their shared republic.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">State Security</div>
+            <div class="vocab-def">The paramount duty of a government to protect its territorial integrity, civil order, and independence against internal rebellion and external invasion.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Realpolitik</div>
+            <div class="vocab-def">Pragmatic politics based on practical calculations of power and state survival rather than strict ethical standards.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Niccolò Machiavelli was an Italian political diplomat who shifted the study of politics away from moral ideals toward political realism—the examination of how power operates in practice rather than how it ought to operate in theory. In The Prince, Machiavelli maintained that a ruler's primary obligation is to preserve state stability, security, and order. He argued that an overly lenient leader risks public disorder and foreign conquest; consequently, rulers must be prepared to use deception, force, and strategic ruthlessness when necessary. However, in his broader work, Discourses on Livy, Machiavelli argued that once security is established, a republic governed by laws and supported by active citizens (civic virtue) is far more durable and stable than rule by a single tyrant.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Focuses on practical security, rapid decision-making, and strong law enforcement to prevent internal chaos, factional civil war, and foreign invasion.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Grants authority figures permission to bypass moral standards, break solemn promises, and mistreat individuals under the pretext of state necessity.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Pioneered modern political science and international relations realism, heavily influencing theories of executive emergency powers and realpolitik.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('aristotle')">← Aristotle</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('hobbes')">Thomas Hobbes →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== THOMAS HOBBES VIEW ==================== -->
+  <section class="page-view" id="view-hobbes">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Thomas_Hobbes_%28portrait%29.jpg" alt="Thomas Hobbes" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Oil portrait by John Michael Wright (National Portrait Gallery)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/d/d8/Thomas_Hobbes_%28portrait%29.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1588–1679</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">England</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>Leviathan</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">State of Nature & Absolute Sovereignty</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('hobbes')">
+              ⭐ Rank Thomas Hobbes on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #04</span>
+          <h1 class="profile-header-title">Thomas Hobbes</h1>
+          <div class="profile-header-subtitle">State of Nature & Absolute Sovereignty</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Born in Westport, England, Hobbes lived through the upheaval of the English Civil War (1642–1651), fleeing to Paris in exile for over a decade. His profound fear of social chaos and violent death directly informed his conclusion that only an unchallengeable sovereign could ensure human survival.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Naturally violent, competitive, fearful, and selfish; driven by a restless desire for power and self-preservation.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Absolute Monarchy — a centralized, undivided, all-powerful sovereign authority.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"In such condition there is no place for industry... no arts, no letters, no society; and which is worst of all, continual fear, and danger of violent death; and the life of man, solitary, poor, nasty, brutish, and short."</div>
+          <div class="quote-author">— Thomas Hobbes, Leviathan, Chapter XIII</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">State of Nature</div>
+            <div class="vocab-def">A hypothetical condition before governments existed, where humans lived without laws in constant war, terror, and competition for resources.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Social Contract</div>
+            <div class="vocab-def">An agreement among individuals to surrender personal rights and freedoms to a central authority in exchange for physical protection and social order.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Sovereign Authority</div>
+            <div class="vocab-def">A supreme ruler or central government holding absolute, indivisible power to make, judge, and enforce laws.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Leviathan</div>
+            <div class="vocab-def">Hobbes's biblical metaphor for an all-powerful central government or absolute monarch required to maintain order and prevent civil war.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Thomas Hobbes wrote Leviathan during the English Civil War, a period of severe political conflict and bloodshed. Hobbes theorized that without government, humanity exists in a theoretical State of Nature—a condition of constant warfare where individuals violently compete for limited resources. In this state, long-term societal achievements such as agriculture, trade, or technology are impossible because human life remains in constant danger. To escape this condition, Hobbes argued that individuals enter into a Social Contract. Citizens give up their personal freedom and rights to an absolute authority (the Leviathan). In return, the sovereign guarantees total physical safety and social order. Hobbes maintained that once this authority is established, citizens surrender the right to question, criticize, or overthrow the ruler.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Completely eliminates civil warfare, enforces strict law and order, and provides total societal protection, safety, and commerce.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Strips citizens of fundamental human rights and leaves them with zero legal recourse if the sovereign becomes abusive or tyrannical.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Formulated modern Social Contract theory, establishing the revolutionary idea that political authority originates from agreement among individuals rather than divine right.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('machiavelli')">← Niccolò Machiavelli</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('locke')">John Locke →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== JOHN LOCKE VIEW ==================== -->
+  <section class="page-view" id="view-locke">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/John_Locke.jpg" alt="John Locke" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Oil portrait by Sir Godfrey Kneller (State Hermitage Museum)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/b/b8/John_Locke.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1632–1704</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">England</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>Two Treatises of Government</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Natural Rights, Consent & Right to Revolution</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('locke')">
+              ⭐ Rank John Locke on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #05</span>
+          <h1 class="profile-header-title">John Locke</h1>
+          <div class="profile-header-subtitle">Natural Rights, Consent & Right to Revolution</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Educated in medicine and philosophy at Oxford, Locke served as personal physician and advisor to Lord Ashley (the Earl of Shaftesbury). Suspected of involvement in plots against King Charles II, Locke fled to the Netherlands in exile, returning in triumph with William and Mary following the Glorious Revolution of 1688.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Born as a Tabula Rasa (blank slate); rational, reasonable, morally equal, and capable of peaceful self-governance.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Representative Democracy — a limited constitutional government founded on popular consent.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"Reason teaches all mankind... that being all equal and independent, no one ought to harm another in his life, health, liberty, or possessions."</div>
+          <div class="quote-author">— John Locke, Second Treatise of Government, Chapter II</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Tabula Rasa</div>
+            <div class="vocab-def">The concept that human minds are born as a 'blank slate' and shaped entirely by experience, observation, and environment.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Natural Rights</div>
+            <div class="vocab-def">Fundamental, inalienable rights to life, liberty, and property that all human beings inherently possess at birth independently of any government.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Consent of the Governed</div>
+            <div class="vocab-def">The principle that a government's authority depends entirely on the explicit approval and ongoing trust of the people it rules.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Right to Revolution</div>
+            <div class="vocab-def">The moral and political right of citizens to overthrow and replace a government that systematically fails to protect their natural rights.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">John Locke rejected the notion that humans are naturally evil or that kings rule by divine right. He proposed that human minds begin as a Tabula Rasa (blank slate) shaped by experience and reason. Locke asserted that all human beings are endowed with fundamental Natural Rights—specifically the rights to Life, Liberty, and Property—which exist independently of any government authority. Locke maintained that governments are formed through a social contract for the sole purpose of protecting these natural rights. Political legitimacy rests entirely on the consent of the governed. If a government fails to protect these rights or actively abuses its power, the social contract is broken, and citizens possess a moral and political right to revolt and establish a new government.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Protects individual liberties, places strict constitutional limits on executive authority, and establishes that rulers are accountable to the citizens they serve.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Locke’s focus on property ownership historically restricted full political participation to wealthy property-owning males, initially excluding non-landowners, women, and marginalized groups.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Served as the foundational political philosophy for democratic revolutions, directly shaping Thomas Jefferson's drafting of the U.S. Declaration of Independence and modern liberal constitutionalism.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('hobbes')">← Thomas Hobbes</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('montesquieu')">Baron de Montesquieu →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== BARON DE MONTESQUIEU VIEW ==================== -->
+  <section class="page-view" id="view-montesquieu">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Montesquieu_1.png" alt="Baron de Montesquieu" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Profile portrait after Jacques-Antoine Dassier (Palace of Versailles)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/f/fc/Montesquieu_1.png" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1689–1755</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">France</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>The Spirit of the Laws</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Separation of Powers & Checks and Balances</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('montesquieu')">
+              ⭐ Rank Baron de Montesquieu on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #06</span>
+          <h1 class="profile-header-title">Baron de Montesquieu</h1>
+          <div class="profile-header-subtitle">Separation of Powers & Checks and Balances</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Charles-Louis de Secondat was born into French nobility near Bordeaux and inherited the title of Baron and the presidency of the Parlement of Bordeaux. He spent over two decades researching legal history, constitutional models, and sociological climates across Europe to produce his 1748 magnum opus.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Cautious and fearful in isolation, but naturally inclined to abuse authority whenever granted unrestrained political power.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Tripartite System — a constitutional government divided into three equal, independent branches.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"To prevent abuse of power, it is necessary that, by the disposition of things, power should be a check to power."</div>
+          <div class="quote-author">— Baron de Montesquieu, The Spirit of the Laws, Book XI</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Separation of Powers</div>
+            <div class="vocab-def">Dividing government responsibilities into distinct branches (legislative, executive, judicial) to prevent the concentration of absolute authority.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Checks and Balances</div>
+            <div class="vocab-def">A constitutional mechanism permitting each branch of government to limit, veto, or restrict the actions of the other branches to prevent corruption.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Tripartite System</div>
+            <div class="vocab-def">A three-part government structure comprising lawmakers (legislative), law enforcers (executive), and judges (judicial).</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Despotism</div>
+            <div class="vocab-def">A tyrannical form of government in which a single individual or group rules with absolute, unchecked, and arbitrary power.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Baron de Montesquieu examined political history to determine how governments could maintain political liberty without devolving into despotism. He concluded that any individual or institution granted absolute authority will inevitably abuse that power. To safeguard freedom, Montesquieu advocated for the Separation of Powers, dividing governmental authority among three distinct, independent branches: Legislative (creating laws), Executive (enforcing laws), and Judicial (interpreting laws and resolving legal disputes). He further proposed a network of Checks and Balances, giving each branch specific constitutional authority to limit or block abusive actions taken by the other branches.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Prevents dictatorship and tyranny, protects individual liberty, and ensures no single political entity or faction acquires absolute power.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Dividing authority can lead to legislative gridlock, partisan conflict, and slow governmental responses during urgent national crises or emergencies.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Directly determined the structural architecture of the United States Constitution (Articles I, II, and III) and serves as the model for modern constitutional democracies worldwide.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('locke')">← John Locke</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('rousseau')">Jean-Jacques Rousseau →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== JEAN-JACQUES ROUSSEAU VIEW ==================== -->
+  <section class="page-view" id="view-rousseau">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Jean-Jacques_Rousseau_%28painted_portrait%29.jpg" alt="Jean-Jacques Rousseau" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Oil portrait by Maurice Quentin de La Tour / François Guérin<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/b/b7/Jean-Jacques_Rousseau_%28painted_portrait%29.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1712–1778</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">Switzerland / France</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>The Social Contract</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Popular Sovereignty & The General Will</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('rousseau')">
+              ⭐ Rank Jean-Jacques Rousseau on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #07</span>
+          <h1 class="profile-header-title">Jean-Jacques Rousseau</h1>
+          <div class="profile-header-subtitle">Popular Sovereignty & The General Will</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Born in Calvinist Geneva, Rousseau led a nomadic, self-taught life as an essayist, composer, and novelist. His radical assertion that civilization had corrupted natural human goodness alienated him from contemporaries like Voltaire, yet cemented him as the primary intellectual harbinger of the French Revolution.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Born naturally compassionate, peaceful, and free, but gradually corrupted by society, private property, and institutional inequality.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Direct Democracy — a state where every citizen participates directly in debating and voting on all laws.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"Man is born free, and everywhere he is in chains... The Sovereign, having no force other than the legislative power, acts only by means of the laws."</div>
+          <div class="quote-author">— Jean-Jacques Rousseau, The Social Contract, Book I</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">General Will</div>
+            <div class="vocab-def">The collective interest and shared desire of the whole community, aiming for the common good over personal self-interest.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Popular Sovereignty</div>
+            <div class="vocab-def">The principle that ultimate political power and government legitimacy belong exclusively to the collective body of citizens.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Direct Democracy</div>
+            <div class="vocab-def">A system of government where citizens vote directly on laws and policies rather than electing representatives.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Tyranny of the Majority</div>
+            <div class="vocab-def">A situation where a numerical majority enforces decisions that suppress the rights, freedoms, or voices of minority groups.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Jean-Jacques Rousseau argued that human beings in the state of nature were inherently peaceful and free, but were gradually corrupted by the establishment of private property and economic inequality. Because society cannot return to a primitive natural state, Rousseau sought to create a political system where individuals could regain moral and political freedom. In The Social Contract, Rousseau proposed that true political legitimacy belongs exclusively to the people (popular sovereignty). He rejected representative democracy, arguing that elected politicians cannot represent the true interest of citizens. Instead, he favored a Direct Democracy, where every citizen participates directly in debating and voting on legislation guided by the General Will—the collective interest of the whole community rather than private personal desires.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Guarantees complete political equality, fosters active civic virtue, and ensures direct citizen involvement in lawmaking.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Highly impractical for large, populous nations, and dogmatic adherence to the 'General Will' risks creating a tyranny of the majority that suppresses individual dissent.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Inspired radical democratic theories, heavily influenced the French Revolution, and shaped modern concepts of direct civic participation and popular sovereignty.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('montesquieu')">← Baron de Montesquieu</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('voltaire')">Voltaire →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== VOLTAIRE VIEW ==================== -->
+  <section class="page-view" id="view-voltaire">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/6/66/Nicolas_de_Largilli%C3%A8re_-_Portrait_de_Voltaire_%281694-1778%29_en_1718_-_P208_-_Mus%C3%A9e_Carnavalet_-_2.jpg" alt="Voltaire" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> Oil portrait by Nicolas de Largillière (Musée Carnavalet)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/6/66/Nicolas_de_Largilli%C3%A8re_-_Portrait_de_Voltaire_%281694-1778%29_en_1718_-_P208_-_Mus%C3%A9e_Carnavalet_-_2.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1694–1778</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">France</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>Candide & Treatise on Tolerance</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Civil Liberties & Separation of Church and State</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('voltaire')">
+              ⭐ Rank Voltaire on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #08</span>
+          <h1 class="profile-header-title">Voltaire</h1>
+          <div class="profile-header-subtitle">Civil Liberties & Separation of Church and State</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Born François-Marie Arouet in Paris, Voltaire was twice imprisoned in the Bastille and forced into exile in England for mocking noblemen and royal decrees. In England, he marveled at constitutional monarchy, religious diversity, and scientific free inquiry, returning to France as an unstoppable crusader against dogma and judicial cruelty.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Fundamentally capable of reason and logic, but frequently misled and corrupted by religious fanaticism, superstition, and state-sponsored prejudice.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Enlightened Republic / Constitutional Monarchy — focused heavily on civil rights, justice, and free expression.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"Those who can make you believe absurdities can make you commit atrocities... I may disagree with what you say, but I will defend to the death your right to say it."</div>
+          <div class="quote-author">— Voltaire, Questions on the Encyclopedia / Attributed</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Civil Liberties</div>
+            <div class="vocab-def">Basic individual rights and freedoms protected by law against arbitrary government interference or oppression.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Freedom of Speech</div>
+            <div class="vocab-def">The legal right to express thoughts, opinions, and political critiques publicly without government censorship, arrest, or retaliation.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Separation of Church and State</div>
+            <div class="vocab-def">The principle that government institutions and religious organizations must remain entirely distinct and separate.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Religious Intolerance</div>
+            <div class="vocab-def">The active refusal to accept or tolerate religious beliefs and practices that differ from the majority or state religion.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Voltaire was an influential French writer and philosopher who targeted political tyranny, state censorship, and religious intolerance. Throughout his career, he challenged the authority of the Catholic Church and absolute monarchs, arguing that political stability and societal progress depend on intellectual freedom. Voltaire argued that government's essential duty is to protect civil liberties, particularly freedom of speech, freedom of the press, and freedom of religion. He was a staunch advocate for the complete separation of church and state, maintaining that combining religious dogma with political authority leads to persecution, violence, and fanaticism.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Fosters open debate, protects independent thought and scientific inquiry, and defends religious and intellectual minorities against state tyranny.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Focused primarily on defending individual liberties and criticizing existing abuses rather than proposing a detailed constitutional structure for managing governmental branches.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Provided the primary philosophical defense for individual civil liberties, directly inspiring the First Amendment of the United States Constitution and modern human rights declarations.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('rousseau')">← Jean-Jacques Rousseau</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('blackstone')">William Blackstone →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== WILLIAM BLACKSTONE VIEW ==================== -->
+  <section class="page-view" id="view-blackstone">
+    <div class="profile-layout">
+      
+      <!-- Sidebar / Portrait -->
+      <aside class="profile-sidebar">
+        <div class="portrait-card">
+          <div class="portrait-frame">
+            <img class="portrait-img" src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Sir_William_Blackstone_from_NPG.jpg" alt="William Blackstone" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/300px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          </div>
+          <div class="portrait-caption">
+            <strong>Artwork:</strong> 18th-century judicial portrait in robes and wig (National Portrait Gallery)<br>
+            <a href="https://upload.wikimedia.org/wikipedia/commons/6/6d/Sir_William_Blackstone_from_NPG.jpg" target="_blank" rel="noopener">View High-Res Image on Wikimedia ↗</a>
+          </div>
+        </div>
+
+        <div class="sidebar-meta-card">
+          <div class="meta-item">
+            <div class="meta-title">Historical Era &amp; Dates</div>
+            <div class="meta-value">1723–1780</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Origin &amp; Location</div>
+            <div class="meta-value">England</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Seminal Work</div>
+            <div class="meta-value"><em>Commentaries on the Laws of England</em></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-title">Signature Concept</div>
+            <div class="meta-value" style="color: var(--accent);">Common Law, Precedent & Due Process</div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="openTierWithHighlight('blackstone')">
+              ⭐ Rank William Blackstone on S-Tier Scale
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Profile Content -->
+      <article class="profile-content">
+        <div class="profile-header-banner">
+          <span class="profile-header-tag">Philosopher Dossier #09</span>
+          <h1 class="profile-header-title">William Blackstone</h1>
+          <div class="profile-header-subtitle">Common Law, Precedent & Due Process</div>
+        </div>
+
+        <!-- Biographical Context -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Biographical &amp; Historical Context
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Orphaned at a young age, Blackstone excelled at Oxford University, becoming the first Vinerian Professor of English Law in 1758. He served as a Member of Parliament and judge on the Court of Common Pleas, creating the definitive legal textbook read by virtually every Founding Father and American frontier lawyer.</p>
+        </div>
+
+        <!-- Philosophical Foundations -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            Philosophical Foundations
+          </h2>
+          <div style="margin-bottom: 1rem;">
+            <strong style="color: var(--text-primary); font-size: 1rem;">View of Human Nature:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Requires written, consistent, and predictable legal systems to resolve conflicts fairly, maintain order, and prevent arbitrary abuse of authority.</p>
+          </div>
+          <div>
+            <strong style="color: var(--text-primary); font-size: 1rem;">Proposed Ideal Model of Government:</strong>
+            <p style="color: var(--text-secondary); margin-top: 0.25rem;">Constitutional Common Law System — rule by clear judicial precedent, procedural due process, and organized judicial authority.</p>
+          </div>
+        </div>
+
+        <!-- Primary Source Quote -->
+        <div class="quote-box">
+          <div class="quote-text">"It is better that ten guilty persons escape than that one innocent suffer."</div>
+          <div class="quote-author">— William Blackstone, Commentaries on the Laws of England, Book IV</div>
+        </div>
+
+        <!-- Academic Vocabulary -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            Key Academic Vocabulary
+          </h2>
+          <div class="vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-name">Common Law</div>
+            <div class="vocab-def">A system of legal principles built over centuries through judicial decisions and court precedents rather than written legislative statutes alone.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Precedent</div>
+            <div class="vocab-def">A past court decision that serves as an authoritative rule or guide for future similar legal controversies (stare decisis).</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Presumption of Innocence</div>
+            <div class="vocab-def">The foundational principle that an accused person is legally considered innocent until proven guilty beyond a reasonable doubt.</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-name">Due Process</div>
+            <div class="vocab-def">Fair, regular treatment through the judicial system according to established rules, impartial hearings, and statutory protections.</div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Core Ideas Overview -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Overview &amp; Political Theory
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Sir William Blackstone was an English judge and legal scholar who systematically organized centuries of unwritten customs, court decisions, and statutes into a clear legal reference work titled Commentaries on the Laws of England. Prior to his work, English legal practice was highly fragmented and difficult for ordinary citizens to navigate. Blackstone championed the Common Law system, which relies on past judicial rulings (precedents) to ensure that laws are applied consistently over time. He articulated fundamental principles of modern legal justice, including due process, trial by jury, the right to legal defense, and the presumption of innocence.</p>
+        </div>
+
+        <!-- Critical Evaluation -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Critical Evaluation: Strengths vs. Drawbacks
+          </h2>
+          <div class="evaluation-columns">
+            <div class="eval-column eval-strength">
+              <div class="eval-title">✓ Strengths of the Concept</div>
+              <div class="eval-text">Establishes a predictable, stable legal system that treats individuals consistently and protects citizens against arbitrary punishment by government authorities.</div>
+            </div>
+            <div class="eval-column eval-drawback">
+              <div class="eval-title">✗ Drawbacks &amp; Trade-offs</div>
+              <div class="eval-text">Upheld traditional historical laws that favored landowning elites and maintained strict legal restrictions on the rights of married women (coverture).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Impact -->
+        <div class="content-block">
+          <h2 class="block-heading">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Historical Impact &amp; Modern Legacy
+          </h2>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75;">Formed the primary legal framework for the American judiciary, shaped judicial review procedures, and heavily influenced the Fourth, Fifth, Sixth, and Eighth Amendments in the U.S. Bill of Rights.</p>
+        </div>
+
+        <!-- Profile Page Navigation Footer -->
+        <div class="profile-nav-footer">
+          <button class="btn btn-secondary" onclick="navigateTo('voltaire')">← Voltaire</button>
+          <button class="btn btn-primary" onclick="navigateTo('tier-list')">⭐ Sort in S-Tier Scale</button>
+          <button class="btn btn-secondary" onclick="navigateTo('tier-list')">S-Tier Scale →</button>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ==================== FINAL PAGE: S-TIER RANKING SCALE ==================== -->
+  <section class="page-view" id="view-tier-list">
+    <div class="tier-page-header">
+      <h1 class="tier-page-title">Interactive S-Tier Ranking Scale</h1>
+      <p class="tier-page-desc">
+        Evaluate and rank history's foundational political philosophers.
+        Drag and drop each philosopher card from the pool into the tier that matches your assessment of their impact, coherence, and relevance to human governance.
+        <br><small style="color: var(--text-muted);">(On touchscreens or mobile: tap a card to select it, then tap any tier row to place it!)</small>
+      </p>
+
+      <div class="tier-controls">
+        <button class="btn btn-secondary" onclick="resetTierList()">↺ Reset All Cards</button>
+        <button class="btn btn-primary" onclick="exportRankings()">📋 Copy Ranking Summary</button>
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+
+    <!-- The Tier List Board -->
+    <div class="tier-board" id="tier-board">
+      
+      <!-- S Tier -->
+      <div class="tier-row" data-tier="S">
+        <div class="tier-label tier-label-s">S</div>
+        <div class="tier-dropzone" id="zone-S" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'S')" onclick="handleZoneClick('S')"></div>
+      </div>
+
+      <!-- A Tier -->
+      <div class="tier-row" data-tier="A">
+        <div class="tier-label tier-label-a">A</div>
+        <div class="tier-dropzone" id="zone-A" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'A')" onclick="handleZoneClick('A')"></div>
+      </div>
+
+      <!-- B Tier -->
+      <div class="tier-row" data-tier="B">
+        <div class="tier-label tier-label-b">B</div>
+        <div class="tier-dropzone" id="zone-B" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'B')" onclick="handleZoneClick('B')"></div>
+      </div>
+
+      <!-- C Tier -->
+      <div class="tier-row" data-tier="C">
+        <div class="tier-label tier-label-c">C</div>
+        <div class="tier-dropzone" id="zone-C" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'C')" onclick="handleZoneClick('C')"></div>
+      </div>
+
+      <!-- D Tier -->
+      <div class="tier-row" data-tier="D">
+        <div class="tier-label tier-label-d">D</div>
+        <div class="tier-dropzone" id="zone-D" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'D')" onclick="handleZoneClick('D')"></div>
+      </div>
+
+      <!-- F Tier -->
+      <div class="tier-row" data-tier="F">
+        <div class="tier-label tier-label-f">F</div>
+        <div class="tier-dropzone" id="zone-F" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'F')" onclick="handleZoneClick('F')"></div>
+      </div>
+
+    </div>
+
+    <!-- The Unranked Card Pool -->
+    <div class="unranked-container">
+      <div class="unranked-header">
+        <div class="unranked-title">
+          <span>Philosopher Cards Pool</span>
+          <span class="unranked-count" id="unranked-count">9 Remaining</span>
+        </div>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Drag into a tier above, or click to select</span>
+      </div>
+
+      <div class="card-pool" id="unranked-pool" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'unranked')" onclick="handleZoneClick('unranked')">
+        <div class="philosopher-card" id="card-plato" draggable="true" ondragstart="handleDragStart(event, 'plato')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'plato')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg" alt="Plato" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Plato</div>
+          <div class="card-dates-mini">c. 427–347 BCE</div>
+          <div class="card-concept-mini" title="Philosopher Kings & The Ship of State">Philosopher Kings & The Ship of State</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('plato')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-aristotle" draggable="true" ondragstart="handleDragStart(event, 'aristotle')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'aristotle')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Aristoteles_Louvre.jpg" alt="Aristotle" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Aristotle</div>
+          <div class="card-dates-mini">384–322 BCE</div>
+          <div class="card-concept-mini" title="Polity, Rule of Law & Middle Class Balance">Polity, Rule of Law & Middle Class Balance</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('aristotle')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-machiavelli" draggable="true" ondragstart="handleDragStart(event, 'machiavelli')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'machiavelli')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Portrait_of_Niccol%C3%B2_Machiavelli_by_Santi_di_Tito.jpg" alt="Niccolò Machiavelli" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Niccolò Machiavelli</div>
+          <div class="card-dates-mini">1469–1527</div>
+          <div class="card-concept-mini" title="Political Realism & Civic Virtue">Political Realism & Civic Virtue</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('machiavelli')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-hobbes" draggable="true" ondragstart="handleDragStart(event, 'hobbes')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'hobbes')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Thomas_Hobbes_%28portrait%29.jpg" alt="Thomas Hobbes" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Thomas Hobbes</div>
+          <div class="card-dates-mini">1588–1679</div>
+          <div class="card-concept-mini" title="State of Nature & Absolute Sovereignty">State of Nature & Absolute Sovereignty</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('hobbes')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-locke" draggable="true" ondragstart="handleDragStart(event, 'locke')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'locke')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/John_Locke.jpg" alt="John Locke" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">John Locke</div>
+          <div class="card-dates-mini">1632–1704</div>
+          <div class="card-concept-mini" title="Natural Rights, Consent & Right to Revolution">Natural Rights, Consent & Right to Revolution</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('locke')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-montesquieu" draggable="true" ondragstart="handleDragStart(event, 'montesquieu')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'montesquieu')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Montesquieu_1.png" alt="Baron de Montesquieu" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Baron de Montesquieu</div>
+          <div class="card-dates-mini">1689–1755</div>
+          <div class="card-concept-mini" title="Separation of Powers & Checks and Balances">Separation of Powers & Checks and Balances</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('montesquieu')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-rousseau" draggable="true" ondragstart="handleDragStart(event, 'rousseau')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'rousseau')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Jean-Jacques_Rousseau_%28painted_portrait%29.jpg" alt="Jean-Jacques Rousseau" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Jean-Jacques Rousseau</div>
+          <div class="card-dates-mini">1712–1778</div>
+          <div class="card-concept-mini" title="Popular Sovereignty & The General Will">Popular Sovereignty & The General Will</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('rousseau')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-voltaire" draggable="true" ondragstart="handleDragStart(event, 'voltaire')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'voltaire')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/6/66/Nicolas_de_Largilli%C3%A8re_-_Portrait_de_Voltaire_%281694-1778%29_en_1718_-_P208_-_Mus%C3%A9e_Carnavalet_-_2.jpg" alt="Voltaire" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">Voltaire</div>
+          <div class="card-dates-mini">1694–1778</div>
+          <div class="card-concept-mini" title="Civil Liberties & Separation of Church and State">Civil Liberties & Separation of Church and State</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('voltaire')">Read Bio ↗</a>
+        </div>
+        <div class="philosopher-card" id="card-blackstone" draggable="true" ondragstart="handleDragStart(event, 'blackstone')" ondragend="handleDragEnd(event)" onclick="handleCardClick(event, 'blackstone')">
+          <img class="card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Sir_William_Blackstone_from_NPG.jpg" alt="William Blackstone" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg/100px-Plato_Silanion_Musei_Capitolini_MC1377.jpg'">
+          <div class="card-name-mini">William Blackstone</div>
+          <div class="card-dates-mini">1723–1780</div>
+          <div class="card-concept-mini" title="Common Law, Precedent & Due Process">Common Law, Precedent & Due Process</div>
+          <a class="card-info-link" onclick="event.stopPropagation(); navigateTo('blackstone')">Read Bio ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Justification & Analytical Notes -->
+    <div class="notes-section">
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem;">
+        Student Analytical Justification &amp; Defense
+      </h2>
+      <p style="font-size: 0.9rem; color: var(--text-secondary);">
+        Record your philosophical reasoning: Why did you place certain thinkers in S-Tier and others in lower tiers? How did their assumptions about human nature influence your decision?
+      </p>
+      <textarea class="notes-textarea" id="student-notes" placeholder="Write your tier-ranking justifications, defense of S-Tier selections, and critique of lower tiers here... (Saved automatically to your browser)"></textarea>
+      <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+        <button class="btn btn-primary" onclick="saveNotesAlert()">💾 Save Notes</button>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>Political Philosophers Tier-List Research Profiles</strong> • Educational Resource for Civics &amp; Social Studies</p>
+  <div class="footer-links">
+    <a href="https://docs.google.com/spreadsheets/d/1HpIZflzt9Shdx3DKZ22_p81Ow-Ypym5CwDMFM1eBNDg/edit" target="_blank" rel="noopener">Master Data Spreadsheet (Google Sheets)</a> •
+    <a href="https://docs.google.com/presentation/d/1MWIdyv3m3PYZpzZqQv1qWGOcwxccKNWOu7aW01kwQhs/edit" target="_blank" rel="noopener">Presentation Slide Deck (Google Slides)</a> •
+    <a href="https://docs.google.com/document/d/10mbyDlHyjDr9iZwvvkGkJH87LX8Y6ld6Q_lIv09sTEk/edit" target="_blank" rel="noopener">One-Pager Reading Handouts (Google Docs)</a>
+  </div>
+</footer>
+
+<script>
+  // ==========================================
+  // SPA Page Navigation
+  // ==========================================
+  function navigateTo(pageId) {
+    // Hide all pages
+    const pages = document.querySelectorAll('.page-view');
+    pages.forEach(page => page.classList.remove('active'));
+
+    // Show target page
+    const targetPage = document.getElementById('view-' + pageId);
+    if (targetPage) {
+      targetPage.classList.add('active');
+    } else {
+      document.getElementById('view-home').classList.add('active');
+      pageId = 'home';
+    }
+
+    // Update active nav link
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => link.classList.remove('active'));
+    const targetNav = document.getElementById('nav-' + pageId);
+    if (targetNav) targetNav.classList.add('active');
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Update URL hash without reload
+    window.location.hash = pageId;
+  }
+
+  // Handle URL hash on load or back/forward navigation
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '') || 'home';
+    navigateTo(hash);
+  });
+
+  // ==========================================
+  // Drag and Drop Implementation
+  // ==========================================
+  let draggedCardId = null;
+  let selectedCardId = null;
+
+  function handleDragStart(event, id) {
+    draggedCardId = id;
+    event.dataTransfer.setData('text/plain', id);
+    event.dataTransfer.effectAllowed = 'move';
+    const cardEl = document.getElementById('card-' + id);
+    if (cardEl) {
+      cardEl.classList.add('dragging');
+    }
+  }
+
+  function handleDragEnd(event) {
+    if (draggedCardId) {
+      const cardEl = document.getElementById('card-' + draggedCardId);
+      if (cardEl) cardEl.classList.remove('dragging');
+    }
+    draggedCardId = null;
+    document.querySelectorAll('.tier-row').forEach(row => row.classList.remove('drag-over'));
+  }
+
+  function handleDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    const row = event.currentTarget.closest('.tier-row');
+    if (row) row.classList.add('drag-over');
+  }
+
+  function handleDragLeave(event) {
+    const row = event.currentTarget.closest('.tier-row');
+    if (row) row.classList.remove('drag-over');
+  }
+
+  function handleDrop(event, targetZone) {
+    event.preventDefault();
+    document.querySelectorAll('.tier-row').forEach(row => row.classList.remove('drag-over'));
+    
+    const cardId = draggedCardId || event.dataTransfer.getData('text/plain');
+    if (!cardId) return;
+
+    moveCardToZone(cardId, targetZone);
+  }
+
+  // Touch and Click Selection Fallback for accessibility/mobile
+  function handleCardClick(event, id) {
+    event.stopPropagation();
+    if (selectedCardId === id) {
+      // Deselect
+      document.getElementById('card-' + id).classList.remove('selected');
+      selectedCardId = null;
+    } else {
+      // Clear previous selection
+      if (selectedCardId) {
+        const prevEl = document.getElementById('card-' + selectedCardId);
+        if (prevEl) prevEl.classList.remove('selected');
+      }
+      selectedCardId = id;
+      document.getElementById('card-' + id).classList.add('selected');
+    }
+  }
+
+  function handleZoneClick(targetZone) {
+    if (selectedCardId) {
+      moveCardToZone(selectedCardId, targetZone);
+      const cardEl = document.getElementById('card-' + selectedCardId);
+      if (cardEl) cardEl.classList.remove('selected');
+      selectedCardId = null;
+    }
+  }
+
+  function moveCardToZone(cardId, targetZone) {
+    const cardEl = document.getElementById('card-' + cardId);
+    if (!cardEl) return;
+
+    if (targetZone === 'unranked') {
+      document.getElementById('unranked-pool').appendChild(cardEl);
+    } else {
+      const zoneEl = document.getElementById('zone-' + targetZone);
+      if (zoneEl) zoneEl.appendChild(cardEl);
+    }
+
+    updateUnrankedCount();
+    saveTierState();
+  }
+
+  function updateUnrankedCount() {
+    const unrankedPool = document.getElementById('unranked-pool');
+    const count = unrankedPool ? unrankedPool.querySelectorAll('.philosopher-card').length : 0;
+    const countEl = document.getElementById('unranked-count');
+    if (countEl) {
+      countEl.innerText = count + ' Remaining';
+    }
+  }
+
+  function resetTierList() {
+    if (confirm('Reset all philosopher cards back to the unranked pool?')) {
+      const pool = document.getElementById('unranked-pool');
+      document.querySelectorAll('.philosopher-card').forEach(card => pool.appendChild(card));
+      updateUnrankedCount();
+      saveTierState();
+    }
+  }
+
+  function openTierWithHighlight(philosopherId) {
+    navigateTo('tier-list');
+    setTimeout(() => {
+      const card = document.getElementById('card-' + philosopherId);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('selected');
+        setTimeout(() => card.classList.remove('selected'), 2500);
+      }
+    }, 200);
+  }
+
+  // Save/Load Tier Rankings with LocalStorage
+  function saveTierState() {
+    const state = {};
+    ['S', 'A', 'B', 'C', 'D', 'F'].forEach(tier => {
+      const cards = document.getElementById('zone-' + tier).querySelectorAll('.philosopher-card');
+      state[tier] = Array.from(cards).map(c => c.id.replace('card-', ''));
+    });
+    localStorage.setItem('philosopher_tier_list_state', JSON.stringify(state));
+  }
+
+  function loadTierState() {
+    const saved = localStorage.getItem('philosopher_tier_list_state');
+    if (!saved) return;
+    try {
+      const state = JSON.parse(saved);
+      Object.keys(state).forEach(tier => {
+        const zone = document.getElementById('zone-' + tier);
+        if (zone) {
+          state[tier].forEach(pId => {
+            const card = document.getElementById('card-' + pId);
+            if (card) zone.appendChild(card);
+          });
+        }
+      });
+      updateUnrankedCount();
+    } catch(e) {
+      console.error('Error loading tier state', e);
+    }
+  }
+
+  // Export Rankings to Clipboard
+  function exportRankings() {
+    let summary = "=== MY POLITICAL PHILOSOPHERS TIER LIST ===\n\n";
+    ['S', 'A', 'B', 'C', 'D', 'F'].forEach(tier => {
+      const cards = document.getElementById('zone-' + tier).querySelectorAll('.card-name-mini');
+      const names = Array.from(cards).map(c => c.innerText.trim()).join(', ');
+      summary += tier + " TIER: " + (names || "(Empty)") + "\n";
+    });
+
+    const notes = document.getElementById('student-notes').value.trim();
+    if (notes) {
+      summary += "\n=== STUDENT JUSTIFICATION NOTES ===\n" + notes + "\n";
+    }
+
+    navigator.clipboard.writeText(summary).then(() => {
+      alert("Tier rankings copied to clipboard! You can now paste it into an assignment or document.");
+    }).catch(() => {
+      prompt("Copy your tier list rankings below:", summary);
+    });
+  }
+
+  // Student Notes Persistence
+  const notesEl = document.getElementById('student-notes');
+  if (notesEl) {
+    notesEl.value = localStorage.getItem('philosopher_notes') || '';
+    notesEl.addEventListener('input', () => {
+      localStorage.setItem('philosopher_notes', notesEl.value);
+    });
+  }
+
+  function saveNotesAlert() {
+    alert("Your notes have been saved to local storage!");
+  }
+
+  // Initialization
+  window.addEventListener('DOMContentLoaded', () => {
+    loadTierState();
+    updateUnrankedCount();
+    const hash = window.location.hash.replace('#', '') || 'home';
+    navigateTo(hash);
+  });
+</script>
+
+</body>
+</html>
