@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Smartboard Primary Source Viewer</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #3b82f6;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--panel-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-family: system-ui, sans-serif;
+            color: #fff;
+        }
+
+        /* Toolbar Controls */
+        .controls-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            background-color: #1a1a1a;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-family: system-ui, sans-serif;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        button, select {
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: system-ui, sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: #3a3a3a;
+            border-color: #555;
+        }
+
+        button.active-view {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Highlighter Colors */
+        .hl-btn {
+            font-weight: bold;
+            color: #000 !important;
+            border: 2px solid transparent;
+        }
+        .hl-btn.selected-tool {
+            border-color: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.5);
+        }
+
+        /* Workspace Grid Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        .doc-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        /* Author Header & Profile Images */
+        .author-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .portrait {
+            width: 75px;
+            height: 95px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid #444;
+            background-color: #333;
+        }
+
+        .author-meta h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #fff;
+        }
+        .author-meta p {
+            margin: 4px 0 0 0;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+            font-family: system-ui, sans-serif;
+        }
+
+        .text-content {
+            font-size: 18px;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* Vocabulary Tooltips */
+        .vocab {
+            border-bottom: 1px dashed var(--accent-color);
+            color: #60a5fa;
+            cursor: help;
+            position: relative;
+            display: inline-block;
+        }
+        .vocab:hover::after {
+            content: attr(data-definition);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: system-ui, sans-serif;
+            width: 220px;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        /* Dynamic Classes for Custom Highlighting */
+        .hl-yellow { background-color: #ffe066; color: #000; padding: 2px 0; border-radius: 2px; }
+        .hl-green { background-color: #a9e34b; color: #000; padding: 2px 0; border-radius: 2px; }
+        .hl-orange { background-color: #ffa94d; color: #000; padding: 2px 0; border-radius: 2px; }
+
+        @media (max-width: 900px) {
+            .workspace { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Classroom Smartboard Primary Source Viewer</h1>
+    
+    <div class="controls-container">
+        <div class="control-group">
+            <label>Mode View:</label>
+            <button id="btn-hvj" class="active-view" onclick="switchView('hvj')">Hobbes vs Jefferson</button>
+            <button id="btn-lvj" onclick="switchView('lvj')">Locke vs Jefferson</button>
+        </div>
+
+        <div class="control-group">
+            <label>Font Typeface:</label>
+            <select id="font-select" onchange="changeFont(this.value)">
+                <option value="Georgia, serif">Georgia (Classic)</option>
+                <option value="'Playfair Display', serif">Playfair Display</option>
+                <option value="system-ui, sans-serif">System UI (Clean Sans)</option>
+            </select>
+        </div>
+
+        <div class="control-group" style="border-left: 1px solid #444; padding-left: 15px;">
+            <label>Highlighter Palette:</label>
+            <button class="hl-btn selected-tool" style="background-color: #ffe066;" onclick="setHighlighter('hl-yellow', this)">Yellow (Themes)</button>
+            <button class="hl-btn" style="background-color: #a9e34b;" onclick="setHighlighter('hl-green', this)">Green (Rights)</button>
+            <button class="hl-btn" style="background-color: #ffa94d;" onclick="setHighlighter('hl-orange', this)">Orange (Govt)</button>
+            <button style="background-color: #fa5252; color:#fff;" onclick="clearSelectionHighlight()">Clear Text Selection</button>
+        </div>
+    </div>
+</header>
+
+<main class="workspace">
+    <div class="doc-panel" id="panel-left">
+        <div id="content-left-hobbes">
+            <div class="author-card">
+                <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Thomas_Hobbes_%28by_John_Michael_Wright%29.jpg" alt="Thomas Hobbes Portrait">
+                <div class="author-meta">
+                    <h2>Thomas Hobbes</h2>
+                    <p>Excerpt from Leviathan (1651)</p>
+                </div>
+            </div>
+            <div class="text-content document-content">
+                "In the nature of man, we find three principal causes of quarrel: competition, <span class="vocab" data-definition="Distrust, lack of confidence in others, or fear of other people.">diffidence</span>, and glory. The first makes men invade for gain; the second, for safety; and the third, for reputation. ... During the time men live without a <span class="vocab" data-definition="A supreme authority or ruling government body that holds society together.">common power</span> to keep them all in awe, they are in that condition which is called war; and such a war, as is of every man, against every man. The life of man, solitary, poor, nasty, brutish, and short."
+            </div>
+        </div>
+
+        <div id="content-left-locke" style="display: none;">
+            <div class="author-card">
+                <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/d/d1/John_Locke.jpg" alt="John Locke Portrait">
+                <div class="author-meta">
+                    <h2>John Locke</h2>
+                    <p>Excerpt from Second Treatise of Government (1689)</p>
+                </div>
+            </div>
+            <div class="text-content document-content">
+                "The <span class="vocab" data-definition="The hypothetical condition of humanity before state-governed laws and political societies were established.">state of nature</span> has a law of nature to govern it, which obliges every one: and reason, which is that law, teaches all mankind... that being all <span class="vocab" data-definition="Possessing identical natural rights and standing before moral law.">equal</span> and independent, no one ought to harm another in his life, health, <span class="vocab" data-definition="The condition of being free from oppressive restrictions on authority or way of life.">liberty</span>, or possessions..."
+            </div>
+        </div>
+    </div>
+
+    <div class="doc-panel" id="panel-right">
+        <div class="author-card">
+            <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Thomas_Jefferson_by_Rembrandt_Peale_1800.jpg" alt="Thomas Jefferson Portrait">
+            <div class="author-meta">
+                <h2>Thomas Jefferson</h2>
+                <p>Excerpt from the U.S. Declaration of Independence (1776)</p>
+            </div>
+        </div>
+        <div class="text-content document-content">
+            "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain <span class="vocab" data-definition="Rights inherent to human beings that cannot be surrendered, given away, or taken away.">unalienable Rights</span>, that among these are Life, Liberty and the pursuit of Happiness. That to secure these rights, Governments are instituted among Men, deriving their just powers from the <span class="vocab" data-definition="The baseline idea that a government's legitimacy and moral right to use state power is only justified when agreed upon by the citizens.">consent of the governed</span>..."
+        </div>
+    </div>
+</main>
+
+<script>
+    // State Tracker
+    let activeHighlightClass = 'hl-yellow';
+
+    // View Switching Logic
+    function switchView(mode) {
+        const hobbesLeft = document.getElementById('content-left-hobbes');
+        const lockeLeft = document.getElementById('content-left-locke');
+        const btnHvJ = document.getElementById('btn-hvj');
+        const btnLvJ = document.getElementById('btn-lvj');
+
+        if (mode === 'hvj') {
+            hobbesLeft.style.display = 'block';
+            lockeLeft.style.display = 'none';
+            btnHvJ.classList.add('active-view');
+            btnLvJ.classList.remove('active-view');
+        } else if (mode === 'lvj') {
+            hobbesLeft.style.display = 'none';
+            lockeLeft.style.display = 'block';
+            btnLvJ.classList.add('active-view');
+            btnHvJ.classList.remove('active-view');
+        }
+    }
+
+    // Typography Controller Logic
+    function changeFont(fontFamily) {
+        document.querySelectorAll('.text-content').forEach(el => {
+            el.style.fontFamily = fontFamily;
+        });
+    }
+
+    // Interactive Highlight Configuration
+    function setHighlighter(className, element) {
+        activeHighlightClass = className;
+        document.querySelectorAll('.hl-btn').forEach(btn => btn.classList.remove('selected-tool'));
+        element.classList.add('selected-tool');
+    }
+
+    // Text Wrap Highlighter Tool For Interactive Touch Screens/Smartboards
+    function applyHighlight() {
+        const selection = window.getSelection();
+        if (!selection.rangeCount || selection.isCollapsed) return;
+
+        const range = selection.getRangeAt(0);
+        const container = range.commonAncestorContainer;
+        
+        // Ensure that highlighting stays localized strictly within the source material text blocks
+        const validParent = container.nodeType === 3 ? container.parentNode.closest('.document-content') : container.closest('.document-content');
+        
+        if (validParent) {
+            const span = document.createElement('span');
+            span.className = activeHighlightClass;
+            
+            try {
+                range.surroundContents(span);
+            } catch(e) {
+                alert("Smartboard note: To highlight across mixed items or tooltips, please make smaller granular selections.");
+            }
+            selection.removeAllRanges();
+        }
+    }
+
+    // Eraser Functionality
+    function clearSelectionHighlight() {
+        const selection = window.getSelection();
+        if (!selection.rangeCount || selection.isCollapsed) return;
+
+        const container = selection.getRangeAt(0).commonAncestorContainer;
+        const parentSpan = container.nodeType === 3 ? container.parentNode : container;
+
+        if (parentSpan && (parentSpan.classList.contains('hl-yellow') || parentSpan.classList.contains('hl-green') || parentSpan.classList.contains('hl-orange'))) {
+            const textNode = document.createTextNode(parentSpan.textContent);
+            parentSpan.parentNode.replaceChild(textNode, parentSpan);
+            selection.removeAllRanges();
+        }
+    }
+
+    // Initialize Event Listeners for Classroom Finger Dragging/Mouse Selections
+    document.addEventListener('mouseup', applyHighlight);
+    document.addEventListener('touchend', applyHighlight);
+</script>
+
+</body>
+</html>
