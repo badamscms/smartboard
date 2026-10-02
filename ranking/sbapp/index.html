@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Political Philosophers: Class Tally &amp; Consensus</title>
+<style>
+  :root {
+    /* Dark Theme Default */
+    --bg-main: #0a0f1d;
+    --bg-card: #151e32;
+    --bg-card-hover: #1e2942;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-accent: #38bdf8;
+    --border-color: #27354f;
+    --header-bg: #080c18;
+    --nav-bg: #0c1222;
+    --row-bg: #0d1424;
+    --inner-box: #0a0f1d;
+    --quote-bg: rgba(0, 0, 0, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    
+    --tier-s: #f59e0b;
+    --tier-s-bg: rgba(245, 158, 11, 0.16);
+    --tier-s-border: #d97706;
+    
+    --tier-a: #3b82f6;
+    --tier-a-bg: rgba(59, 130, 246, 0.16);
+    --tier-a-border: #2563eb;
+    
+    --tier-b: #10b981;
+    --tier-b-bg: rgba(16, 185, 129, 0.16);
+    --tier-b-border: #059669;
+    
+    --tier-c: #64748b;
+    --tier-c-bg: rgba(100, 116, 139, 0.16);
+    --tier-c-border: #475569;
+    
+    --tier-d: #f97316;
+    --tier-d-bg: rgba(249, 115, 22, 0.16);
+    --tier-d-border: #ea580c;
+    
+    --tier-f: #ef4444;
+    --tier-f-bg: rgba(239, 68, 68, 0.16);
+    --tier-f-border: #dc2626;
+
+    --btn-primary: #2563eb;
+    --btn-primary-hover: #1d4ed8;
+    --btn-vote-bg: #2563eb;
+    --btn-vote-hover: #1d4ed8;
+    --btn-undo-bg: #27354f;
+    --btn-undo-hover: #3b4d6b;
+  }
+
+  [data-theme="light"] {
+    --bg-main: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-accent: #0284c7;
+    --border-color: #cbd5e1;
+    --header-bg: #ffffff;
+    --nav-bg: #e2e8f0;
+    --row-bg: #ffffff;
+    --inner-box: #f8fafc;
+    --quote-bg: #f1f5f9;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+
+    --tier-s: #d97706;
+    --tier-s-bg: rgba(245, 158, 11, 0.12);
+    --tier-s-border: #b45309;
+
+    --tier-a: #2563eb;
+    --tier-a-bg: rgba(37, 99, 235, 0.12);
+    --tier-a-border: #1d4ed8;
+
+    --tier-b: #059669;
+    --tier-b-bg: rgba(16, 185, 129, 0.12);
+    --tier-b-border: #047857;
+
+    --tier-c: #475569;
+    --tier-c-bg: rgba(100, 116, 139, 0.12);
+    --tier-c-border: #334155;
+
+    --tier-d: #ea580c;
+    --tier-d-bg: rgba(249, 115, 22, 0.12);
+    --tier-d-border: #c2410c;
+
+    --tier-f: #dc2626;
+    --tier-f-bg: rgba(239, 68, 68, 0.12);
+    --tier-f-border: #b91c1c;
+
+    --btn-primary: #0284c7;
+    --btn-primary-hover: #0369a1;
+    --btn-vote-bg: #0284c7;
+    --btn-vote-hover: #0369a1;
+    --btn-undo-bg: #e2e8f0;
+    --btn-undo-hover: #cbd5e1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Clean Top Navigation Bar */
+  header {
+    background-color: var(--header-bg);
+    border-bottom: 2px solid var(--border-color);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .app-icon {
+    font-size: 26pt;
+    line-height: 1;
+  }
+
+  .header-titles h1 {
+    font-size: 18pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-titles p {
+    font-size: 10pt;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .class-period-select {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--text-accent);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 11pt;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 11pt;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    text-decoration: none;
+  }
+
+  .btn-theme {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+  }
+
+  .btn-theme:hover {
+    border-color: var(--text-accent);
+    background-color: var(--bg-card-hover);
+  }
+
+  .btn-fullscreen {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    font-size: 11.5pt;
+    padding: 10px 18px;
+    border: 2px solid #60a5fa;
+  }
+
+  .btn-fullscreen:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: scale(1.02);
+  }
+
+  .btn-fullscreen:active {
+    transform: scale(0.98);
+  }
+
+  .btn-secondary {
+    background-color: var(--btn-undo-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--btn-undo-hover);
+  }
+
+  .btn-danger {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid #dc2626;
+  }
+
+  .btn-danger:hover {
+    background-color: rgba(239, 68, 68, 0.25);
+  }
+
+  /* Nav Tabs */
+  .nav-tabs {
+    background-color: var(--nav-bg);
+    display: flex;
+    gap: 6px;
+    padding: 8px 24px;
+    border-bottom: 2px solid var(--border-color);
+    overflow-x: auto;
+    transition: background-color 0.2s ease;
+  }
+
+  .nav-tab-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    padding: 11px 18px;
+    font-size: 11.5pt;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+
+  .nav-tab-btn:hover {
+    background-color: rgba(125, 125, 125, 0.1);
+    color: var(--text-primary);
+  }
+
+  .nav-tab-btn.active {
+    background-color: var(--bg-card);
+    color: var(--text-accent);
+    border-bottom: 3px solid var(--text-accent);
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    padding: 20px 24px 40px 24px;
+    max-width: 1650px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .tab-pane {
+    display: none;
+  }
+
+  .tab-pane.active {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------------------------------------------------- */
+  /* TAB 1: THINKER TALLY STYLES                         */
+  /* ---------------------------------------------------- */
+  .tally-view-toggle-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .toggle-btn-group {
+    display: flex;
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .toggle-mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    font-size: 10.5pt;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .toggle-mode-btn.active {
+    background-color: var(--btn-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+  }
+
+  /* 9-Thinker Visual Roster / Selector Bar */
+  .thinker-roster-header {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .thinker-selector-bar {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 1400px) {
+    .thinker-selector-bar {
+      display: flex;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .thinker-tab-card {
+      min-width: 140px;
+    }
+  }
+
+  .thinker-tab-card {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    box-shadow: 0 2px 6px var(--shadow-color);
+  }
+
+  .thinker-tab-card:hover {
+    border-color: #60a5fa;
+    background-color: var(--bg-card-hover);
+    transform: translateY(-2px);
+  }
+
+  .thinker-tab-card.active {
+    border-color: var(--text-accent);
+    background-color: var(--bg-card-hover);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+  }
+
+  .tab-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--text-accent);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    background-color: var(--inner-box);
+  }
+
+  .tab-info-name {
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .tab-info-tier {
+    font-size: 8.5pt;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    display: inline-block;
+  }
+
+  /* Active Thinker Hero Banner */
+  .thinker-hero {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 150px 1fr auto;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px var(--shadow-color);
+  }
+
+  .hero-portrait {
+    width: 140px;
+    height: 140px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 4px solid var(--text-accent);
+    box-shadow: 0 6px 18px var(--shadow-color);
+    background-color: var(--inner-box);
+  }
+
+  .hero-details h2 {
+    font-size: 24pt;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-meta {
+    font-size: 11pt;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .hero-concept {
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--text-accent);
+    margin-bottom: 6px;
+  }
+
+  .hero-quote {
+    font-size: 11pt;
+    font-style: italic;
+    color: var(--text-primary);
+    background-color: var(--quote-bg);
+    padding: 6px 12px;
+    border-left: 4px solid var(--text-accent);
+    border-radius: 4px;
+    margin-top: 6px;
+  }
+
+  .hero-civics-badge {
+    margin-top: 8px;
+    font-size: 10pt;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    font-weight: 600;
+  }
+
+  .hero-consensus-box {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .leading-badge {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14pt;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+
+  .total-votes-count {
+    font-size: 12pt;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* Tally Buttons Grid */
+  .tally-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 1024px) {
+    .tally-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .tally-grid {
+      grid-template-columns: 1fr;
+    }
+    .thinker-hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .hero-consensus-box {
+      align-items: center;
+    }
+  }
+
+  .tally-card {
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    padding: 16px 18px;
+    border: 3px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tally-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .tally-card.tier-s { background-color: var(--tier-s-bg); border-color: var(--tier-s-border); }
+  .tally-card.tier-a { background-color: var(--tier-a-bg); border-color: var(--tier-a-border); }
+  .tally-card.tier-b { background-color: var(--tier-b-bg); border-color: var(--tier-b-border); }
+  .tally-card.tier-c { background-color: var(--tier-c-bg); border-color: var(--tier-c-border); }
+  .tally-card.tier-d { background-color: var(--tier-d-bg); border-color: var(--tier-d-border); }
+  .tally-card.tier-f { background-color: var(--tier-f-bg); border-color: var(--tier-f-border); }
+
+  .tally-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .tier-badge-large {
+    font-size: 20pt;
+    font-weight: 900;
+    padding: 4px 14px;
+    border-radius: 8px;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .tier-badge-large.tier-s { background-color: var(--tier-s); }
+  .tier-badge-large.tier-a { background-color: var(--tier-a); }
+  .tier-badge-large.tier-b { background-color: var(--tier-b); }
+  .tier-badge-large.tier-c { background-color: var(--tier-c); }
+  .tier-badge-large.tier-d { background-color: var(--tier-d); }
+  .tier-badge-large.tier-f { background-color: var(--tier-f); }
+
+  .tier-name-label {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+  }
+
+  .tier-desc-label {
+    font-size: 9pt;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  /* Count display */
+  .count-display-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .count-number {
+    font-size: 44pt;
+    font-weight: 900;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .count-pct {
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  /* Progress bar inside card */
+  .pct-bar-bg {
+    width: 100%;
+    height: 10px;
+    background-color: rgba(125, 125, 125, 0.2);
+    border-radius: 5px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .pct-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+
+  .pct-bar-fill.tier-s { background-color: var(--tier-s); }
+  .pct-bar-fill.tier-a { background-color: var(--tier-a); }
+  .pct-bar-fill.tier-b { background-color: var(--tier-b); }
+  .pct-bar-fill.tier-c { background-color: var(--tier-c); }
+  .pct-bar-fill.tier-d { background-color: var(--tier-d); }
+  .pct-bar-fill.tier-f { background-color: var(--tier-f); }
+
+  /* STUDENT-FRIENDLY SINGLE-VOTE BUTTONS (NO batch vote) */
+  .tally-action-buttons {
+    display: grid;
+    grid-template-columns: 85px 1fr;
+    gap: 10px;
+  }
+
+  .tally-btn {
+    border: none;
+    border-radius: 10px;
+    font-size: 12.5pt;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 14px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+    box-shadow: 0 2px 6px var(--shadow-color);
+  }
+
+  .tally-btn:active {
+    transform: scale(0.95);
+  }
+
+  .btn-minus {
+    background-color: var(--btn-undo-bg);
+    color: var(--text-secondary);
+    font-size: 10.5pt;
+    border: 1.5px solid var(--border-color);
+  }
+
+  .btn-minus:hover {
+    background-color: var(--btn-undo-hover);
+    color: var(--text-primary);
+  }
+
+  .btn-add-1 {
+    background-color: var(--btn-vote-bg);
+    color: #ffffff;
+    font-size: 14pt;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  }
+
+  .btn-add-1:hover {
+    background-color: var(--btn-vote-hover);
+  }
+
+  /* Tally Footer Bar */
+  .tally-footer-bar {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+
+  .footer-nav-buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  /* LIVE CONSENSUS BAR WITH AVATARS ON TALLY PAGE */
+  .live-consensus-bar-section {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+
+  .consensus-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .consensus-bar-title {
+    font-size: 12pt;
+    font-weight: 800;
+    color: var(--text-accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .consensus-tiers-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .consensus-tiers-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .consensus-tier-col {
+    background-color: var(--inner-box);
+    border-radius: 10px;
+    border: 1.5px solid var(--border-color);
+    padding: 10px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .col-tier-label {
+    font-size: 11pt;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .col-avatars-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
+
+  .consensus-avatar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .consensus-avatar-item:hover {
+    transform: scale(1.1);
+  }
+
+  .consensus-avatar-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--text-accent);
+    background-color: var(--bg-card);
+  }
+
+  .consensus-avatar-name {
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 2px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
+  }
+
+  .consensus-empty-text {
+    font-size: 9pt;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: auto;
+  }
+
+  /* ALL-THINKERS OVERVIEW GRID */
+  .all-thinkers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 1200px) {
+    .all-thinkers-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .all-thinkers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .overview-card {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 14px var(--shadow-color);
+    transition: all 0.15s ease;
+  }
+
+  .overview-card:hover {
+    border-color: #60a5fa;
+    transform: translateY(-2px);
+  }
+
+  .overview-card-top {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .overview-card-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 3px solid var(--text-accent);
+    background-color: var(--inner-box);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .overview-card-details {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .overview-card-name {
+    font-size: 13pt;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+
+  .overview-card-dates {
+    font-size: 9pt;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .overview-card-clue {
+    font-size: 9.5pt;
+    color: var(--text-accent);
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  .overview-tier-counters {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    background-color: var(--inner-box);
+    border-radius: 8px;
+    padding: 8px 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  .mini-tier-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mini-tier-letter {
+    font-size: 10pt;
+    font-weight: 900;
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: #ffffff;
+  }
+
+  .mini-tier-count {
+    font-size: 14pt;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .mini-vote-btns {
+    display: flex;
+    gap: 2px;
+  }
+
+  .btn-mini-vote {
+    background-color: var(--btn-undo-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 11pt;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .btn-mini-vote:hover {
+    background-color: var(--btn-primary);
+    color: #ffffff;
+  }
+
+  .btn-mini-vote:active {
+    transform: scale(0.9);
+  }
+
+  .overview-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+    font-size: 9.5pt;
+  }
+
+  /* ---------------------------------------------------- */
+  /* TAB 2: TIER BOARD STYLES                            */
+  /* ---------------------------------------------------- */
+  .tier-board-container {
+    background-color: var(--row-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    border-bottom: 2px solid var(--border-color);
+    min-height: 120px;
+    background-color: var(--row-bg);
+  }
+
+  .tier-row:last-child {
+    border-bottom: none;
+  }
+
+  .tier-label-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  }
+
+  .tier-letter {
+    font-size: 36pt;
+    line-height: 1;
+  }
+
+  .tier-subtext {
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 4px;
+    opacity: 0.95;
+  }
+
+  .tier-row.tier-s .tier-label-cell { background-color: var(--tier-s); }
+  .tier-row.tier-a .tier-label-cell { background-color: var(--tier-a); }
+  .tier-row.tier-b .tier-label-cell { background-color: var(--tier-b); }
+  .tier-row.tier-c .tier-label-cell { background-color: var(--tier-c); }
+  .tier-row.tier-d .tier-label-cell { background-color: var(--tier-d); }
+  .tier-row.tier-f .tier-label-cell { background-color: var(--tier-f); }
+
+  .tier-drop-zone {
+    padding: 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    min-height: 110px;
+    background-color: var(--inner-box);
+  }
+
+  .unassigned-pool {
+    background-color: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+
+  .unassigned-title {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Thinker Card on Tier Board */
+  .board-thinker-card {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 250px;
+    cursor: grab;
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+
+  .board-thinker-card:hover {
+    border-color: var(--text-accent);
+    transform: scale(1.03);
+  }
+
+  .board-thinker-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid var(--text-accent);
+    flex-shrink: 0;
+    background-color: var(--inner-box);
+  }
+
+  .board-card-info {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .board-card-name {
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .board-card-votes {
+    font-size: 9pt;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-top: 2px;
+    margin-bottom: 4px;
+  }
+
+  .tier-select-mini {
+    background-color: var(--inner-box);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 9.5pt;
+    font-weight: bold;
+    padding: 3px 6px;
+    cursor: pointer;
+  }
+
+  /* ---------------------------------------------------- */
+  /* TAB 3: DEBATE ARENA STYLES                          */
+  /* ---------------------------------------------------- */
+  .debate-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .debate-matchup-card {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 6px 20px var(--shadow-color);
+  }
+
+  .debate-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .debate-header-title {
+    font-size: 16pt;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .debate-header-sub {
+    font-size: 11pt;
+    color: var(--text-accent);
+    font-weight: 600;
+  }
+
+  .debate-vs-layout {
+    display: grid;
+    grid-template-columns: 1fr 140px 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 800px) {
+    .debate-vs-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .fighter-side {
+    background-color: var(--inner-box);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+  }
+
+  .fighter-side.leading {
+    border-color: var(--text-accent);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
+  }
+
+  .fighter-thumb {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--text-accent);
+    box-shadow: 0 4px 10px var(--shadow-color);
+    background-color: var(--bg-card);
+  }
+
+  .fighter-name {
+    font-size: 15pt;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .fighter-thesis {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: var(--text-accent);
+  }
+
+  .fighter-arg {
+    font-size: 9.5pt;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    background-color: var(--quote-bg);
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+    text-align: left;
+  }
+
+  .fighter-vote-count {
+    font-size: 38pt;
+    font-weight: 900;
+    color: var(--text-primary);
+    line-height: 1;
+    margin: 6px 0;
+  }
+
+  .fighter-buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .btn-debate-vote {
+    flex: 1;
+    background-color: var(--btn-vote-bg);
+    color: #ffffff;
+    font-size: 13pt;
+    font-weight: 900;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    transition: all 0.1s ease;
+  }
+
+  .btn-debate-vote:hover {
+    background-color: var(--btn-vote-hover);
+  }
+
+  .btn-debate-vote:active {
+    transform: scale(0.96);
+  }
+
+  .btn-debate-undo {
+    background-color: var(--btn-undo-bg);
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 10.5pt;
+    font-weight: 700;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+
+  .btn-debate-undo:hover {
+    background-color: var(--btn-undo-hover);
+    color: var(--text-primary);
+  }
+
+  .vs-divider-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .vs-badge {
+    font-size: 22pt;
+    font-weight: 900;
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.15);
+    padding: 8px 16px;
+    border-radius: 50%;
+    border: 2px solid #ef4444;
+  }
+
+  .debate-civics-note {
+    font-size: 9pt;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* Tug of War Gauge */
+  .tug-gauge-container {
+    width: 100%;
+    margin-top: 14px;
+  }
+
+  .gauge-track {
+    width: 100%;
+    height: 26px;
+    background-color: var(--inner-box);
+    border-radius: 13px;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    border: 2px solid var(--border-color);
+  }
+
+  .gauge-fill-left {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    transition: width 0.3s ease;
+  }
+
+  .gauge-fill-right {
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+    transition: width 0.3s ease;
+  }
+
+  .gauge-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11pt;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  /* ---------------------------------------------------- */
+  /* TAB 4: DISCUSSION & PROMPTS                         */
+  /* ---------------------------------------------------- */
+  .discussion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .discussion-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .prompt-card {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 14px var(--shadow-color);
+  }
+
+  .prompt-card h3 {
+    font-size: 14pt;
+    font-weight: 800;
+    color: var(--text-accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .prompt-list {
+    list-style: none;
+  }
+
+  .prompt-list li {
+    padding: 10px 14px;
+    background-color: var(--inner-box);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--text-accent);
+    font-size: 11.5pt;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+
+  .sentence-starter-box {
+    background-color: var(--inner-box);
+    border-left: 4px solid #10b981;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: var(--text-primary);
+  }
+
+  .sentence-starter-box strong {
+    color: #10b981;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-box {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 650px;
+    width: 90%;
+    box-shadow: 0 20px 40px var(--shadow-color);
+  }
+
+  .modal-title {
+    font-size: 18pt;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .modal-body {
+    font-size: 11pt;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER (CLEAN, NO TEACHER NAME OR SCHOOL NAME) -->
+<header>
+  <div class="header-left">
+    <div class="app-icon">🏛️</div>
+    <div class="header-titles">
+      <h1>Political Philosophers: Class Tally &amp; Consensus</h1>
+      <p>Interactive Discussion &amp; Tier Ranking</p>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <select id="classPeriodSelect" class="class-period-select" onchange="changeClassPeriod()">
+      <option value="p1">Period 1</option>
+      <option value="p2">Period 2</option>
+      <option value="p3">Period 3</option>
+      <option value="p4">Period 4</option>
+      <option value="p5">Period 5</option>
+      <option value="p6">Period 6</option>
+      <option value="p7">Period 7</option>
+      <option value="p8">Period 8</option>
+      <option value="p9">Period 9</option>
+    </select>
+
+    <button id="themeToggleBtn" class="btn btn-theme" onclick="toggleTheme()" title="Toggle Light / Dark Mode">
+      <span id="themeIcon">☀️</span> <span id="themeText">Light Mode</span>
+    </button>
+
+    <button id="fullscreenBtn" class="btn btn-fullscreen" onclick="toggleFullScreen()">
+      <span id="fsIcon">⛶</span> <span id="fsText">Full Screen</span>
+    </button>
+
+    <button class="btn btn-secondary" onclick="openSummaryModal()">
+      📄 Summary
+    </button>
+
+    <button class="btn btn-danger" onclick="confirmResetClass()">
+      🔄 Reset
+    </button>
+  </div>
+</header>
+
+<!-- NAVIGATION TABS -->
+<div class="nav-tabs">
+  <button class="nav-tab-btn active" onclick="switchTab('tallyTab', this)">
+    📊 Class Tally Page
+  </button>
+  <button class="nav-tab-btn" onclick="switchTab('boardTab', this)">
+    🏆 Class Consensus Tier Board
+  </button>
+  <button class="nav-tab-btn" onclick="switchTab('debatesTab', this)">
+    ⚔️ Debate Face-Off Arena
+  </button>
+  <button class="nav-tab-btn" onclick="switchTab('promptsTab', this)">
+    💡 Discussion Prompts &amp; IEP Stems
+  </button>
+</div>
+
+<!-- MAIN VIEWPORT -->
+<main>
+
+  <!-- TAB 1: CLASS TALLY PAGE -->
+  <div id="tallyTab" class="tab-pane active">
+    
+    <!-- Top View Switcher -->
+    <div class="tally-view-toggle-bar">
+      <div>
+        <h2 style="font-size: 18pt; font-weight: 800; color: var(--text-primary);">📊 Class Tally &amp; Consensus Voting</h2>
+        <p style="color: var(--text-secondary); font-size: 10.5pt;">Tap any philosopher's portrait below to vote on screen, or switch to the all-thinker grid view.</p>
+      </div>
+
+      <div class="toggle-btn-group">
+        <button id="btnFocusView" class="toggle-mode-btn active" onclick="setTallyView('focus')">
+          🎯 Single-Thinker Focus Mode
+        </button>
+        <button id="btnOverviewView" class="toggle-mode-btn" onclick="setTallyView('overview')">
+          👥 All 9 Thinkers Overview Grid
+        </button>
+      </div>
+    </div>
+
+    <!-- 9-Philosopher Visual Gallery / Selector (Portraits with Wikimedia URLs) -->
+    <div class="thinker-roster-header">
+      <span>🖼️ All 9 Political Philosophers:</span>
+      <span style="font-size: 9.5pt; color: var(--text-accent);">Tip: Badges show current class consensus tier</span>
+    </div>
+    <div class="thinker-selector-bar" id="thinkerSelectorBar"></div>
+
+    <!-- VIEW 1: SINGLE THINKER FOCUS MODE -->
+    <div id="focusTallyContainer">
+      <!-- Active Thinker Hero Card (With Large Portrait Image) -->
+      <div class="thinker-hero" id="thinkerHero"></div>
+
+      <!-- Tier Tally Grid (S, A, B, C, D, F) - SINGLE VOTE BUTTONS ONLY (NO batch vote) -->
+      <div class="tally-grid" id="tallyGrid"></div>
+
+      <!-- Bottom Action Bar -->
+      <div class="tally-footer-bar">
+        <div class="footer-nav-buttons">
+          <button class="btn btn-secondary" onclick="prevThinker()">⬅️ Previous Thinker</button>
+          <button class="btn btn-secondary" onclick="nextThinker()">Next Thinker ➡️</button>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-fullscreen" style="font-size: 11pt; padding: 10px 18px;" onclick="lockCurrentToConsensus()">
+            📌 Lock Winning Tier to Board
+          </button>
+          <button class="btn btn-secondary" onclick="resetCurrentThinkerVotes()">
+            Clear Votes for Thinker
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: ALL 9 THINKERS OVERVIEW GRID -->
+    <div id="overviewTallyContainer" style="display: none;">
+      <div class="all-thinkers-grid" id="allThinkersGrid"></div>
+    </div>
+
+    <!-- LIVE CLASS CONSENSUS BAR WITH PHILOSOPHER PORTRAITS/AVATARS -->
+    <div class="live-consensus-bar-section">
+      <div class="consensus-bar-header">
+        <div class="consensus-bar-title">
+          <span>🏆 Current Live Consensus (Philosophers placed by class votes):</span>
+        </div>
+        <button class="btn btn-secondary" style="font-size: 9pt; padding: 4px 10px;" onclick="switchTab('boardTab', document.querySelectorAll('.nav-tab-btn')[1])">
+          Open Full Tier Board ➡️
+        </button>
+      </div>
+
+      <div class="consensus-tiers-row" id="consensusTiersRow"></div>
+    </div>
+
+  </div>
+
+  <!-- TAB 2: CLASS CONSENSUS TIER BOARD -->
+  <div id="boardTab" class="tab-pane">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h2 style="font-size: 20pt; font-weight: 800; color: var(--text-primary);">🏆 Class Consensus Tier Board</h2>
+        <p style="color: var(--text-secondary); font-size: 11pt;">Live whole-class tier placements compiled from student votes with philosopher portraits.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-fullscreen" style="font-size: 11pt; padding: 10px 18px;" onclick="applyAllTallyWinnersToBoard()">
+          ⚡ Auto-Place All Winners from Tally
+        </button>
+        <button class="btn btn-secondary" onclick="clearTierBoard()">
+          Clear Board
+        </button>
+      </div>
+    </div>
+
+    <!-- Tier Rows Container -->
+    <div class="tier-board-container" id="tierBoardContainer"></div>
+
+    <!-- Unassigned Pool -->
+    <div class="unassigned-pool">
+      <div class="unassigned-title">
+        <span>📦 Unassigned / Floating Thinkers</span>
+        <span style="font-size: 10pt; font-weight: 500;">Tip: Use the dropdown on any card to move tiers directly on the Smart Board!</span>
+      </div>
+      <div class="tier-drop-zone" id="unassignedDropZone"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: DEBATE FACE-OFF ARENA (NO batch vote BUTTONS) -->
+  <div id="debatesTab" class="tab-pane">
+    <div style="margin-bottom: 20px;">
+      <h2 style="font-size: 20pt; font-weight: 800; color: var(--text-primary);">⚔️ Head-to-Head Debate Arena</h2>
+      <p style="color: var(--text-secondary); font-size: 11pt;">Students can tap their chosen thinker directly on the screen to cast a single vote!</p>
+    </div>
+
+    <div class="debate-grid" id="debateGrid"></div>
+  </div>
+
+  <!-- TAB 4: DISCUSSION PROMPTS & IEP STEMS -->
+  <div id="promptsTab" class="tab-pane">
+    <div style="margin-bottom: 20px;">
+      <h2 style="font-size: 20pt; font-weight: 800; color: var(--text-primary);">💡 Whole-Class Discussion Prompts &amp; IEP Stems</h2>
+      <p style="color: var(--text-secondary); font-size: 11pt;">Display these prompts and sentence starters on the board during class discussion.</p>
+    </div>
+
+    <div class="discussion-grid">
+      <!-- Discussion Prompts Column -->
+      <div class="prompt-card">
+        <h3>🗣️ Smart Board Discussion Questions</h3>
+        <ul class="prompt-list">
+          <li><strong>The Hobbes vs. Locke Divide:</strong> "Raise your hand if you chose Hobbes for safety. Raise your hand if you chose Locke for freedom. Who wants to explain why safety must come before rights—or why rights are worth the risk?"</li>
+          <li><strong>Plato's Expert Rule:</strong> "Plato believed ordinary citizens shouldn't vote because they can be tricked by smooth talkers. Do we use Plato's idea in America today? (Hint: Supreme Court, Federal Reserve, military commanders)."</li>
+          <li><strong>Aristotle's Middle Class:</strong> "Aristotle said democracy only survives if there is a strong middle class. Why does a large gap between the super-rich and the poor create political instability?"</li>
+          <li><strong>Montesquieu vs. Rousseau:</strong> "Montesquieu divided power among 3 branches to stop tyranny. Rousseau wanted everyone to vote directly on every law. What are the pros and cons of voting directly vs. electing representatives?"</li>
+          <li><strong>Blackstone's Ratio:</strong> "Blackstone said: <em>'Better that ten guilty persons escape than that one innocent suffer.'</em> Do you agree with this ratio? What happens if society flips that rule?"</li>
+        </ul>
+      </div>
+
+      <!-- IEP Sentence Starters Column -->
+      <div class="prompt-card">
+        <h3>📝 Sentence Starters (For Student Presentations)</h3>
+        
+        <div class="sentence-starter-box">
+          <strong>Defending Tier Placement:</strong><br>
+          "I placed <u>&nbsp;[Thinker]&nbsp;</u> in <strong>[Tier]</strong> because their idea of <u>&nbsp;[Concept]&nbsp;</u> is essential to protecting American freedom today."
+        </div>
+
+        <div class="sentence-starter-box">
+          <strong>Highlighting a Major Trade-off:</strong><br>
+          "I ranked <u>&nbsp;[Thinker]&nbsp;</u> in <strong>B-Tier</strong> because while their idea of <u>&nbsp;[Strength]&nbsp;</u> is helpful, their system has a serious flaw: <u>&nbsp;[Weakness]&nbsp;</u>."
+        </div>
+
+        <div class="sentence-starter-box">
+          <strong>Debate Winner Defense:</strong><br>
+          "In the debate between <u>&nbsp;[Thinker A]&nbsp;</u> and <u>&nbsp;[Thinker B]&nbsp;</u>, I chose <u>&nbsp;[Winner]&nbsp;</u> because our society needs <u>&nbsp;[Core Value]&nbsp;</u> more than <u>&nbsp;[Competing Value]&nbsp;</u>."
+        </div>
+
+        <div class="sentence-starter-box">
+          <strong>Civics Word Bank Clues:</strong><br>
+          • <strong>Rule of Law:</strong> Written laws apply to everyone, even leaders.<br>
+          • <strong>Natural Rights:</strong> Life, Liberty, and Property (born with them).<br>
+          • <strong>Separation of Powers:</strong> 3 branches check each other.<br>
+          • <strong>Due Process:</strong> Fair court trial before punishment.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- SUMMARY MODAL -->
+<div class="modal-overlay" id="summaryModal">
+  <div class="modal-box">
+    <div class="modal-title">📊 Class Results Summary</div>
+    <div class="modal-body" id="summaryModalContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="copySummaryText()">📋 Copy Text</button>
+      <button class="btn btn-fullscreen" style="font-size: 11pt; padding: 8px 16px;" onclick="closeSummaryModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- INLINE DATA (USING WIKIMEDIA IMAGE URLS FROM STUDENT SITE) ---
+const philosophers = [{"id": "plato", "name": "Plato", "dates": "c. 427\u2013347 BCE", "location": "Athens, Greece", "work": "The Republic", "concept": "Philosopher Kings & The Ship of State", "img_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Plato_Silanion_Musei_Capitolini_MC1377.jpg", "primary_quote": "", "clue": "Philosopher Kings & Ship of State \u2022 Expert Rule", "us_connection": "Appointed experts (Supreme Court justices, Federal Reserve governors) rather than elected officials."}, {"id": "aristotle", "name": "Aristotle", "dates": "384\u2013322 BCE", "location": "Greece / Macedonia", "work": "Politics", "concept": "Polity, Rule of Law & Middle Class Balance", "img_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Aristoteles_Louvre.jpg", "primary_quote": "", "clue": "Rule of Law \u2022 Polity \u2022 Constitutional Balance", "us_connection": "The U.S. Constitution as the supreme law of the land; no official is above the law."}, {"id": "machiavelli", "name": "Niccol\u00f2 Machiavelli", "dates": "1469\u20131527", "location": "Florence, Italy", "work": "The Prince & Discourses on Livy", "concept": "Political Realism & Civic Virtue", "img_url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Portrait_of_Niccol%C3%B2_Machiavelli_by_Santi_di_Tito.jpg", "primary_quote": "", "clue": "Political Realism \u2022 Fear vs. Love in a Crisis", "us_connection": "Presidential emergency executive orders and foreign policy realism."}, {"id": "hobbes", "name": "Thomas Hobbes", "dates": "1588\u20131679", "location": "England", "work": "Leviathan", "concept": "State of Nature & Absolute Sovereignty", "img_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Thomas_Hobbes_%28portrait%29.jpg", "primary_quote": "", "clue": "State of Nature \u2022 Leviathan \u2022 Total Security", "us_connection": "Preamble objective to \"insure domestic Tranquility\" and law enforcement protection."}, {"id": "locke", "name": "John Locke", "dates": "1632\u20131704", "location": "England", "work": "Two Treatises of Government", "concept": "Natural Rights, Consent & Right to Revolution", "img_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/John_Locke.jpg", "primary_quote": "", "clue": "Natural Rights (Life, Liberty, Property) \u2022 Consent", "us_connection": "Declaration of Independence (\"Life, Liberty, and the pursuit of Happiness\") and democratic elections."}, {"id": "montesquieu", "name": "Baron de Montesquieu", "dates": "1689\u20131755", "location": "France", "work": "The Spirit of the Laws", "concept": "Separation of Powers & Checks and Balances", "img_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Montesquieu_1.png", "primary_quote": "", "clue": "Separation of Powers \u2022 3 Branches & Checks", "us_connection": "Articles I, II, and III of the U.S. Constitution (Legislative, Executive, Judicial branches)."}, {"id": "rousseau", "name": "Jean-Jacques Rousseau", "dates": "1712\u20131778", "location": "Switzerland / France", "work": "The Social Contract", "concept": "Popular Sovereignty & The General Will", "img_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Jean-Jacques_Rousseau_%28painted_portrait%29.jpg", "primary_quote": "", "clue": "Direct Democracy \u2022 General Will \u2022 Popular Vote", "us_connection": "Town hall meetings, citizen ballot initiatives, and state referendums."}, {"id": "voltaire", "name": "Voltaire", "dates": "1694\u20131778", "location": "France", "work": "Candide & Treatise on Tolerance", "concept": "Civil Liberties & Separation of Church and State", "img_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Nicolas_de_Largilli%C3%A8re_-_Portrait_de_Voltaire_%281694-1778%29_en_1718_-_P208_-_Mus%C3%A9e_Carnavalet_-_2.jpg", "primary_quote": "", "clue": "Freedom of Speech & Religion \u2022 Anti-Censorship", "us_connection": "The First Amendment (Freedom of speech, religion, press, assembly, petition)."}, {"id": "blackstone", "name": "William Blackstone", "dates": "1723\u20131780", "location": "England", "work": "Commentaries on the Laws of England", "concept": "Common Law, Precedent & Due Process", "img_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Sir_William_Blackstone_from_NPG.jpg", "primary_quote": "", "clue": "Common Law \u2022 Due Process \u2022 Presumption of Innocence", "us_connection": "Bill of Rights amendments 4\u20138 (Fair trial, jury of peers, innocent until proven guilty)."}];
+const debates = [{"id": "debate1", "title": "Matchup 1: Safety vs. Freedom", "sub": "Total Order vs. Inalienable Rights", "p1": "hobbes", "p1_name": "Thomas Hobbes", "p1_thesis": "Total Security (The Leviathan)", "p1_arg": "Without basic physical order and safety, no human rights can exist. Law enforcement is government's first duty.", "p2": "locke", "p2_name": "John Locke", "p2_thesis": "Natural Rights & Liberty", "p2_arg": "Security is worthless if an absolute king can seize your life or property arbitrarily. Government exists only by consent.", "civics_link": "Preamble: \"insure domestic Tranquility\" vs. \"secure the Blessings of Liberty\""}, {"id": "debate2", "title": "Matchup 2: Expert Rule vs. Written Law", "sub": "Philosopher Kings vs. Constitutional Governance", "p1": "plato", "p1_name": "Plato", "p1_thesis": "Philosopher Kings (Expertise)", "p1_arg": "Governing requires deep specialized knowledge. Untrained crowds make emotional, harmful decisions (mob rule).", "p2": "aristotle", "p2_name": "Aristotle", "p2_thesis": "Rule of Law & Middle Class", "p2_arg": "Even the wisest leader can become corrupt or selfish. Written laws treat all citizens equally and outlast mortal rulers.", "civics_link": "Technocratic Expertise (Fed / Agencies) vs. Constitutional Supremacy (Article VI)"}, {"id": "debate3", "title": "Matchup 3: Three Branches vs. Direct Voting", "sub": "Divided Institutional Checks vs. Pure Popular Will", "p1": "montesquieu", "p1_name": "Baron de Montesquieu", "p1_thesis": "Separation of Powers & Checks", "p1_arg": "Dividing power among 3 branches prevents any single faction from tyrannizing the minority. Liberty requires balance.", "p2": "rousseau", "p2_name": "Jean-Jacques Rousseau", "p2_thesis": "Direct Democracy & General Will", "p2_arg": "Elected representatives can be bribed by the wealthy. True freedom means every citizen votes directly on every law.", "civics_link": "Constitutional Republic (Articles I\u2013III) vs. Direct Ballot Initiatives & Town Halls"}, {"id": "debate4", "title": "Matchup 4: Free Expression vs. Fair Courts", "sub": "First Amendment Liberties vs. Procedural Due Process", "p1": "voltaire", "p1_name": "Voltaire", "p1_thesis": "Free Speech & Religious Freedom", "p1_arg": "Without free speech, citizens cannot expose corruption, critique unjust laws, or hold powerful leaders accountable.", "p2": "blackstone", "p2_name": "William Blackstone", "p2_thesis": "Due Process & Presumption of Innocence", "p2_arg": "Free speech is useless if the state can arrest and imprison you without a fair jury trial. Better 10 guilty escape than 1 innocent suffer.", "civics_link": "First Amendment Freedoms vs. Fourth through Eighth Amendment Due Process Rights"}];
+
+const tiers = [
+  { key: 'S', name: 'Foundational Titans', desc: 'Indispensable to American liberty', colorClass: 'tier-s', colorHex: '#f59e0b' },
+  { key: 'A', name: 'Architects of Governance', desc: 'Built durable, balanced systems', colorClass: 'tier-a', colorHex: '#3b82f6' },
+  { key: 'B', name: 'Pragmatic & Bold', desc: 'Realistic ideas with trade-offs', colorClass: 'tier-b', colorHex: '#10b981' },
+  { key: 'C', name: 'Niche / Unrealistic', desc: 'Hard to run in a large nation', colorClass: 'tier-c', colorHex: '#64748b' },
+  { key: 'D', name: 'Harsh / Restrictive', desc: 'Takes away rights & liberties', colorClass: 'tier-d', colorHex: '#f97316' },
+  { key: 'F', name: 'Dangerous / Tyrannical', desc: 'Destroys freedom & rule of law', colorClass: 'tier-f', colorHex: '#ef4444' }
+];
+
+let currentPeriod = 'p1';
+let currentThinkerIndex = 0;
+let currentTallyView = 'focus'; // 'focus' or 'overview'
+let currentTheme = 'dark'; // 'dark' or 'light'
+
+let state = {};
+
+// ----------------------------------------------------
+// THEME SWITCHING (LIGHT / DARK)
+// ----------------------------------------------------
+function initTheme() {
+  const saved = localStorage.getItem('civics_theme_pref');
+  if (saved === 'light' || saved === 'dark') {
+    currentTheme = saved;
+  } else {
+    currentTheme = 'dark';
+  }
+  applyTheme(currentTheme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const themeIcon = document.getElementById('themeIcon');
+  const themeText = document.getElementById('themeText');
+  if (theme === 'light') {
+    themeIcon.textContent = '🌙';
+    themeText.textContent = 'Dark Mode';
+  } else {
+    themeIcon.textContent = '☀️';
+    themeText.textContent = 'Light Mode';
+  }
+  localStorage.setItem('civics_theme_pref', theme);
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(currentTheme);
+}
+
+// ----------------------------------------------------
+// STORAGE INITIALIZATION
+// ----------------------------------------------------
+function initStorage() {
+  const saved = localStorage.getItem('civics_tally_clean_' + currentPeriod);
+  if (saved) {
+    try {
+      state = JSON.parse(saved);
+    } catch(e) {
+      createDefaultState();
+    }
+  } else {
+    createDefaultState();
+  }
+}
+
+function createDefaultState() {
+  state = {
+    tallies: {},
+    tierBoard: {},
+    debateVotes: {}
+  };
+  philosophers.forEach(p => {
+    state.tallies[p.id] = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
+    state.tierBoard[p.id] = 'unassigned';
+  });
+  debates.forEach(d => {
+    state.debateVotes[d.id] = { p1: 0, p2: 0 };
+  });
+  saveState();
+}
+
+function saveState() {
+  localStorage.setItem('civics_tally_clean_' + currentPeriod, JSON.stringify(state));
+}
+
+function changeClassPeriod() {
+  currentPeriod = document.getElementById('classPeriodSelect').value;
+  initStorage();
+  renderAll();
+}
+
+// ----------------------------------------------------
+// FULL SCREEN HANDLING
+// ----------------------------------------------------
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      alert(`Error attempting to enable full-screen mode: ${err.message}`);
+    });
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const fsBtn = document.getElementById('fullscreenBtn');
+  const fsIcon = document.getElementById('fsIcon');
+  const fsText = document.getElementById('fsText');
+  if (document.fullscreenElement) {
+    fsIcon.textContent = '✖';
+    fsText.textContent = 'Exit Full Screen';
+    fsBtn.style.background = '#dc2626';
+    fsBtn.style.borderColor = '#f87171';
+  } else {
+    fsIcon.textContent = '⛶';
+    fsText.textContent = 'Full Screen';
+    fsBtn.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+    fsBtn.style.borderColor = '#60a5fa';
+  }
+});
+
+// Keyboard shortcuts for Smart Board
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'f' || e.key === 'F') {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') {
+      toggleFullScreen();
+    }
+  } else if (e.key === 'ArrowRight') {
+    nextThinker();
+  } else if (e.key === 'ArrowLeft') {
+    prevThinker();
+  }
+});
+
+// ----------------------------------------------------
+// NAVIGATION
+// ----------------------------------------------------
+function switchTab(tabId, btnElement) {
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btnElement.classList.add('active');
+
+  if (tabId === 'tallyTab') {
+    renderTallyPage();
+  } else if (tabId === 'boardTab') {
+    renderTierBoard();
+  } else if (tabId === 'debatesTab') {
+    renderDebates();
+  }
+}
+
+function setTallyView(mode) {
+  currentTallyView = mode;
+  document.getElementById('btnFocusView').classList.toggle('active', mode === 'focus');
+  document.getElementById('btnOverviewView').classList.toggle('active', mode === 'overview');
+
+  document.getElementById('focusTallyContainer').style.display = mode === 'focus' ? 'block' : 'none';
+  document.getElementById('overviewTallyContainer').style.display = mode === 'overview' ? 'block' : 'none';
+
+  if (mode === 'overview') {
+    renderAllThinkersGrid();
+  }
+}
+
+// ----------------------------------------------------
+// TAB 1: CLASS TALLY PAGE RENDERING
+// ----------------------------------------------------
+function renderTallyPage() {
+  renderThinkerSelector();
+  renderActiveThinker();
+  renderConsensusBar();
+  if (currentTallyView === 'overview') {
+    renderAllThinkersGrid();
+  }
+}
+
+function renderThinkerSelector() {
+  const bar = document.getElementById('thinkerSelectorBar');
+  bar.innerHTML = '';
+
+  philosophers.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.className = `thinker-tab-card ${idx === currentThinkerIndex ? 'active' : ''}`;
+    card.onclick = () => {
+      currentThinkerIndex = idx;
+      if (currentTallyView === 'overview') {
+        setTallyView('focus');
+      }
+      renderThinkerSelector();
+      renderActiveThinker();
+    };
+
+    const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+    const leader = getLeadingTier(counts);
+    const tierBadge = leader ? `<span class="tab-info-tier" style="background:${leader.colorHex}; color:#fff;">${leader.key}</span>` : `<span class="tab-info-tier" style="background:var(--border-color); color:var(--text-secondary);">--</span>`;
+
+    card.innerHTML = `
+      <img src="${p.img_url}" referrerpolicy="no-referrer" loading="lazy" class="tab-thumb" alt="${p.name}">
+      <div class="tab-info-name">${p.name}</div>
+      ${tierBadge}
+    `;
+    bar.appendChild(card);
+  });
+}
+
+function getLeadingTier(counts) {
+  let max = 0;
+  let leaderKey = null;
+  for (const [t, c] of Object.entries(counts)) {
+    if (c > max) {
+      max = c;
+      leaderKey = t;
+    }
+  }
+  if (max === 0 || !leaderKey) return null;
+  const tObj = tiers.find(item => item.key === leaderKey);
+  return { ...tObj, votes: max };
+}
+
+function renderActiveThinker() {
+  const p = philosophers[currentThinkerIndex];
+  const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+  const totalVotes = Object.values(counts).reduce((a, b) => a + b, 0);
+  const leader = getLeadingTier(counts);
+
+  // Hero Section with Large Image
+  const hero = document.getElementById('thinkerHero');
+  let leaderHtml = '';
+  if (leader) {
+    const pct = Math.round((leader.votes / totalVotes) * 100);
+    leaderHtml = `
+      <div class="leading-badge" style="background: ${leader.colorHex}; color: #ffffff;">
+        <span>🏆 Leading: ${leader.key}-Tier (${leader.votes} votes • ${pct}%)</span>
+      </div>
+    `;
+  } else {
+    leaderHtml = `
+      <div class="leading-badge" style="background: var(--inner-box); color: var(--text-secondary); border: 1px solid var(--border-color);">
+        <span>No votes tallied yet</span>
+      </div>
+    `;
+  }
+
+  hero.innerHTML = `
+    <img src="${p.img_url}" referrerpolicy="no-referrer" loading="lazy" class="hero-portrait" alt="${p.name}">
+    <div class="hero-details">
+      <h2>${p.name}</h2>
+      <div class="hero-meta">${p.dates} • ${p.location} • <em>${p.work}</em></div>
+      <div class="hero-concept">${p.concept}</div>
+      <div class="hero-quote">"${p.primary_quote}"</div>
+      <div class="hero-civics-badge">Civics Link: ${p.us_connection}</div>
+    </div>
+    <div class="hero-consensus-box">
+      ${leaderHtml}
+      <div class="total-votes-count">${totalVotes} total class votes</div>
+    </div>
+  `;
+
+  // Tally Grid (ONLY SINGLE VOTE BUTTON + UNDO BUTTON, NO batch vote)
+  const grid = document.getElementById('tallyGrid');
+  grid.innerHTML = '';
+
+  tiers.forEach(t => {
+    const count = counts[t.key] || 0;
+    const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+
+    const card = document.createElement('div');
+    card.className = `tally-card ${t.colorClass}`;
+
+    card.innerHTML = `
+      <div>
+        <div class="tally-header">
+          <span class="tier-badge-large ${t.colorClass}">${t.key}</span>
+          <div>
+            <div class="tier-name-label">${t.name}</div>
+            <div class="tier-desc-label">${t.desc}</div>
+          </div>
+        </div>
+
+        <div class="count-display-row">
+          <span class="count-number">${count}</span>
+          <span class="count-pct">${pct}%</span>
+        </div>
+
+        <div class="pct-bar-bg">
+          <div class="pct-bar-fill ${t.colorClass}" style="width: ${pct}%;"></div>
+        </div>
+      </div>
+
+      <div class="tally-action-buttons">
+        <button class="tally-btn btn-minus" onclick="vote('${p.id}', '${t.key}', -1)" title="Undo 1 vote">Undo (-1)</button>
+        <button class="tally-btn btn-add-1" onclick="vote('${p.id}', '${t.key}', 1)" title="Cast 1 vote on screen">🗳️ Vote (+1)</button>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  renderConsensusBar();
+}
+
+function vote(pId, tierKey, delta) {
+  if (!state.tallies[pId]) {
+    state.tallies[pId] = { S:0, A:0, B:0, C:0, D:0, F:0 };
+  }
+  state.tallies[pId][tierKey] = Math.max(0, (state.tallies[pId][tierKey] || 0) + delta);
+  saveState();
+  renderThinkerSelector();
+  renderActiveThinker();
+  if (currentTallyView === 'overview') {
+    renderAllThinkersGrid();
+  }
+}
+
+function prevThinker() {
+  currentThinkerIndex = (currentThinkerIndex - 1 + philosophers.length) % philosophers.length;
+  renderThinkerSelector();
+  renderActiveThinker();
+}
+
+function nextThinker() {
+  currentThinkerIndex = (currentThinkerIndex + 1) % philosophers.length;
+  renderThinkerSelector();
+  renderActiveThinker();
+}
+
+function resetCurrentThinkerVotes() {
+  const p = philosophers[currentThinkerIndex];
+  if (confirm(`Clear all votes for ${p.name}?`)) {
+    state.tallies[p.id] = { S:0, A:0, B:0, C:0, D:0, F:0 };
+    saveState();
+    renderThinkerSelector();
+    renderActiveThinker();
+  }
+}
+
+function lockCurrentToConsensus() {
+  const p = philosophers[currentThinkerIndex];
+  const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+  const leader = getLeadingTier(counts);
+  if (!leader) {
+    alert("Please tally some votes first before locking into the consensus board!");
+    return;
+  }
+  state.tierBoard[p.id] = leader.key;
+  saveState();
+  renderConsensusBar();
+  alert(`Placed ${p.name} into ${leader.key}-Tier on the Class Consensus Board!`);
+}
+
+// ----------------------------------------------------
+// ALL 9 THINKERS OVERVIEW GRID (NO batch vote)
+// ----------------------------------------------------
+function renderAllThinkersGrid() {
+  const grid = document.getElementById('allThinkersGrid');
+  grid.innerHTML = '';
+
+  philosophers.forEach(p => {
+    const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+    const totalVotes = Object.values(counts).reduce((a, b) => a + b, 0);
+    const leader = getLeadingTier(counts);
+
+    const leaderBadge = leader ? 
+      `<span style="background:${leader.colorHex}; color:#fff; font-weight:800; padding:3px 8px; border-radius:6px; font-size:9pt;">${leader.key}-Tier (${leader.votes} votes)</span>` : 
+      `<span style="background:var(--inner-box); border:1px solid var(--border-color); color:var(--text-secondary); font-weight:600; padding:3px 8px; border-radius:6px; font-size:9pt;">No votes</span>`;
+
+    const card = document.createElement('div');
+    card.className = 'overview-card';
+
+    let countersHtml = '';
+    tiers.forEach(t => {
+      const c = counts[t.key] || 0;
+      countersHtml += `
+        <div class="mini-tier-col">
+          <span class="mini-tier-letter ${t.colorClass}">${t.key}</span>
+          <span class="mini-tier-count">${c}</span>
+          <div class="mini-vote-btns">
+            <button class="btn-mini-vote" onclick="vote('${p.id}', '${t.key}', 1)" title="Cast 1 vote">+</button>
+            <button class="btn-mini-vote" onclick="vote('${p.id}', '${t.key}', -1)" title="Undo 1 vote">-</button>
+          </div>
+        </div>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="overview-card-top">
+        <img src="${p.img_url}" referrerpolicy="no-referrer" loading="lazy" class="overview-card-img" alt="${p.name}" onclick="selectThinkerAndFocus('${p.id}')" title="Click to view details">
+        <div class="overview-card-details">
+          <div class="overview-card-name">${p.name}</div>
+          <div class="overview-card-dates">${p.dates} • ${p.location}</div>
+          <div class="overview-card-clue">${p.clue}</div>
+        </div>
+      </div>
+
+      <div class="overview-tier-counters">
+        ${countersHtml}
+      </div>
+
+      <div class="overview-card-footer">
+        <div><strong>Consensus:</strong> ${leaderBadge}</div>
+        <div style="color:var(--text-secondary); font-weight:600;">${totalVotes} total votes</div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+function selectThinkerAndFocus(pId) {
+  const idx = philosophers.findIndex(p => p.id === pId);
+  if (idx !== -1) {
+    currentThinkerIndex = idx;
+    setTallyView('focus');
+    renderThinkerSelector();
+    renderActiveThinker();
+  }
+}
+
+// ----------------------------------------------------
+// LIVE CONSENSUS BAR WITH AVATARS ON TALLY PAGE
+// ----------------------------------------------------
+function renderConsensusBar() {
+  const row = document.getElementById('consensusTiersRow');
+  row.innerHTML = '';
+
+  tiers.forEach(t => {
+    const leadersInThisTier = philosophers.filter(p => {
+      const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+      const leader = getLeadingTier(counts);
+      return leader && leader.key === t.key;
+    });
+
+    const col = document.createElement('div');
+    col.className = 'consensus-tier-col';
+
+    let avatarsHtml = '';
+    if (leadersInThisTier.length > 0) {
+      avatarsHtml = leadersInThisTier.map(p => `
+        <div class="consensus-avatar-item" onclick="selectThinkerAndFocus('${p.id}')" title="${p.name}">
+          <img src="${p.img_url}" referrerpolicy="no-referrer" loading="lazy" class="consensus-avatar-img" alt="${p.name}">
+          <div class="consensus-avatar-name">${p.name.split(' ')[0]}</div>
+        </div>
+      `).join('');
+    } else {
+      avatarsHtml = `<div class="consensus-empty-text">None yet</div>`;
+    }
+
+    col.innerHTML = `
+      <div class="col-tier-label ${t.colorClass}">${t.key} Tier</div>
+      <div class="col-avatars-wrap">
+        ${avatarsHtml}
+      </div>
+    `;
+
+    row.appendChild(col);
+  });
+}
+
+// ----------------------------------------------------
+// TAB 2: TIER BOARD FUNCTIONS
+// ----------------------------------------------------
+function renderTierBoard() {
+  const container = document.getElementById('tierBoardContainer');
+  container.innerHTML = '';
+
+  tiers.forEach(t => {
+    const row = document.createElement('div');
+    row.className = `tier-row ${t.colorClass}`;
+
+    row.innerHTML = `
+      <div class="tier-label-cell">
+        <span class="tier-letter">${t.key}</span>
+        <span class="tier-subtext">${t.name.split(' ')[0]}</span>
+      </div>
+      <div class="tier-drop-zone" id="tierZone_${t.key}"></div>
+    `;
+
+    container.appendChild(row);
+  });
+
+  const unassignedZone = document.getElementById('unassignedDropZone');
+  unassignedZone.innerHTML = '';
+
+  philosophers.forEach(p => {
+    const currentTier = state.tierBoard[p.id] || 'unassigned';
+    const card = createBoardThinkerCard(p, currentTier);
+
+    if (currentTier !== 'unassigned' && document.getElementById(`tierZone_${currentTier}`)) {
+      document.getElementById(`tierZone_${currentTier}`).appendChild(card);
+    } else {
+      unassignedZone.appendChild(card);
+    }
+  });
+}
+
+function createBoardThinkerCard(p, currentTier) {
+  const card = document.createElement('div');
+  card.className = 'board-thinker-card';
+
+  const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+  const totalVotes = Object.values(counts).reduce((a, b) => a + b, 0);
+  const leader = getLeadingTier(counts);
+  const voteStr = leader ? `${leader.votes} votes (${Math.round((leader.votes/totalVotes)*100)}% ${leader.key})` : '0 votes';
+
+  let optionsHtml = `<option value="unassigned" ${currentTier === 'unassigned' ? 'selected' : ''}>Unassigned</option>`;
+  tiers.forEach(t => {
+    optionsHtml += `<option value="${t.key}" ${currentTier === t.key ? 'selected' : ''}>${t.key} Tier</option>`;
+  });
+
+  card.innerHTML = `
+    <img src="${p.img_url}" referrerpolicy="no-referrer" loading="lazy" class="board-thinker-thumb" alt="${p.name}">
+    <div class="board-card-info">
+      <div class="board-card-name" title="${p.name}">${p.name}</div>
+      <div class="board-card-votes">${voteStr}</div>
+      <select class="tier-select-mini" onchange="moveThinkerToTier('${p.id}', this.value)">
+        ${optionsHtml}
+      </select>
+    </div>
+  `;
+
+  return card;
+}
+
+function moveThinkerToTier(pId, targetTier) {
+  state.tierBoard[pId] = targetTier;
+  saveState();
+  renderTierBoard();
+  renderConsensusBar();
+}
+
+function applyAllTallyWinnersToBoard() {
+  let placedCount = 0;
+  philosophers.forEach(p => {
+    const counts = state.tallies[p.id] || { S:0, A:0, B:0, C:0, D:0, F:0 };
+    const leader = getLeadingTier(counts);
+    if (leader) {
+      state.tierBoard[p.id] = leader.key;
+      placedCount++;
+    }
+  });
+  saveState();
+  renderTierBoard();
+  renderConsensusBar();
+  alert(`Auto-placed ${placedCount} thinkers into their winning consensus tiers!`);
+}
+
+function clearTierBoard() {
+  if (confirm("Reset the tier board to unassigned? (Vote tallies will NOT be deleted)")) {
+    philosophers.forEach(p => {
+      state.tierBoard[p.id] = 'unassigned';
+    });
+    saveState();
+    renderTierBoard();
+    renderConsensusBar();
+  }
+}
+
+// ----------------------------------------------------
+// TAB 3: DEBATE ARENA FUNCTIONS (NO batch vote)
+// ----------------------------------------------------
+function renderDebates() {
+  const grid = document.getElementById('debateGrid');
+  grid.innerHTML = '';
+
+  debates.forEach(d => {
+    const votes = state.debateVotes[d.id] || { p1: 0, p2: 0 };
+    const total = votes.p1 + votes.p2;
+    const p1Pct = total > 0 ? Math.round((votes.p1 / total) * 100) : 50;
+    const p2Pct = total > 0 ? Math.round((votes.p2 / total) * 100) : 50;
+
+    const p1Obj = philosophers.find(p => p.id === d.p1);
+    const p2Obj = philosophers.find(p => p.id === d.p2);
+
+    const card = document.createElement('div');
+    card.className = 'debate-matchup-card';
+
+    card.innerHTML = `
+      <div class="debate-header-row">
+        <div>
+          <div class="debate-header-title">${d.title}</div>
+          <div class="debate-header-sub">${d.sub}</div>
+        </div>
+        <button class="btn btn-secondary" style="font-size: 9.5pt; padding: 6px 12px;" onclick="resetDebate('${d.id}')">Reset Debate</button>
+      </div>
+
+      <div class="debate-vs-layout">
+        <!-- Fighter 1 -->
+        <div class="fighter-side ${votes.p1 > votes.p2 ? 'leading' : ''}">
+          <img src="${p1Obj.img_url}" referrerpolicy="no-referrer" loading="lazy" class="fighter-thumb" alt="${d.p1_name}">
+          <div class="fighter-name">${d.p1_name}</div>
+          <div class="fighter-thesis">🛡️ ${d.p1_thesis}</div>
+          <div class="fighter-arg">"${d.p1_arg}"</div>
+          <div class="fighter-vote-count">${votes.p1}</div>
+          <div class="fighter-buttons">
+            <button class="btn-debate-undo" onclick="voteDebate('${d.id}', 'p1', -1)" title="Undo 1 vote">Undo (-1)</button>
+            <button class="btn-debate-vote" onclick="voteDebate('${d.id}', 'p1', 1)">🗳️ Vote for ${d.p1_name.split(' ')[0]} (+1)</button>
+          </div>
+        </div>
+
+        <!-- VS Divider -->
+        <div class="vs-divider-box">
+          <div class="vs-badge">VS</div>
+          <div class="total-votes-count">${total} Votes</div>
+          <div class="debate-civics-note">${d.civics_link}</div>
+        </div>
+
+        <!-- Fighter 2 -->
+        <div class="fighter-side ${votes.p2 > votes.p1 ? 'leading' : ''}">
+          <img src="${p2Obj.img_url}" referrerpolicy="no-referrer" loading="lazy" class="fighter-thumb" alt="${d.p2_name}">
+          <div class="fighter-name">${d.p2_name}</div>
+          <div class="fighter-thesis">⚖️ ${d.p2_thesis}</div>
+          <div class="fighter-arg">"${d.p2_arg}"</div>
+          <div class="fighter-vote-count">${votes.p2}</div>
+          <div class="fighter-buttons">
+            <button class="btn-debate-undo" onclick="voteDebate('${d.id}', 'p2', -1)" title="Undo 1 vote">Undo (-1)</button>
+            <button class="btn-debate-vote" style="background:#d97706;" onclick="voteDebate('${d.id}', 'p2', 1)">🗳️ Vote for ${d.p2_name.split(' ')[0]} (+1)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tug of War Gauge -->
+      <div class="tug-gauge-container">
+        <div class="gauge-track">
+          <div class="gauge-fill-left" style="width: ${p1Pct}%;"></div>
+          <div class="gauge-fill-right" style="width: ${p2Pct}%;"></div>
+        </div>
+        <div class="gauge-labels">
+          <span style="color: var(--text-accent);">${d.p1_name}: ${p1Pct}% (${votes.p1} votes)</span>
+          <span style="color: var(--tier-s);">${d.p2_name}: ${p2Pct}% (${votes.p2} votes)</span>
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+function voteDebate(debateId, side, delta) {
+  if (!state.debateVotes[debateId]) {
+    state.debateVotes[debateId] = { p1: 0, p2: 0 };
+  }
+  state.debateVotes[debateId][side] = Math.max(0, (state.debateVotes[debateId][side] || 0) + delta);
+  saveState();
+  renderDebates();
+}
+
+function resetDebate(debateId) {
+  if (confirm("Reset votes for this debate matchup?")) {
+    state.debateVotes[debateId] = { p1: 0, p2: 0 };
+    saveState();
+    renderDebates();
+  }
+}
+
+// ----------------------------------------------------
+// SUMMARY & RESET MODALS
+// ----------------------------------------------------
+function openSummaryModal() {
+  const modal = document.getElementById('summaryModal');
+  const body = document.getElementById('summaryModalContent');
+
+  let text = `<h3>Period: ${document.getElementById('classPeriodSelect').selectedOptions[0].text}</h3>`;
+  text += `<hr style="border-color:var(--border-color); margin: 10px 0;">`;
+  text += `<h4>Tier Board Placements:</h4><ul>`;
+
+  tiers.forEach(t => {
+    const inTier = philosophers.filter(p => state.tierBoard[p.id] === t.key);
+    text += `<li><strong>${t.key}-Tier:</strong> ${inTier.map(p => p.name).join(', ') || '<em>None</em>'}</li>`;
+  });
+  text += `</ul>`;
+
+  text += `<h4 style="margin-top:14px;">Debate Face-Off Results:</h4><ul>`;
+  debates.forEach(d => {
+    const v = state.debateVotes[d.id] || { p1:0, p2:0 };
+    const winner = v.p1 > v.p2 ? d.p1_name : (v.p2 > v.p1 ? d.p2_name : 'Tied');
+    text += `<li><strong>${d.title}:</strong> ${d.p1_name} (${v.p1}) vs. ${d.p2_name} (${v.p2}) &nbsp;•&nbsp; <strong>Winner:</strong> ${winner}</li>`;
+  });
+  text += `</ul>`;
+
+  body.innerHTML = text;
+  modal.classList.add('active');
+}
+
+function closeSummaryModal() {
+  document.getElementById('summaryModal').classList.remove('active');
+}
+
+function copySummaryText() {
+  let summary = `Political Philosophers Tier-List - Class Results
+Period: ${document.getElementById('classPeriodSelect').selectedOptions[0].text}
+
+`;
+  summary += `--- TIER BOARD CONSENSUS ---
+`;
+  tiers.forEach(t => {
+    const inTier = philosophers.filter(p => state.tierBoard[p.id] === t.key);
+    summary += `${t.key}-Tier: ${inTier.map(p => p.name).join(', ') || 'None'}
+`;
+  });
+  summary += `
+--- DEBATE WINNERS ---
+`;
+  debates.forEach(d => {
+    const v = state.debateVotes[d.id] || { p1:0, p2:0 };
+    const winner = v.p1 > v.p2 ? d.p1_name : (v.p2 > v.p1 ? d.p2_name : 'Tied');
+    summary += `${d.title}: ${d.p1_name} (${v.p1}) vs ${d.p2_name} (${v.p2}) -> Winner: ${winner}
+`;
+  });
+
+  navigator.clipboard.writeText(summary).then(() => {
+    alert("Class summary copied to clipboard!");
+  });
+}
+
+function confirmResetClass() {
+  const pName = document.getElementById('classPeriodSelect').selectedOptions[0].text;
+  if (confirm(`Are you sure you want to reset ALL tallies and tier board placements for ${pName}?`)) {
+    createDefaultState();
+    renderAll();
+    alert(`${pName} has been reset.`);
+  }
+}
+
+function renderAll() {
+  renderTallyPage();
+  renderTierBoard();
+  renderDebates();
+}
+
+// Initialize on page load
+initTheme();
+initStorage();
+renderAll();
+</script>
+</body>
+</html>
