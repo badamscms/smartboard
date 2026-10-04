@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBQ Smartboard: Hobbes, Locke & Jefferson | Declaration of Independence Analysis</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        chalkboard: {
+                            800: '#1e2638',
+                            850: '#171d2b',
+                            900: '#0f141f',
+                            950: '#090d15'
+                        },
+                        parchment: {
+                            50: '#fdfbf7',
+                            100: '#f7f3e8',
+                            200: '#ede4ce',
+                            300: '#dfd0ab',
+                            800: '#3c301c',
+                            900: '#231b0e'
+                        },
+                        influence: {
+                            equal: '#10b981',       /* Emerald: Natural Equality */
+                            rights: '#3b82f6',      /* Blue: Unalienable Rights */
+                            consent: '#8b5cf6',     /* Purple: Consent of Governed */
+                            revolt: '#ef4444',      /* Red: Right of Revolution */
+                            nature: '#f59e0b'       /* Amber: State of Nature / Purpose */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --doc-font-size: 1.65rem;
+            --doc-line-height: 1.65;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            user-select: text;
+        }
+
+        /* Dark Slate Chalkboard Theme */
+        body.theme-chalkboard {
+            background-color: #0d121c;
+            color: #e2e8f0;
+        }
+        body.theme-chalkboard .surface-card {
+            background-color: #171f2f;
+            border-color: #29354d;
+        }
+        body.theme-chalkboard .surface-header {
+            background-color: #0f1523;
+            border-color: #222d42;
+        }
+        body.theme-chalkboard .surface-control {
+            background-color: #1f2b40;
+            color: #e2e8f0;
+            border-color: #334466;
+        }
+        body.theme-chalkboard .surface-control:hover,
+        body.theme-chalkboard .surface-control.active {
+            background-color: #2e4163;
+            border-color: #60a5fa;
+            color: #ffffff;
+        }
+
+        /* Light Warm Parchment Theme */
+        body.theme-parchment {
+            background-color: #f5eedc;
+            color: #2d2314;
+        }
+        body.theme-parchment .surface-card {
+            background-color: #fdfaf2;
+            border-color: #dfd2b8;
+            box-shadow: 0 4px 15px rgba(80, 60, 20, 0.06);
+        }
+        body.theme-parchment .surface-header {
+            background-color: #f3ebda;
+            border-color: #d6c5a3;
+        }
+        body.theme-parchment .surface-control {
+            background-color: #ede2cb;
+            color: #3b2f1e;
+            border-color: #cfbe9a;
+        }
+        body.theme-parchment .surface-control:hover,
+        body.theme-parchment .surface-control.active {
+            background-color: #dfcead;
+            border-color: #92692f;
+            color: #1a1207;
+        }
+        body.theme-parchment .doc-author-title {
+            color: #78350f !important;
+        }
+
+        .document-pane {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .document-pane::-webkit-scrollbar {
+            width: 8px;
+        }
+        .document-pane::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+        .document-pane::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.4);
+            border-radius: 4px;
+        }
+        .document-pane::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.7);
+        }
+
+        .doc-content {
+            font-size: var(--doc-font-size);
+            line-height: var(--doc-line-height);
+        }
+
+        /* Smart Interactive Highlighting & Influence Overlaps */
+        .highlightable {
+            position: relative;
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 3px 6px;
+            margin: 0 2px;
+            display: inline;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border-bottom: 2.5px solid transparent;
+        }
+
+        .highlightable[data-theme="equal"] { border-bottom-color: rgba(16, 185, 129, 0.5); }
+        .highlightable[data-theme="rights"] { border-bottom-color: rgba(59, 130, 246, 0.5); }
+        .highlightable[data-theme="consent"] { border-bottom-color: rgba(139, 92, 246, 0.5); }
+        .highlightable[data-theme="revolt"] { border-bottom-color: rgba(239, 68, 68, 0.5); }
+        .highlightable[data-theme="nature"] { border-bottom-color: rgba(245, 158, 11, 0.5); }
+
+        .highlightable:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+        }
+
+        .highlightable.highlighted[data-theme="equal"] {
+            background-color: rgba(16, 185, 129, 0.28);
+            border-bottom-color: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+            color: inherit;
+            font-weight: 600;
+        }
+        .highlightable.highlighted[data-theme="rights"] {
+            background-color: rgba(59, 130, 246, 0.28);
+            border-bottom-color: #3b82f6;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+            color: inherit;
+            font-weight: 600;
+        }
+        .highlightable.highlighted[data-theme="consent"] {
+            background-color: rgba(139, 92, 246, 0.28);
+            border-bottom-color: #8b5cf6;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.45);
+            color: inherit;
+            font-weight: 600;
+        }
+        .highlightable.highlighted[data-theme="revolt"] {
+            background-color: rgba(239, 68, 68, 0.28);
+            border-bottom-color: #ef4444;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+            color: inherit;
+            font-weight: 600;
+        }
+        .highlightable.highlighted[data-theme="nature"] {
+            background-color: rgba(245, 158, 11, 0.28);
+            border-bottom-color: #f59e0b;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+            color: inherit;
+            font-weight: 600;
+        }
+
+        body.theme-chalkboard .highlightable.highlighted { color: #ffffff; }
+        body.theme-parchment .highlightable.highlighted { color: #111827; }
+
+        .influence-pill {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.6em;
+            vertical-align: middle;
+            padding: 0.15rem 0.4rem;
+            border-radius: 9999px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.25rem;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .glossary-term {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 2.5px;
+            text-underline-offset: 4px;
+            cursor: help;
+            color: #38bdf8;
+            transition: all 0.2s ease;
+        }
+        body.theme-parchment .glossary-term { color: #0284c7; }
+        .glossary-term:hover {
+            color: #7dd3fc;
+            text-decoration-style: solid;
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(96, 165, 250, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+        }
+        .active-pulse { animation: pulse-ring 1.8s infinite; }
+
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        button, select { touch-action: manipulation; }
+    </style>
+</head>
+<body class="theme-chalkboard min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- Top Classroom Header -->
+    <header class="surface-header border-b px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 shadow-md z-20">
+        <div class="flex items-center space-x-3">
+            <span class="text-3xl p-2 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30">📜</span>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2" id="main-title">
+                    <span>Enlightenment Roots of the Declaration</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium">DBQ Smartboard v2.5</span>
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-400">Interactive Document Analysis: Hobbes (1651) &bull; Locke (1689) &bull; Jefferson (1776)</p>
+            </div>
+        </div>
+
+        <!-- Quick Classroom Utility Buttons -->
+        <div class="flex items-center flex-wrap gap-2">
+            <!-- Theme Toggle -->
+            <button id="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Dark Chalkboard / Light Parchment Mode" class="surface-control px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition">
+                <span id="theme-icon">☀️</span> <span id="theme-text" class="hidden md:inline">Parchment</span>
+            </button>
+
+            <!-- DBQ Guiding Questions Modal Button -->
+            <button onclick="openModal('dbq-guide-modal')" class="surface-control px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 text-amber-300 border-amber-500/40 hover:bg-amber-900/30 transition">
+                <span>💡</span> <span class="hidden sm:inline">DBQ Prompts</span>
+            </button>
+
+            <!-- Glossary Modal Button -->
+            <button onclick="openGlossaryListModal()" class="surface-control px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 text-sky-300 border-sky-500/40 hover:bg-sky-900/30 transition">
+                <span>📖</span> <span class="hidden sm:inline">Glossary (12)</span>
+            </button>
+
+            <!-- Fullscreen Mode for Smartboard -->
+            <button onclick="toggleFullscreen()" title="Toggle Fullscreen for Smartboard" class="surface-control px-2.5 py-1.5 rounded-lg text-sm font-medium transition">
+                ⛶
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Smartboard Control Center -->
+    <div id="controls-bar" class="surface-card border-b px-4 py-2.5 sm:px-6 shadow-sm z-10 flex flex-wrap items-center justify-between gap-3">
+        <!-- View Selector Buttons -->
+        <div class="flex items-center flex-wrap gap-1.5">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1 hidden lg:inline">Views:</span>
+            
+            <button id="btn-view-doc1" class="surface-control px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition" onclick="setView('doc1')">
+                <span>🧔🏻</span> Hobbes
+            </button>
+            <button id="btn-view-doc2" class="surface-control px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition" onclick="setView('doc2')">
+                <span>👴🏼</span> Locke
+            </button>
+            <button id="btn-view-doc3" class="surface-control px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition" onclick="setView('doc3')">
+                <span>🦅</span> Declaration
+            </button>
+
+            <div class="h-6 w-px bg-slate-600/50 mx-1"></div>
+
+            <button id="btn-compare-23" class="surface-control px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5 bg-blue-900/30 text-blue-300 border-blue-600/40 transition active" onclick="setView('doc2', 'doc3')">
+                <span>⚡</span> Locke vs Jefferson <span class="text-[10px] bg-emerald-500/30 text-emerald-300 px-1.5 py-0.5 rounded ml-1 font-mono">PRIMARY INFLUENCE</span>
+            </button>
+
+            <button id="btn-compare-13" class="surface-control px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition" onclick="setView('doc1', 'doc3')">
+                <span>⚔️</span> Hobbes vs Jefferson
+            </button>
+
+            <button id="btn-compare-tri" class="surface-control px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 text-purple-300 border-purple-500/40 transition" onclick="setView('doc1', 'doc2', 'doc3')">
+                <span>🏛️</span> Tri-View (All 3)
+            </button>
+
+            <button id="btn-influence-matrix" class="surface-control px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 text-amber-300 border-amber-500/40 transition" onclick="showInfluenceMatrixView()">
+                <span>🧬</span> Overlap Matrix
+            </button>
+        </div>
+
+        <!-- Typography & Smartboard Readability Settings -->
+        <div class="flex items-center gap-2.5 flex-wrap">
+            <!-- Font Scaler for distance readability -->
+            <div class="flex items-center surface-control rounded-lg p-1 text-xs">
+                <button onclick="adjustFontSize(-0.15)" title="Decrease font size" class="px-2 py-1 hover:bg-slate-700/50 rounded font-bold">A-</button>
+                <span id="font-size-label" class="px-2 font-mono font-medium">100%</span>
+                <button onclick="adjustFontSize(0.15)" title="Increase font size for classroom" class="px-2 py-1 hover:bg-slate-700/50 rounded font-bold text-sm">A+</button>
+            </div>
+
+            <!-- Font Family -->
+            <select id="font-selector" onchange="changeFont()" class="surface-control px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium cursor-pointer outline-none">
+                <option value="'Inter', sans-serif">Modern Sans (Inter)</option>
+                <option value="'Merriweather', serif" selected>Scholarly Serif (Merriweather)</option>
+                <option value="'Playfair Display', serif">Declaration Display (Playfair)</option>
+                <option value="'Roboto', sans-serif">Clean Display (Roboto)</option>
+                <option value="'Cinzel', serif">Classical Roman (Cinzel)</option>
+            </select>
+
+            <!-- Reset Highlight -->
+            <button onclick="clearHighlights()" title="Clear all active highlights" class="surface-control px-2.5 py-1.5 rounded-lg text-xs font-medium hover:text-red-400 transition">
+                Clear ✕
+            </button>
+        </div>
+    </div>
+
+    <!-- Thematic Influence & Overlap Filter Bar -->
+    <div id="theme-filter-bar" class="px-4 py-2 sm:px-6 bg-slate-900/60 dark:bg-slate-950/70 border-b border-slate-700/40 flex items-center flex-wrap gap-2 text-xs">
+        <span class="font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mr-1">
+            <span>🎯</span> Filter Influences & Overlaps:
+        </span>
+
+        <button onclick="filterByTheme('all')" class="theme-filter-btn px-2.5 py-1 rounded-md font-semibold bg-slate-700 text-white transition active" data-filter="all">
+            Show All Overlaps
+        </button>
+
+        <button onclick="filterByTheme('equal')" class="theme-filter-btn px-2.5 py-1 rounded-md font-semibold text-emerald-300 border border-emerald-500/40 hover:bg-emerald-950/40 transition" data-filter="equal">
+            🟢 Natural Equality
+        </button>
+
+        <button onclick="filterByTheme('rights')" class="theme-filter-btn px-2.5 py-1 rounded-md font-semibold text-blue-300 border border-blue-500/40 hover:bg-blue-950/40 transition" data-filter="rights">
+            🔵 Unalienable Rights
+        </button>
+
+        <button onclick="filterByTheme('consent')" class="theme-filter-btn px-2.5 py-1 rounded-md font-semibold text-purple-300 border border-purple-500/40 hover:bg-purple-950/40 transition" data-filter="consent">
+            🟣 Consent of Governed
+        </button>
+
+        <button onclick="filterByTheme('revolt')" class="theme-filter-btn px-2.5 py-1 rounded-md font-semibold text-red-300 border border-red-500/40 hover:bg-red-950/40 transition" data-filter="revolt">
+            🔴 Right of Revolution
+        </button>
+
+        <button onclick="filterByTheme('nature')" class="theme-filter-btn px-2.5 py-1 rounded-md font-semibold text-amber-300 border border-amber-500/40 hover:bg-amber-950/40 transition" data-filter="nature">
+            🟠 State of Nature & Purpose
+        </button>
+    </div>
+
+    <!-- Active Overlap Explanatory Ribbon (Dynamic Banner) -->
+    <div id="overlap-ribbon" class="hidden px-4 py-2 bg-gradient-to-r from-blue-950/80 via-slate-900 to-indigo-950/80 border-b border-blue-500/30 text-xs sm:text-sm text-slate-200 flex items-center justify-between transition-all">
+        <div class="flex items-center gap-2 overflow-hidden">
+            <span id="ribbon-badge" class="px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-blue-500 text-white shrink-0">DIRECT INFLUENCE</span>
+            <span id="ribbon-text" class="font-medium truncate">Click any highlighted passage to inspect direct philosophical overlaps between Locke, Hobbes, and Jefferson.</span>
+        </div>
+        <button onclick="closeRibbon()" class="text-slate-400 hover:text-white px-2 py-0.5 text-lg leading-none">&times;</button>
+    </div>
+
+    <!-- Main Document Display Workspace -->
+    <main id="document-display" class="flex-1 p-3 sm:p-5 flex gap-4 w-full h-[calc(100vh-14.5rem)] min-h-[500px]">
+        <!-- Document cards dynamically populated via JavaScript -->
+    </main>
+
+    <!-- Bottom Contextual Status / Influence Helper Footer -->
+    <footer class="surface-header border-t px-4 py-2 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2 z-10">
+        <div class="flex items-center gap-3">
+            <span class="flex items-center gap-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                <span>Locke ➔ Jefferson (Direct Alignment)</span>
+            </span>
+            <span class="flex items-center gap-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>
+                <span>Hobbes vs Jefferson (Direct Antithesis / Contrast)</span>
+            </span>
+            <span class="hidden md:inline text-slate-500">|</span>
+            <span class="hidden md:inline text-slate-400">💡 <em>Tip: Tap any dotted term for glossary definitions; tap highlighted phrases for influence breakdown.</em></span>
+        </div>
+        <div class="font-mono text-[11px] text-slate-400">
+            AP U.S. History & Gov DBQ Module
+        </div>
+    </footer>
+
+    <!-- ================= MODALS & POPUPS ================= -->
+
+    <!-- Interactive Influence Overlap Deep-Dive Inspector Modal -->
+    <div id="influence-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div class="surface-card rounded-xl max-w-4xl w-full border-2 border-blue-500/40 shadow-2xl p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('influence-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl font-light leading-none">&times;</button>
+            
+            <div class="flex items-center gap-2 mb-2">
+                <span id="inf-modal-badge" class="px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-emerald-600 text-white">Theme: Natural Equality</span>
+                <span id="inf-modal-relation" class="text-xs text-slate-400 font-mono">John Locke ➔ Thomas Jefferson (1776)</span>
+            </div>
+
+            <h2 id="inf-modal-title" class="text-2xl font-bold text-white mb-4">Textual Parallel & Philosophical Inheritance</h2>
+
+            <!-- Side-by-side quote comparison in modal -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+                <div class="p-4 rounded-lg bg-slate-900/70 border border-slate-700/80">
+                    <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <span>👴🏼</span> <span id="inf-source-title">John Locke, Second Treatise (1689)</span>
+                    </div>
+                    <blockquote id="inf-source-quote" class="italic text-slate-200 border-l-2 border-sky-500 pl-3 my-2 text-lg">
+                        "Men being, as has been said, by nature all free, equal, and independent..."
+                    </blockquote>
+                    <p id="inf-source-context" class="text-xs text-slate-400 mt-2">Section 95: Discussing the natural state before civil society.</p>
+                </div>
+
+                <div class="p-4 rounded-lg bg-slate-900/70 border border-emerald-700/60 bg-emerald-950/10">
+                    <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <span>🦅</span> Thomas Jefferson, Declaration of Independence (1776)
+                    </div>
+                    <blockquote id="inf-target-quote" class="italic text-slate-200 border-l-2 border-emerald-500 pl-3 my-2 text-lg">
+                        "We hold these truths to be self-evident, that all men are created equal..."
+                    </blockquote>
+                    <p id="inf-target-context" class="text-xs text-slate-400 mt-2">Preamble: Universal justification for dissolving political bonds.</p>
+                </div>
+            </div>
+
+            <!-- Scholarly Analysis & DBQ Takeaway -->
+            <div class="mt-4 p-4 rounded-lg bg-slate-800/80 border border-slate-700">
+                <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                    <span>🔍</span> Historical & Conceptual Analysis
+                </h4>
+                <p id="inf-modal-analysis" class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Jefferson did not write in a vacuum; his declaration was an intentional distillation of the "common sense of the subject." He directly transcribed Locke's core Enlightenment axiom that all individuals enter the world with natural parity.
+                </p>
+            </div>
+
+            <!-- DBQ Discussion Prompt -->
+            <div class="mt-3 p-3 rounded-lg bg-blue-950/40 border border-blue-500/30 flex items-start gap-2">
+                <span class="text-xl">✍️</span>
+                <div>
+                    <strong class="text-blue-300 text-xs uppercase tracking-wide block">DBQ Argumentation Prompt:</strong>
+                    <span id="inf-modal-prompt" class="text-xs sm:text-sm text-slate-300">
+                        How does Jefferson's phrasing of "self-evident" elevate Locke's legal contract theory into an axiomatic moral imperative?
+                    </span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeModal('influence-modal')" class="surface-control px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-700">Close Inspector</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glossary Term Definition Modal -->
+    <div id="glossary-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div class="surface-card rounded-xl max-w-xl w-full border-2 border-sky-500/40 shadow-2xl p-6 sm:p-8 relative">
+            <button onclick="closeModal('glossary-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl font-light leading-none">&times;</button>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-sky-600 text-white">Historical Vocabulary</span>
+            </div>
+            <h3 id="modal-term" class="text-2xl sm:text-3xl font-bold mb-2 text-sky-400"></h3>
+            <div class="p-3 my-3 rounded bg-slate-900/60 border border-slate-700">
+                <span class="text-xs uppercase text-slate-400 font-semibold block mb-1">17th/18th-Century Political Meaning:</span>
+                <p id="modal-definition" class="text-base sm:text-lg text-slate-200 leading-relaxed"></p>
+            </div>
+            <div class="p-3 my-2 rounded bg-amber-950/20 border border-amber-600/30">
+                <span class="text-xs uppercase text-amber-400 font-semibold block mb-1">Classroom DBQ Connection:</span>
+                <p id="modal-dbq-note" class="text-xs sm:text-sm text-slate-300"></p>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button onclick="closeModal('glossary-modal')" class="surface-control px-4 py-2 rounded-lg text-sm font-semibold">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Glossary Index Modal -->
+    <div id="glossary-list-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div class="surface-card rounded-xl max-w-3xl w-full border-2 border-slate-600 shadow-2xl p-6 sm:p-8 relative max-h-[85vh] flex flex-col">
+            <button onclick="closeModal('glossary-list-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl font-light leading-none">&times;</button>
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">📖</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white">Foundational Political Glossary</h3>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Key terms used across Hobbes's *Leviathan*, Locke's *Treatises*, and the *Declaration of Independence*.</p>
+            
+            <div id="glossary-items-container" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
+            <div class="mt-4 pt-3 border-t border-slate-700 flex justify-end">
+                <button onclick="closeModal('glossary-list-modal')" class="surface-control px-4 py-2 rounded-lg text-sm font-semibold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DBQ Essay & Discussion Prompts Modal -->
+    <div id="dbq-guide-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div class="surface-card rounded-xl max-w-3xl w-full border-2 border-amber-500/40 shadow-2xl p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('dbq-guide-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl font-light leading-none">&times;</button>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">💡</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-amber-400">DBQ Essay Prompts & Teacher Discussion Guide</h3>
+            </div>
+            <p class="text-sm text-slate-300 mb-4">Use these questions for class discussion or student essay scaffolding:</p>
+            
+            <div class="space-y-4">
+                <div class="p-4 rounded-lg bg-slate-900/60 border border-slate-700">
+                    <span class="px-2 py-0.5 rounded bg-blue-600/30 text-blue-300 font-bold text-xs uppercase">Primary Prompt</span>
+                    <h4 class="text-base sm:text-lg font-bold text-white mt-1">To what extent was the Declaration of Independence a direct application of Lockean social contract theory?</h4>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Look closely at Locke's definition of "consent" and the "Right of Revolution" when legislators destroy property or exercise arbitrary power.</p>
+                </div>
+
+                <div class="p-4 rounded-lg bg-slate-900/60 border border-slate-700">
+                    <span class="px-2 py-0.5 rounded bg-amber-600/30 text-amber-300 font-bold text-xs uppercase">Textual Shift Analysis</span>
+                    <h4 class="text-base sm:text-lg font-bold text-white mt-1">Why did Jefferson substitute "the pursuit of Happiness" for Locke's original triad of "Life, Liberty, and Estate (Property)"?</h4>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Consider the broader moral connotations of Greek/Scottish eudaimonia (virtue & public flourishing) vs. narrow landed wealth.</p>
+                </div>
+
+                <div class="p-4 rounded-lg bg-slate-900/60 border border-slate-700">
+                    <span class="px-2 py-0.5 rounded bg-red-600/30 text-red-300 font-bold text-xs uppercase">Hobbesian Counter-Argument</span>
+                    <h4 class="text-base sm:text-lg font-bold text-white mt-1">How would Thomas Hobbes criticize the American colonists' decision to declare independence?</h4>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Hobbes argued that fracturing the "common power" dissolves civil society back into the brutal "war of every man against every man."</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeModal('dbq-guide-modal')" class="surface-control px-5 py-2 rounded-lg text-sm font-semibold">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DATA & LOGIC -->
+    <script>
+        const philosopherImages = {
+            hobbes: {
+                primary: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Thomas_Hobbes_%28portrait%29.jpg/440px-Thomas_Hobbes_%28portrait%29.jpg",
+                alt: "Thomas Hobbes (1588-1679) Portrait by John Michael Wright"
+            },
+            locke: {
+                primary: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/John_Locke.jpg/440px-John_Locke.jpg",
+                alt: "John Locke (1632-1704) Portrait by Sir Godfrey Kneller"
+            },
+            jefferson: {
+                primary: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Thomas_Jefferson_by_Rembrandt_Peale%2C_1800.jpg/440px-Thomas_Jefferson_by_Rembrandt_Peale%2C_1800.jpg",
+                alt: "Thomas Jefferson (1743-1826) Portrait by Rembrandt Peale"
+            }
+        };
+
+        function getSvgFallback(name) {
+            const initials = name === 'hobbes' ? 'TH' : (name === 'locke' ? 'JL' : 'TJ');
+            const bg = name === 'hobbes' ? '#475569' : (name === 'locke' ? '#1e3a8a' : '#065f46');
+            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="${bg}"/><circle cx="100" cy="80" r="45" fill="%23cbd5e1"/><path d="M40 180 c0-40 30-60 60-60 s60 20 60 60" fill="%23cbd5e1"/><text x="100" y="105" font-family="serif" font-size="34" font-weight="bold" fill="%231e293b" text-anchor="middle">${initials}</text></svg>`;
+        }
+
+        const documents = {
+            doc1: {
+                id: 'doc1',
+                code: 'hobbes',
+                author: 'Thomas Hobbes',
+                dates: '1588–1679 &bull; Malmesbury, England',
+                work: 'Leviathan (1651)',
+                roleBadge: 'The Authoritarian Baseline (Foil to Jefferson)',
+                roleColor: 'bg-red-900/40 text-red-300 border-red-700/50',
+                coreIdea: 'Human nature without sovereign law leads to violent chaos. Security requires total submission to a common authority.',
+                image: philosopherImages.hobbes.primary,
+                content: `"In the nature of man, we find three principal causes of quarrel: 
+                <span class="highlightable" data-match="quarrel" data-theme="nature">competition, <span class="glossary-term" data-term="diffidence">diffidence</span>, and glory</span>. 
+                The first makes men invade for gain; the second, for safety; and the third, for reputation. ... 
+                During the time men live without a <span class="highlightable glossary-term" data-match="power" data-theme="consent" data-term="common power">common power</span> 
+                to keep them all in awe, they are in that condition which is called war; and such a war, as is 
+                <span class="highlightable" data-match="state_of_war" data-theme="nature">of every man, against every man</span>. 
+                The life of man, <span class="highlightable" data-match="nasty_brutish" data-theme="nature">solitary, poor, nasty, brutish, and short</span>."`
+            },
+            doc2: {
+                id: 'doc2',
+                code: 'locke',
+                author: 'John Locke',
+                dates: '1632–1704 &bull; Somerset, England',
+                work: 'Second Treatise of Government (1689)',
+                roleBadge: 'Primary Intellectual Architect of the Revolution',
+                roleColor: 'bg-blue-900/40 text-blue-300 border-blue-700/50',
+                coreIdea: 'Men possess inalienable rights in nature. Government is a conditional trust; if violated, citizens may lawfully rebel.',
+                image: philosopherImages.locke.primary,
+                content: `"Men being, as has been said, by nature all 
+                <span class="highlightable" data-match="equal" data-theme="equal">free, equal, and independent</span>
+                <span class="influence-pill bg-emerald-700 text-emerald-100" data-theme="equal" title="Direct influence on Jefferson's 'created equal'">Locke Axiom</span>, 
+                no one can be put out of this estate and subjected to the political power of another without his own 
+                <span class="highlightable glossary-term" data-match="consent" data-theme="consent" data-term="consent">consent</span>. 
+                The end of law is not to abolish or restrain but to 
+                <span class="highlightable" data-match="liberty" data-theme="rights">preserve and enlarge freedom</span>. ... 
+                Whenever the legislators endeavor to take away and destroy the property of the people or to reduce them to slavery under 
+                <span class="glossary-term" data-term="arbitrary power">arbitrary power</span>, they put themselves into a state of war with the people, who are thereupon 
+                <span class="highlightable" data-match="revolt" data-theme="revolt"><span class="glossary-term" data-term="absolved">absolved</span> from any further obedience</span>
+                <span class="influence-pill bg-red-700 text-red-100" data-theme="revolt" title="Legal blueprint for declaring independence">Right to Rebel</span>."`
+            },
+            doc3: {
+                id: 'doc3',
+                code: 'jefferson',
+                author: 'Thomas Jefferson',
+                dates: '1743–1826 &bull; Virginia, British America',
+                work: 'The Declaration of Independence (1776)',
+                roleBadge: 'Revolutionary Synthesizer & Drafter',
+                roleColor: 'bg-emerald-900/40 text-emerald-300 border-emerald-700/50',
+                coreIdea: 'Translates Enlightenment philosophy into revolutionary practice, declaring universal rights and justification for national separation.',
+                image: philosopherImages.jefferson.primary,
+                content: `"We hold these truths to be self-evident, that 
+                <span class="highlightable" data-match="equal" data-theme="equal">all men are created equal</span>
+                <span class="influence-pill bg-emerald-700 text-emerald-100" data-theme="equal" title="Paraphrased from Locke's Second Treatise">Echoes Locke</span>, 
+                that they are endowed by their Creator with certain 
+                <span class="glossary-term" data-term="unalienable Rights">unalienable Rights</span>, that among these are 
+                <span class="highlightable" data-match="liberty" data-theme="rights">Life, Liberty and the pursuit of Happiness</span>
+                <span class="influence-pill bg-blue-700 text-blue-100" data-theme="rights" title="Adapted from Locke's 'Life, Liberty, & Estate'">Locke's Triad</span>. 
+                That to secure these rights, Governments are 
+                <span class="glossary-term" data-term="instituted">instituted</span> among Men, 
+                <span class="glossary-term" data-term="deriving">deriving</span> their just powers from the 
+                <span class="highlightable glossary-term" data-match="consent" data-theme="consent" data-term="consent">consent of the governed</span>
+                <span class="influence-pill bg-purple-700 text-purple-100" data-theme="consent" title="Direct Lockean social contract theory">Popular Sovereignty</span>, 
+                That whenever any Form of Government becomes destructive of these ends, it is the 
+                <span class="highlightable" data-match="revolt" data-theme="revolt">Right of the People to alter or to <span class="glossary-term" data-term="abolish">abolish</span> it</span>
+                <span class="influence-pill bg-red-700 text-red-100" data-theme="revolt" title="Direct translation of Locke's dissolution clause">Locke's Mandate</span>, 
+                and to institute new Government."`
+            }
+        };
+
+        const influenceData = {
+            equal: {
+                theme: 'equal',
+                badgeText: 'DIRECT LOCKE INFLUENCE',
+                title: 'Natural Equality as an Innate Condition',
+                sourceAuthor: 'John Locke, Second Treatise (1689)',
+                sourceQuote: 'Men being, as has been said, by nature all free, equal, and independent...',
+                sourceContext: 'Section 95: Rebutting Robert Filmer’s patriarchal divine right of kings.',
+                targetQuote: 'We hold these truths to be self-evident, that all men are created equal...',
+                targetContext: 'Declaration Preamble: Establishing the moral baseline for all legitimate authority.',
+                analysis: 'Jefferson directly adopted Locke’s fundamental premise: before political institutions exist, all humans possess equal moral worth and natural freedom. While Locke argued this analytically through natural law, Jefferson elevated it into an unshakeable American political creed ("self-evident").',
+                prompt: 'Why was the assertion that "all men are created equal" both radically revolutionary in 1776 yet deeply contradictory in practice regarding chattel slavery?'
+            },
+            liberty: {
+                theme: 'rights',
+                badgeText: 'ADAPTED FROM LOCKE',
+                title: 'The Triad of Inalienable Natural Rights',
+                sourceAuthor: 'John Locke, Second Treatise (1689)',
+                sourceQuote: '...preserve and enlarge freedom... [to preserve one\'s] Life, Liberty, and Estate [Property].',
+                sourceContext: 'Section 57 & 123: The chief purpose for which individuals unite into commonwealths.',
+                targetQuote: '...endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.',
+                targetContext: 'Declaration Preamble: Defining the sacred entitlements no crown can infringe.',
+                analysis: 'Jefferson famously substituted "the pursuit of Happiness" for Locke’s "Estate" (property). Influenced by Scottish Enlightenment moral philosophy and George Mason’s Virginia Declaration of Rights, Jefferson wanted a more universal, civic concept of human flourishing (Greek eudaimonia) rather than merely protecting material possessions.',
+                prompt: 'In what ways does changing "property" to "the pursuit of happiness" broaden the promise of American democratic society?'
+            },
+            consent: {
+                theme: 'consent',
+                badgeText: 'LOCKEAN FIDUCIARY TRUST',
+                title: 'Government Legitimized Solely by Consent',
+                sourceAuthor: 'John Locke (vs. Thomas Hobbes)',
+                sourceQuote: 'Locke: "...no one can be subjected to the political power of another without his own consent." (Contrast Hobbes: "...a common power to keep them all in awe.")',
+                sourceContext: 'Locke argues power is held on conditional trust. Hobbes argued surrender of rights to the Sovereign is absolute and permanent.',
+                targetQuote: '...deriving their just powers from the consent of the governed...',
+                targetContext: 'Declaration: The foundational pillar of American constitutionalism.',
+                analysis: 'Jefferson explicitly sides with Locke against Hobbes. For Hobbes, fear of the chaotic state of nature justifies total obedience to an awe-inspiring monarch. For Locke and Jefferson, political power is not inherent in rulers; it is a temporary, revocable grant delegated by the people.',
+                prompt: 'How did King George III\'s taxation without representation directly violate the Lockean principle of "consent of the governed"?'
+            },
+            revolt: {
+                theme: 'revolt',
+                badgeText: 'JUSTIFIED DISSOLUTION OF TYRANNY',
+                title: 'The Moral & Legal Right of Revolution',
+                sourceAuthor: 'John Locke, Second Treatise (1689)',
+                sourceQuote: '...who are thereupon absolved from any further obedience [when rulers act with arbitrary power]...',
+                sourceContext: 'Chapter XIX: "Of the Dissolution of Government"—justifying England\'s Glorious Revolution (1688).',
+                targetQuote: '...it is the Right of the People to alter or to abolish it, and to institute new Government...',
+                targetContext: 'Declaration: Directly laying the legal warrant for the 27 specific charges against King George III.',
+                analysis: 'This is the most direct legal precedent in the entire Declaration. When a government breaches its social contract through "a long train of abuses," Locke argued it enters a state of war with its own citizens, forfeiting all authority. Jefferson used this exact Lockean defense to show King George was a tyrant whom the colonies had the legal right to overthrow.',
+                prompt: 'Why was it crucial for Jefferson to prove that King George III was guilty of "repeated injuries and usurpations" before invoking the right to abolish the government?'
+            },
+            nasty_brutish: {
+                theme: 'nature',
+                badgeText: 'HOBBESIAN CONTRAST & FOIL',
+                title: 'State of Nature: Chaos vs. Moral Harmony',
+                sourceAuthor: 'Thomas Hobbes, Leviathan (1651)',
+                sourceQuote: '...war of every man against every man... solitary, poor, nasty, brutish, and short.',
+                sourceContext: 'Chapter XIII: Human life in the absence of an overpowering central ruler.',
+                targetQuote: 'That to secure these rights, Governments are instituted among Men...',
+                targetContext: 'Declaration: Government is designed as a tool to protect rights, not an oppressive master.',
+                analysis: 'Hobbes believed that humans in nature are inherently selfish and violent, meaning sovereignty must be absolute to maintain mere survival. Locke and Jefferson countered that humans are rational beings possessing pre-political natural rights. While Hobbes saw government as preventing mutual destruction, Jefferson saw it as securing innate freedom.',
+                prompt: 'Would Thomas Hobbes have viewed the American Revolution as a noble fight for freedom, or a dangerous descent into the horrors of the state of nature?'
+            },
+            quarrel: {
+                theme: 'nature',
+                badgeText: 'CAUSES OF CONFLICT',
+                title: 'Origin of Violence & Strife',
+                sourceAuthor: 'Thomas Hobbes, Leviathan (1651)',
+                sourceQuote: '...three principal causes of quarrel: competition, diffidence, and glory...',
+                sourceContext: 'Hobbes argues quarrel arises from human psychology itself.',
+                targetQuote: '...a history of repeated injuries and usurpations, all having in direct object the establishment of an absolute Tyranny...',
+                targetContext: 'Declaration: Conflict arises from executive overreach and tyrannical abuse, not inherent civilian wickedness.',
+                analysis: 'Hobbes places the blame for conflict on ordinary human nature (diffidence/mistrust). Jefferson places the blame squarely upon the corrupting nature of unchecked monarchical power.',
+                prompt: 'Compare Hobbes\'s view of human flaw with the Declaration\'s diagnosis of King George III\'s tyranny.'
+            }
+        };
+
+        const glossary = {
+            'diffidence': {
+                term: 'Diffidence',
+                definition: 'In 17th-century political philosophy (Hobbes), mutual distrust and apprehension. Because no one can be trusted in the state of nature, individuals feel compelled to strike first preemptively to ensure their own survival.',
+                dbqNote: 'Explains why Hobbes believed life without an absolute monarch collapses into constant fear and preventative violence.'
+            },
+            'common power': {
+                term: 'Common Power',
+                definition: 'An undivided, supreme governing authority (the "Leviathan") holding monopoly over force and law to keep all citizens in awe and prevent civil war.',
+                dbqNote: 'Direct antithesis to the American system of separated powers, checks and balances, and federalism.'
+            },
+            'consent': {
+                term: 'Consent',
+                definition: 'Voluntary agreement of free individuals to form a political community and submit to majority rule. For Locke and Jefferson, political authority is illegitimate without ongoing popular consent.',
+                dbqNote: 'The core justification for "No taxation without representation" and the cornerstone of popular sovereignty.'
+            },
+            'arbitrary power': {
+                term: 'Arbitrary Power',
+                definition: 'Rule by the personal whim, impulse, or unchecked decree of a despot rather than by established, known, and impartial constitutional laws.',
+                dbqNote: 'Cited 27 times in the Declaration’s grievances against King George III (e.g., suspending colonial legislatures).'
+            },
+            'absolved': {
+                term: 'Absolved',
+                definition: 'To be formally released from an oath of allegiance, legal duty, or contractual obligation.',
+                dbqNote: 'Crucial legal term in both Locke (treatises) and Jefferson ("are Absolved from all Allegiance to the British Crown").'
+            },
+            'unalienable Rights': {
+                term: 'Unalienable Rights',
+                definition: 'Fundamental rights inherent to all human beings by virtue of existence, which cannot be surrendered, sold, transferred, or legitimately taken away by any king or parliament.',
+                dbqNote: 'Replaced the medieval belief that rights were privileges bestowed at the pleasure of the reigning monarch.'
+            },
+            'instituted': {
+                term: 'Instituted',
+                definition: 'Formally created, established, or organized by deliberate human convention and mutual agreement.',
+                dbqNote: 'Highlights that governments are artificial tools created to serve human rights, not divine fixtures of nature.'
+            },
+            'deriving': {
+                term: 'Deriving',
+                definition: 'Drawing, tracing, or receiving authority from a specific origin.',
+                dbqNote: 'Indicates the directional flow of power in a democracy: bottom-up from the people, not top-down from God to a king.'
+            },
+            'abolish': {
+                term: 'Abolish',
+                definition: 'To formally, completely, and permanently eliminate or dismantle a political structure.',
+                dbqNote: 'The ultimate Lockean remedy when political institutions degenerate into tyranny.'
+            },
+            'social contract': {
+                term: 'Social Contract',
+                definition: 'An implicit or explicit pact among individuals to surrender certain natural freedoms in exchange for civil order and the protection of their remaining rights.',
+                dbqNote: 'Both Hobbes and Locke formulated social contract theories, but Locke made the contract conditional while Hobbes made it unconditional.'
+            },
+            'popular sovereignty': {
+                term: 'Popular Sovereignty',
+                definition: 'The principle that the ultimate authority and legitimacy of the state is created and sustained by the consent of its people, through their elected representatives.',
+                dbqNote: 'The core political legacy of the Declaration and the foundation of the 1787 U.S. Constitution.'
+            },
+            'state of nature': {
+                term: 'State of Nature',
+                definition: 'The hypothetical condition of human beings before the introduction of civil government, societal laws, and organized political power.',
+                dbqNote: 'Hobbes saw it as a nightmare of violence; Locke saw it as a condition of natural freedom and moral equality governed by reason.'
+            }
+        };
+
+        let currentView = { type: 'compare', docs: ['doc2', 'doc3'] };
+        let currentScale = 1.0;
+        let activeThemeFilter = 'all';
+
+        function renderDocumentCard(docId, widthClass = 'w-full') {
+            const doc = documents[docId];
+            return `
+            <div id="pane-${doc.id}" class="document-pane surface-card ${widthClass} h-full rounded-xl border flex flex-col shadow-lg p-5 sm:p-7 relative transition-all">
+                <div class="flex items-center gap-4 pb-4 mb-4 border-b border-slate-700/60 shrink-0">
+                    <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-slate-500/50 shadow-md shrink-0 bg-slate-800">
+                        <img src="${doc.image}" 
+                             alt="${doc.author}" 
+                             class="w-full h-full object-cover object-top"
+                             onerror="this.onerror=null; this.src='${getSvgFallback(doc.code)}';" />
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <span class="text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${doc.roleColor}">
+                                ${doc.roleBadge}
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono hidden sm:inline">${doc.dates}</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight doc-author-title truncate">
+                            ${doc.author}
+                        </h2>
+                        <h3 class="text-xs sm:text-sm font-medium text-amber-400 italic">
+                            ${doc.work}
+                        </h3>
+                    </div>
+                    <button onclick="copyDocumentText('${doc.id}')" title="Copy text for DBQ citation" class="surface-control p-2 rounded-lg text-xs font-medium hover:text-white shrink-0 hidden sm:block">
+                        📋 Copy
+                    </button>
+                </div>
+                <div class="px-3 py-2 rounded-lg bg-slate-900/50 dark:bg-slate-950/60 border border-slate-800/80 text-xs text-slate-300 mb-4 shrink-0">
+                    <strong class="text-slate-400 uppercase font-semibold">Core Theory:</strong> ${doc.coreIdea}
+                </div>
+                <div class="flex-1 overflow-y-auto pr-2">
+                    <div class="doc-content leading-relaxed text-slate-200">
+                        ${doc.content}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function setView(...docIds) {
+            const displayArea = document.getElementById('document-display');
+            currentView.docs = docIds;
+
+            if (docIds.length === 1) {
+                currentView.type = 'single';
+                displayArea.innerHTML = renderDocumentCard(docIds[0], 'w-full');
+            } else if (docIds.length === 2) {
+                currentView.type = 'compare';
+                displayArea.innerHTML = `
+                    ${renderDocumentCard(docIds[0], 'w-full md:w-1/2')}
+                    ${renderDocumentCard(docIds[1], 'w-full md:w-1/2')}
+                `;
+            } else if (docIds.length === 3) {
+                currentView.type = 'tri';
+                displayArea.innerHTML = `
+                    ${renderDocumentCard(docIds[0], 'w-full lg:w-1/3')}
+                    ${renderDocumentCard(docIds[1], 'w-full lg:w-1/3')}
+                    ${renderDocumentCard(docIds[2], 'w-full lg:w-1/3')}
+                `;
+            }
+
+            updateControlButtons();
+            attachInteractiveListeners();
+            applyThemeFilter(activeThemeFilter);
+        }
+
+        function updateControlButtons() {
+            document.querySelectorAll('#controls-bar .surface-control').forEach(b => b.classList.remove('active'));
+
+            const docs = currentView.docs;
+            if (docs.length === 1) {
+                const btn = document.getElementById(`btn-view-${docs[0]}`);
+                if (btn) btn.classList.add('active');
+            } else if (docs.length === 2) {
+                if (docs.includes('doc2') && docs.includes('doc3')) {
+                    document.getElementById('btn-compare-23')?.classList.add('active');
+                } else if (docs.includes('doc1') && docs.includes('doc3')) {
+                    document.getElementById('btn-compare-13')?.classList.add('active');
+                }
+            } else if (docs.length === 3) {
+                document.getElementById('btn-compare-tri')?.classList.add('active');
+            }
+        }
+
+        function showInfluenceMatrixView() {
+            const displayArea = document.getElementById('document-display');
+            document.querySelectorAll('#controls-bar .surface-control').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-influence-matrix')?.classList.add('active');
+
+            displayArea.innerHTML = `
+            <div class="surface-card w-full h-full rounded-xl border flex flex-col p-6 overflow-y-auto">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-700 mb-6">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🧬</span>
+                            <h2 class="text-2xl font-bold text-white">Ideological Lineage & Overlap Matrix</h2>
+                        </div>
+                        <p class="text-sm text-slate-400 mt-1">Comparing Core Political Axioms: Thomas Hobbes (1651) ➔ John Locke (1689) ➔ Thomas Jefferson (1776)</p>
+                    </div>
+                    <button onclick="setView('doc2', 'doc3')" class="surface-control px-4 py-2 rounded-lg text-sm font-semibold text-blue-400">
+                        Back to Document View ➔
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[750px]">
+                        <thead>
+                            <tr class="border-b-2 border-slate-600 text-xs sm:text-sm uppercase tracking-wider text-slate-400">
+                                <th class="py-3 px-4 bg-slate-900/50">Political Dimension</th>
+                                <th class="py-3 px-4 bg-red-950/20 text-red-300">🧔🏻 Thomas Hobbes (1651)</th>
+                                <th class="py-3 px-4 bg-blue-950/20 text-blue-300">👴🏼 John Locke (1689)</th>
+                                <th class="py-3 px-4 bg-emerald-950/20 text-emerald-300">🦅 Thomas Jefferson (1776)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/60 text-xs sm:text-sm text-slate-300">
+                            <tr class="hover:bg-slate-800/40 transition">
+                                <td class="py-4 px-4 font-bold text-white bg-slate-900/40">
+                                    <span class="text-emerald-400">🟢 Natural Equality</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="italic">"Nature hath made men so equal in faculties..."</p>
+                                    <p class="text-xs text-slate-400 mt-1">Equality of capacity to kill each other, creating fear.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-blue-950/10">
+                                    <p class="italic font-semibold text-slate-100">"Men being by nature all free, equal, and independent..."</p>
+                                    <p class="text-xs text-emerald-400 font-medium mt-1">➔ Foundational moral equality under natural law.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-emerald-950/10 font-bold text-white">
+                                    <p class="italic">"All men are created equal..."</p>
+                                    <span class="text-[11px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono mt-1 inline-block">Direct Locke Paraphrase</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/40 transition">
+                                <td class="py-4 px-4 font-bold text-white bg-slate-900/40">
+                                    <span class="text-blue-400">🔵 Fundamental Rights</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="italic">Right of self-preservation only; all other liberties forfeited to Leviathan.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-blue-950/10">
+                                    <p class="italic font-semibold text-slate-100">"Life, Liberty, and Estate [Property]"</p>
+                                    <p class="text-xs text-slate-400 mt-1">Inherent rights that cannot be alienated.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-emerald-950/10 font-bold text-white">
+                                    <p class="italic">"Life, Liberty and the pursuit of Happiness"</p>
+                                    <span class="text-[11px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded font-mono mt-1 inline-block">Adapted Locke's Triad</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/40 transition">
+                                <td class="py-4 px-4 font-bold text-white bg-slate-900/40">
+                                    <span class="text-purple-400">🟣 Consent & Sovereignty</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="italic">"Common power to keep them all in awe."</p>
+                                    <p class="text-xs text-slate-400 mt-1">One-way social contract; irrevocable absolute sovereignty.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-blue-950/10">
+                                    <p class="italic font-semibold text-slate-100">"...without his own consent."</p>
+                                    <p class="text-xs text-purple-400 font-medium mt-1">➔ Government is a fiduciary trust resting on popular will.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-emerald-950/10 font-bold text-white">
+                                    <p class="italic">"Deriving their just powers from the consent of the governed..."</p>
+                                    <span class="text-[11px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-mono mt-1 inline-block">Adopted Lockean Social Contract</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/40 transition">
+                                <td class="py-4 px-4 font-bold text-white bg-slate-900/40">
+                                    <span class="text-red-400">🔴 Right of Revolution</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="italic text-red-400 font-medium">NEVER PERMITTED.</p>
+                                    <p class="text-xs text-slate-400 mt-1">Rebellion returns humanity to chaotic war; tyrant is preferable to anarchy.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-blue-950/10">
+                                    <p class="italic font-semibold text-slate-100">"...absolved from any further obedience [against arbitrary power]."</p>
+                                    <p class="text-xs text-red-400 font-medium mt-1">➔ Tyrants put themselves into a state of war with the people.</p>
+                                </td>
+                                <td class="py-4 px-4 bg-emerald-950/10 font-bold text-white">
+                                    <p class="italic">"Right of the People to alter or to abolish it..."</p>
+                                    <span class="text-[11px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono mt-1 inline-block">Direct Lockean Legal Defense</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 p-4 rounded-xl bg-blue-950/30 border border-blue-500/40 flex items-start gap-3">
+                    <span class="text-2xl">🎓</span>
+                    <div>
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider">The Essential DBQ Takeaway</h4>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+                            Jefferson's Declaration is fundamentally a Lockean document that specifically repudiates the Hobbesian concept of sovereign infallibility. Where Hobbes insisted that any rebellion dissolved society into savage war, Locke gave Jefferson the moral and philosophical weaponry to claim that King George III—not the rebelling colonists—had broken the social contract and returned the relationship to a state of war.
+                        </p>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function attachInteractiveListeners() {
+            document.querySelectorAll('.highlightable, .influence-pill').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('glossary-term')) return;
+                    e.stopPropagation();
+
+                    const matchGroup = el.getAttribute('data-match') || el.closest('.highlightable')?.getAttribute('data-match');
+                    const theme = el.getAttribute('data-theme') || el.closest('.highlightable')?.getAttribute('data-theme');
+
+                    triggerMatchHighlight(matchGroup, theme);
+                });
+
+                el.addEventListener('mouseenter', (e) => {
+                    const matchGroup = el.getAttribute('data-match') || el.closest('.highlightable')?.getAttribute('data-match');
+                    if (matchGroup) {
+                        document.querySelectorAll(`[data-match="${matchGroup}"]`).forEach(m => m.classList.add('ring-2', 'ring-blue-400'));
+                    }
+                });
+
+                el.addEventListener('mouseleave', (e) => {
+                    document.querySelectorAll('.ring-2').forEach(m => m.classList.remove('ring-2', 'ring-blue-400'));
+                });
+            });
+
+            document.querySelectorAll('.glossary-term').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const termKey = el.getAttribute('data-term');
+                    showGlossaryModal(termKey);
+                });
+            });
+        }
+
+        function triggerMatchHighlight(matchGroup, theme) {
+            if (!matchGroup) return;
+
+            document.querySelectorAll('.highlightable').forEach(h => h.classList.remove('highlighted', 'active-pulse'));
+
+            const matchingElements = document.querySelectorAll(`[data-match="${matchGroup}"]`);
+            matchingElements.forEach(m => {
+                m.classList.add('highlighted', 'active-pulse');
+            });
+
+            showRibbonForMatch(matchGroup);
+
+            if (influenceData[matchGroup]) {
+                showInfluenceModal(matchGroup);
+            }
+        }
+
+        function filterByTheme(theme) {
+            activeThemeFilter = theme;
+
+            document.querySelectorAll('.theme-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-filter') === theme);
+                if (btn.getAttribute('data-filter') === theme) {
+                    btn.classList.add('ring-2', 'ring-white/40');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-white/40');
+                }
+            });
+
+            applyThemeFilter(theme);
+        }
+
+        function applyThemeFilter(theme) {
+            document.querySelectorAll('.highlightable').forEach(h => {
+                h.classList.remove('highlighted', 'active-pulse');
+                if (theme === 'all') {
+                    h.classList.add('highlighted');
+                } else if (h.getAttribute('data-theme') === theme) {
+                    h.classList.add('highlighted', 'active-pulse');
+                }
+            });
+
+            const ribbon = document.getElementById('overlap-ribbon');
+            if (theme !== 'all' && influenceData[theme]) {
+                showRibbonForMatch(theme);
+            } else if (theme === 'all') {
+                ribbon.classList.remove('hidden');
+                document.getElementById('ribbon-badge').textContent = 'ALL INFLUENCES ACTIVE';
+                document.getElementById('ribbon-badge').className = 'px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-blue-600 text-white shrink-0';
+                document.getElementById('ribbon-text').textContent = 'Showing all 5 thematic overlaps simultaneously. Click any highlighted phrase to view side-by-side textual analysis.';
+            } else {
+                ribbon.classList.add('hidden');
+            }
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.highlightable').forEach(h => {
+                h.classList.remove('highlighted', 'active-pulse');
+            });
+            document.getElementById('overlap-ribbon').classList.add('hidden');
+            document.querySelectorAll('.theme-filter-btn').forEach(b => b.classList.remove('ring-2', 'ring-white/40'));
+        }
+
+        function showRibbonForMatch(matchKey) {
+            const ribbon = document.getElementById('overlap-ribbon');
+            const data = influenceData[matchKey];
+            if (!data) return;
+
+            ribbon.classList.remove('hidden');
+            const badge = document.getElementById('ribbon-badge');
+            const text = document.getElementById('ribbon-text');
+
+            badge.textContent = data.badgeText;
+            text.innerHTML = `<strong>${data.title}:</strong> ${data.analysis} <button onclick="showInfluenceModal('${matchKey}')" class="underline text-amber-300 ml-2 font-bold hover:text-white">Inspect Text Comparison ➔</button>`;
+        }
+
+        function closeRibbon() {
+            document.getElementById('overlap-ribbon').classList.add('hidden');
+        }
+
+        function showInfluenceModal(matchKey) {
+            const data = influenceData[matchKey];
+            if (!data) return;
+
+            document.getElementById('inf-modal-badge').textContent = data.badgeText;
+            document.getElementById('inf-modal-title').textContent = data.title;
+            document.getElementById('inf-source-title').textContent = data.sourceAuthor;
+            document.getElementById('inf-source-quote').textContent = `"${data.sourceQuote}"`;
+            document.getElementById('inf-source-context').textContent = data.sourceContext;
+            document.getElementById('inf-target-quote').textContent = `"${data.targetQuote}"`;
+            document.getElementById('inf-target-context').textContent = data.targetContext;
+            document.getElementById('inf-modal-analysis').textContent = data.analysis;
+            document.getElementById('inf-modal-prompt').textContent = data.prompt;
+
+            openModal('influence-modal');
+        }
+
+        function showGlossaryModal(termKey) {
+            const entry = glossary[termKey];
+            if (!entry) return;
+
+            document.getElementById('modal-term').textContent = entry.term;
+            document.getElementById('modal-definition').textContent = entry.definition;
+            document.getElementById('modal-dbq-note').textContent = entry.dbqNote;
+
+            openModal('glossary-modal');
+        }
+
+        function openGlossaryListModal() {
+            const container = document.getElementById('glossary-items-container');
+            container.innerHTML = Object.entries(glossary).map(([key, item]) => `
+                <div class="p-3 rounded-lg bg-slate-900/50 border border-slate-700/70 hover:border-sky-500/50 transition">
+                    <div class="flex items-center justify-between mb-1">
+                        <h4 class="text-base font-bold text-sky-400">${item.term}</h4>
+                        <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">17th-18th C. Political Science</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-200 mb-1 leading-relaxed">${item.definition}</p>
+                    <p class="text-[11px] text-amber-300 italic">DBQ Note: ${item.dbqNote}</p>
+                </div>
+            `).join('');
+
+            openModal('glossary-list-modal');
+        }
+
+        function openModal(modalId) {
+            const m = document.getElementById(modalId);
+            if (m) {
+                m.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        function closeModal(modalId) {
+            const m = document.getElementById(modalId);
+            if (m) {
+                m.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('backdrop-blur-sm') || e.target.id.includes('modal')) {
+                if (e.target.id) closeModal(e.target.id);
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                ['influence-modal', 'glossary-modal', 'glossary-list-modal', 'dbq-guide-modal'].forEach(closeModal);
+            }
+        });
+
+        function changeFont() {
+            const selector = document.getElementById('font-selector');
+            document.querySelectorAll('.doc-content').forEach(el => {
+                el.style.fontFamily = selector.value;
+            });
+        }
+
+        function adjustFontSize(delta) {
+            currentScale = Math.max(0.75, Math.min(1.7, currentScale + delta));
+            const baseRem = 1.65;
+            const newRem = (baseRem * currentScale).toFixed(2);
+            document.documentElement.style.setProperty('--doc-font-size', `${newRem}rem`);
+            document.getElementById('font-size-label').textContent = `${Math.round(currentScale * 100)}%`;
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+
+            if (body.classList.contains('theme-chalkboard')) {
+                body.classList.remove('theme-chalkboard');
+                body.classList.add('theme-parchment');
+                icon.textContent = '🌙';
+                text.textContent = 'Chalkboard';
+            } else {
+                body.classList.remove('theme-parchment');
+                body.classList.add('theme-chalkboard');
+                icon.textContent = '☀️';
+                text.textContent = 'Parchment';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Fullscreen error: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function copyDocumentText(docId) {
+            const doc = documents[docId];
+            if (!doc) return;
+            const cleanText = doc.content.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
+            navigator.clipboard.writeText(`${doc.author}, "${doc.work}":\n"${cleanText}"`).then(() => {
+                alert(`Copied citation for ${doc.author} to clipboard!`);
+            }).catch(() => {
+                prompt("Copy citation:", `${doc.author}, "${doc.work}": "${cleanText}"`);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setView('doc2', 'doc3');
+            changeFont();
+            filterByTheme('all');
+        });
+    </script>
+</body>
+</html>
