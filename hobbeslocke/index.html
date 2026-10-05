@@ -398,11 +398,6 @@
                 <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
             </button>
 
-            <!-- DBQ Guiding Questions Modal Button -->
-            <button onclick="openModal('dbq-guide-modal')" class="surface-control px-3.5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 text-amber-700 dark:text-amber-300 border border-amber-400/50 hover:bg-amber-500/10 transition">
-                <span>💡</span> <span>DBQ Prompts</span>
-            </button>
-
             <!-- Glossary Modal Button -->
             <button onclick="openGlossaryListModal()" class="surface-control px-3.5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 text-sky-700 dark:text-sky-300 border border-sky-400/50 hover:bg-sky-500/10 transition">
                 <span>📖</span> <span>Glossary (12)</span>
@@ -574,15 +569,6 @@
                 <p id="inf-modal-analysis" class="text-slate-800 dark:text-slate-200 text-sm sm:text-base leading-relaxed"></p>
             </div>
 
-            <!-- DBQ Discussion Prompt -->
-            <div class="mt-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-500/30 flex items-start gap-2">
-                <span class="text-xl">✍️</span>
-                <div>
-                    <strong class="text-blue-800 dark:text-blue-300 text-xs uppercase tracking-wide block">DBQ Argumentation Prompt:</strong>
-                    <span id="inf-modal-prompt" class="text-xs sm:text-sm text-slate-800 dark:text-slate-300"></span>
-                </div>
-            </div>
-
             <div class="mt-6 flex justify-end">
                 <button onclick="closeModal('influence-modal')" class="surface-control px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 border">Close Inspector</button>
             </div>
@@ -624,42 +610,6 @@
             <div id="glossary-items-container" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
             <div class="mt-4 pt-3 border-t border-slate-300 dark:border-slate-700 flex justify-end">
                 <button onclick="closeModal('glossary-list-modal')" class="surface-control px-4 py-2 rounded-lg text-sm font-semibold border">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- DBQ Essay & Discussion Prompts Modal -->
-    <div id="dbq-guide-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-        <div class="surface-card rounded-2xl max-w-3xl w-full border-2 border-amber-500/40 shadow-2xl p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeModal('dbq-guide-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white text-3xl font-light leading-none">&times;</button>
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-2xl">💡</span>
-                <h3 class="text-xl sm:text-2xl font-bold text-amber-700 dark:text-amber-400">DBQ Essay Prompts & Teacher Discussion Guide</h3>
-            </div>
-            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Use these questions for classroom discussion or student essay scaffolding:</p>
-            
-            <div class="space-y-4">
-                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-                    <span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 font-bold text-xs uppercase">Primary Prompt</span>
-                    <h4 class="text-base sm:text-lg font-bold doc-author-title mt-1">To what extent was the Declaration of Independence a direct application of Lockean social contract theory?</h4>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Look closely at Locke's definition of "consent" and the "Right of Revolution" when legislators destroy property or exercise arbitrary power.</p>
-                </div>
-
-                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-                    <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-600/30 text-amber-700 dark:text-amber-300 font-bold text-xs uppercase">Textual Shift Analysis</span>
-                    <h4 class="text-base sm:text-lg font-bold doc-author-title mt-1">Why did Jefferson substitute "the pursuit of Happiness" for Locke's original triad of "Life, Liberty, and Estate (Property)"?</h4>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Consider the broader moral connotations of Greek/Scottish eudaimonia (virtue & public flourishing) x narrow landed wealth.</p>
-                </div>
-
-                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-                    <span class="px-2 py-0.5 rounded bg-red-100 dark:bg-red-600/30 text-red-700 dark:text-red-300 font-bold text-xs uppercase">Hobbesian Counter-Argument</span>
-                    <h4 class="text-base sm:text-lg font-bold doc-author-title mt-1">How would Thomas Hobbes criticize the American colonists' decision to declare independence?</h4>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Hobbes argued that fracturing the "common power" dissolves civil society back into the brutal "war of every man against every man."</p>
-                </div>
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <button onclick="closeModal('dbq-guide-modal')" class="surface-control px-5 py-2 rounded-lg text-sm font-semibold border">Done</button>
             </div>
         </div>
     </div>
@@ -780,8 +730,7 @@
                 sourceContext: 'Section 95: Rebutting Robert Filmer’s patriarchal divine right of kings.',
                 targetQuote: 'We hold these truths to be self-evident, that all men are created equal...',
                 targetContext: 'Declaration Preamble: Establishing the moral baseline for all legitimate authority.',
-                analysis: 'Jefferson directly adopted Locke’s fundamental premise: before political institutions exist, all humans possess equal moral worth and natural freedom. While Locke argued this analytically through natural law, Jefferson elevated it into an unshakeable American political creed ("self-evident").',
-                prompt: 'Why was the assertion that "all men are created equal" both radically revolutionary in 1776 yet deeply contradictory in practice regarding chattel slavery?'
+                analysis: 'Jefferson directly adopted Locke’s fundamental premise: before political institutions exist, all humans possess equal moral worth and natural freedom. While Locke argued this analytically through natural law, Jefferson elevated it into an unshakeable American political creed ("self-evident").'
             },
             liberty: {
                 theme: 'rights',
@@ -794,8 +743,7 @@
                 sourceContext: 'Section 57 & 123: The chief purpose for which individuals unite into commonwealths.',
                 targetQuote: '...endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.',
                 targetContext: 'Declaration Preamble: Defining the sacred entitlements no crown can infringe.',
-                analysis: 'Jefferson famously substituted "the pursuit of Happiness" for Locke’s "Estate" (property). Influenced by Scottish Enlightenment moral philosophy and George Mason’s Virginia Declaration of Rights, Jefferson wanted a more universal, civic concept of human flourishing (Greek eudaimonia) rather than merely protecting material possessions.',
-                prompt: 'In what ways does changing "property" to "the pursuit of happiness" broaden the promise of American democratic society?'
+                analysis: 'Jefferson famously substituted "the pursuit of Happiness" for Locke’s "Estate" (property). Influenced by Scottish Enlightenment moral philosophy and George Mason’s Virginia Declaration of Rights, Jefferson wanted a more universal, civic concept of human flourishing (Greek eudaimonia) rather than merely protecting material possessions.'
             },
             consent: {
                 theme: 'consent',
@@ -808,8 +756,7 @@
                 sourceContext: 'Locke argues power is held on conditional trust. Hobbes argued surrender of rights to the Sovereign is absolute and permanent.',
                 targetQuote: '...deriving their just powers from the consent of the governed...',
                 targetContext: 'Declaration: The foundational pillar of American constitutionalism.',
-                analysis: 'Jefferson explicitly sides with Locke against Hobbes. For Hobbes, fear of the chaotic state of nature justifies total obedience to an awe-inspiring monarch. For Locke and Jefferson, political power is not inherent in rulers; it is a temporary, revocable grant delegated by the people.',
-                prompt: 'How did King George III’s taxation without representation directly violate the Lockean principle of "consent of the governed"?'
+                analysis: 'Jefferson explicitly sides with Locke against Hobbes. For Hobbes, fear of the chaotic state of nature justifies total obedience to an awe-inspiring monarch. For Locke and Jefferson, political power is not inherent in rulers; it is a temporary, revocable grant delegated by the people.'
             },
             revolt: {
                 theme: 'revolt',
@@ -822,8 +769,7 @@
                 sourceContext: 'Chapter XIX: "Of the Dissolution of Government"—justifying England’s Glorious Revolution (1688).',
                 targetQuote: '...it is the Right of the People to alter or to abolish it, and to institute new Government...',
                 targetContext: 'Declaration: Directly laying the legal warrant for the 27 specific charges against King George III.',
-                analysis: 'This is the most direct legal precedent in the entire Declaration. When a government breaches its social contract through "a long train of abuses," Locke argued it enters a state of war with its own citizens, forfeiting all authority. Jefferson used this exact Lockean defense to show King George was a tyrant whom the colonies had the legal right to overthrow.',
-                prompt: 'Why was it crucial for Jefferson to prove that King George III was guilty of "repeated injuries and usurpations" before invoking the right to abolish the government?'
+                analysis: 'This is the most direct legal precedent in the entire Declaration. When a government breaches its social contract through "a long train of abuses," Locke argued it enters a state of war with its own citizens, forfeiting all authority. Jefferson used this exact Lockean defense to show King George was a tyrant whom the colonies had the legal right to overthrow.'
             },
             nasty_brutish: {
                 theme: 'nature',
@@ -836,8 +782,7 @@
                 sourceContext: 'Chapter XIII: Human life in the absence of an overpowering central ruler.',
                 targetQuote: 'That to secure these rights, Governments are instituted among Men...',
                 targetContext: 'Declaration: Government is designed as a tool to protect rights, not an oppressive master.',
-                analysis: 'Hobbes believed that humans in nature are inherently selfish and violent, meaning sovereignty must be absolute to maintain mere survival. Locke and Jefferson countered that humans are rational beings possessing pre-political natural rights. While Hobbes saw government as preventing mutual destruction, Jefferson saw it as securing innate freedom.',
-                prompt: 'Would Thomas Hobbes have viewed the American Revolution as a noble fight for freedom, or a dangerous descent into the horrors of the state of nature?'
+                analysis: 'Hobbes believed that humans in nature are inherently selfish and violent, meaning sovereignty must be absolute to maintain mere survival. Locke and Jefferson countered that humans are rational beings possessing pre-political natural rights. While Hobbes saw government as preventing mutual destruction, Jefferson saw it as securing innate freedom.'
             },
             quarrel: {
                 theme: 'nature',
@@ -850,8 +795,7 @@
                 sourceContext: 'Hobbes argues quarrel arises from human psychology itself.',
                 targetQuote: '...a history of repeated injuries and usurpations, all having in direct object the establishment of an absolute Tyranny...',
                 targetContext: 'Declaration: Conflict arises from executive overreach and tyrannical abuse, not inherent civilian wickedness.',
-                analysis: 'Hobbes places the blame for conflict on ordinary human nature (diffidence/mistrust). Jefferson places the blame squarely upon the corrupting nature of unchecked monarchical power.',
-                prompt: 'Compare Hobbes’s view of human flaw with the Declaration’s diagnosis of King George III’s tyranny.'
+                analysis: 'Hobbes places the blame for conflict on ordinary human nature (diffidence/mistrust). Jefferson places the blame squarely upon the corrupting nature of unchecked monarchical power.'
             }
         };
 
@@ -1293,8 +1237,7 @@
             document.getElementById('inf-target-quote').textContent = `"${data.targetQuote}"`;
             document.getElementById('inf-target-context').textContent = data.targetContext;
             document.getElementById('inf-modal-analysis').textContent = data.analysis;
-            document.getElementById('inf-modal-prompt').textContent = data.prompt;
-
+            
             const sourceImg = data.sourceCode === 'hobbes' ? philosopherImages.hobbes.fallback : philosopherImages.locke.fallback;
             const targetImg = philosopherImages.jefferson.fallback;
             document.getElementById('inf-source-avatar').innerHTML = `<img src="${sourceImg}" class="w-full h-full object-cover"/>`;
@@ -1354,7 +1297,7 @@
 
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                ['influence-modal', 'glossary-modal', 'glossary-list-modal', 'dbq-guide-modal'].forEach(closeModal);
+                ['influence-modal', 'glossary-modal', 'glossary-list-modal'].forEach(closeModal);
             }
         });
 
